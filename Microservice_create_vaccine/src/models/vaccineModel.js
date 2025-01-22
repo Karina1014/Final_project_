@@ -1,8 +1,8 @@
 import { connectDB } from '../config/postgredb.js'; 
 
-const createVaccines = async (Name, Description, Dose) => {
+const create = async (name, description, dose) => {
   const { data, error } = await connectDB.from('vaccine').insert([
-    { Name, Description, Dose }
+    { name, description, dose }
 ]).select();
 
 if (error) {
@@ -11,4 +11,4 @@ if (error) {
 return data;
 };
 
-export { createVaccines };
+export { create };

@@ -3,6 +3,6 @@ import * as vaccineController from '../controllers/vaccineController.js';
 
 const router = express.Router();
 
-router.post('/createVaccines', vaccineController.createVaccines);
+router.post('/createVaccines', vaccineController.create);
 
 export default router;

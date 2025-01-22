@@ -1,14 +1,13 @@
 import * as vaccineModel from '../models/vaccineModel.js';
 
-const createVaccines = async (req, res) => {
+const create = async (req, res) => {
+    const { name, description, dose } = req.body; 
     try {
-        const { Name, Description, Dose } = req.body; 
-
-        if (!Name || !Description || !Dose) {
+        if (!name || !description || !dose) {
             return res.status(400).json({ message: 'All fields are required: name, description, dose' });
         }
 
-        const newVaccine = await vaccineModel.createVaccines(Name, Description, Dose);
+        const newVaccine = await vaccineModel.create(name, description, dose);
         res.status(201).json(newVaccine);
     } catch (err) {
         console.error('Error creating vaccine', err);
@@ -16,4 +15,4 @@ const createVaccines = async (req, res) => {
     }
 };
 
-export { createVaccines };
+export { create };
