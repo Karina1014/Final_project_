@@ -1,6 +1,6 @@
-import * as vaccineUpdateService from '../services/vaccineUpdateService.js';
+import * as vaccineModel from '../models/vaccineModel.js';
 
-export const updateVaccine = async (req, res) => {
+const updateVaccine = async (req, res) => {
   try {
     const { id, name, description, dose } = req.body;
     
@@ -8,10 +8,12 @@ export const updateVaccine = async (req, res) => {
       return res.status(400).json({ message: 'All fields are required: id, name, description, dose' });
     }
 
-    const updatedVaccine = await vaccineUpdateService.updateVaccine(id, name, description, dose);
+    const updatedVaccine = await vaccineModel.updateVaccine(id, name, description, dose);
     res.status(200).json(updatedVaccine);
   } catch (err) {
     console.error('Error updating vaccine', err);
     res.status(500).json({ message: 'Error updating vaccine' });
   }
 };
+
+export { updateVaccine };

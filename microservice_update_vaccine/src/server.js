@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import vaccineUpdateRoute from './routes/vaccineUpdateRoute.js';
+import vaccineUpdateRoute from './routes/vaccineRouter.js';
 import dotenv from 'dotenv';
 dotenv.config(); 
 
