@@ -63,7 +63,7 @@ const Sidebar = () => {
                       ? "flex items-center gap-x-2 text-blue-600 font-semibold"
                       : "flex items-center gap-x-2 text-gray-300 hover:text-blue-500"
                   }
-                  aria-label="Listar usuarios"
+                  aria-label="Listar usuarios todos"
                 >
                   <BsList size={18} />
                   Listar
