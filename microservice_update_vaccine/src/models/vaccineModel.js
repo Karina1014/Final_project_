@@ -1,9 +1,9 @@
 import { connectDB } from '../config/postgredb.js';
 
-export const updateVaccine = async (id, Name, Description, Dose) => {
+export const updateVaccine = async (id, name, description, dose) => {
   const { data, error } = await connectDB
     .from('vaccine')
-    .update({ Name, Description, Dose })
+    .update({ name, description, dose })
     .eq('id', id) 
     .select();
 

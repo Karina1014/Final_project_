@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Vaccine API",
-    "description": "API for creating vaccines",
+    "description": "API for get list vaccines",
     "version": "1.0.0"
   },
   "host": "localhost:3000",
