@@ -1,0 +1,32 @@
+# Ignore Python compiled files
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignore virtual environment (if you're using one)
+venv/
+env/
+.venv/
+
+# Ignore IDE configuration files (like VSCode, PyCharm, etc.)
+.vscode/
+.idea/
+
+# Ignore environment variable files
+.env
+
+
+# Ignore Flask generated files (like logs)
+instance/
+*.log
+
+# Ignore temporary files
+*.bak
+*.swp
+
+# Ignore pytest cache (if you're using pytest)
+.cache/
+
+# Ignore other potential temporary or project-specific files
+*.pid
+*.log
