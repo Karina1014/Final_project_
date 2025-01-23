@@ -1,0 +1,51 @@
+
+/* Clase inicial para el zoom que empieza con una imagen pequeña */
+.zoom-image {
+transform: scale(0.9); /* Comienza más pequeña */
+transition: transform 3s ease-out; /* Animación de 3 segundos */
+}
+
+/* Cuando la imagen está activa, vuelve a su tamaño original (escala 1) */
+.swiper-slide-active .zoom-image {
+transform: scale(1); /* Escala normal */
+}
+
+/* Efecto en las imágenes previas o siguientes, con un pequeño zoom */
+.swiper-slide-prev .zoom-image,
+.swiper-slide-next .zoom-image {
+transform: scale(1.05); /* Un pequeño zoom para las imágenes previas y siguientes */
+}
+
+/* Esto aplica un pequeño zoom a las imágenes previas y siguientes */
+.swiper-slide-next .zoom-image,
+.swiper-slide-prev .zoom-image {
+transition: transform 0.5s ease-in-out; /* Transición más rápida para el cambio de imagen */
+}
+
+.text-blue-950 {
+color: #19beff;
+}
+
+
+/* Agregar la animación de subir y bajar lentamente */
+@keyframes float {
+0% {
+  transform: translateY(0); /* Empieza en su posición original */
+}
+50% {
+  transform: translateY(-10px); /* Subir un poco */
+}
+100% {
+  transform: translateY(0); /* Volver a su posición original */
+}
+}
+
+/* Usar la animación en el icono de WhatsApp */
+.animate-ping-slow {
+animation: float 2s ease-in-out infinite;
+}
+
+html {
+scroll-behavior: smooth;
+}
+

@@ -4,7 +4,7 @@ import { AppContent } from '../context/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FiArrowRight } from 'react-icons/fi'; // Importa el ícono de flecha de React Icons
-import { assets } from '../assets/assets';
+
 // Importamos los iconos de React Icons
 import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
 import { HiArrowNarrowRight } from 'react-icons/hi'; // Ícono de flecha
@@ -61,34 +61,20 @@ export const Login = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
-    <div className="flex items-center space-x-4 absolute left-5 top-5">
-        <img
-          onClick={() => navigate('/')}
-          src={assets.vaccine} // Asegúrate de que 'assets.vaccine' tenga la ruta correcta
-          alt="logo"
-          height={50}
-          width={50}
-          className="w-12 h-12 sm:w-16 sm:h-16 cursor-pointer" // Ajusta el tamaño según necesidad
-        />
+      <img
+        onClick={() => navigate('/')}
+        src="/path/to/logo.png" // Cambiar a la ruta correcta
+        alt="logo"
+        className="absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer"
+      />
+
       <button
-        onClick={() => navigate('/DashboarUser')}
-        className="flex items-center justify-center bg-[#0C9AD1] text-white py-3 px-10 rounded-full text-xl font-semibold transition-all duration-300 ease-in-out hover:bg-[#0A88B2] hover:scale-105 shadow-lg hover:shadow-xl"
-      >
-        <span className="mr-3">DashboardUser</span> {/* Espacio entre el texto y el ícono */}
-        <FiArrowRight size={24} /> {/* Icono de flecha */}
-      </button>
-      <button
-        onClick={() => navigate('/Admin')}
-        className="flex items-center justify-center bg-[#0C9AD1] text-white py-3 px-10 rounded-full text-xl font-semibold transition-all duration-300 ease-in-out hover:bg-[#0A88B2] hover:scale-105 shadow-lg hover:shadow-xl"
-      >
-        <span className="mr-3">DashboardAdmin</span> {/* Espacio entre el texto y el ícono */}
-        <FiArrowRight size={24} /> {/* Icono de flecha */}
-      </button>
-
-      </div>
-
-
-
+          onClick={() => navigate('/DashboarUser')}
+          className="inline-flex items-center justify-center bg-[#0C9AD1] text-white py-3 px-8 rounded-full text-lg font-semibold transition-all duration-300 ease-in-out hover:bg-[#0A88B2] hover:scale-105"
+        >
+          <span>DashboarUser</span> {/* Texto actualizado a "Sign In" */}
+          <FiArrowRight size={24} /> {/* Usa el ícono de flecha de React Icons */}
+        </button>
       <div className="bg-slate-900 p-10 rounded-lg shadow-lg w-full sm:w-96 text-indigo-300 text-sm">
         <h2 className="text-xl font-bold mb-4">
           {state === 'Sign Up' ? 'Create Account' : 'Login'}
