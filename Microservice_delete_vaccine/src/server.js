@@ -7,7 +7,7 @@ const app = express();
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger.json' assert { type: "json" };
 
-const PORT = 3000;
+const PORT = 3003;
 
 // Configuration cors - Middleware
 app.use((req, res, next) => {

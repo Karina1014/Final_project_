@@ -7,7 +7,7 @@ import path from 'path';
 
 // Configuración de la aplicación
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 4003;
 
 // Middleware
 app.use(express.json()); // Soporte para JSON en las solicitudes
