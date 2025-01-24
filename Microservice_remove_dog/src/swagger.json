@@ -1,26 +1,23 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "Vaccine API",
-    "description": "API for get list vaccines",
+    "title": "Dog API",
+    "description": "API for remove dogs",
     "version": "1.0.0"
   },
-  "host": "localhost:3002",
-  "basePath": "/api",
+  "host": "localhost:4002",
+  "basePath": "/api/dogs",
   "schemes": [
     "http",
     "https"
   ],
   "paths": {
-    "/vaccines": {
+    "/list": {
       "get": {
         "description": "",
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }

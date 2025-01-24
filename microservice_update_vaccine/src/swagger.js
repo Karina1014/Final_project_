@@ -8,7 +8,7 @@ const doc = {
         title: 'Vaccine API',
         description: 'API for update vaccines',
     },
-    host: 'localhost:3000',
+    host: 'localhost:3004',
     schemes: ['http', 'https'],
 };
 

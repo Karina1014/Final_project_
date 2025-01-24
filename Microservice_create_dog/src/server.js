@@ -7,6 +7,10 @@ import dogRouter from "./routes/dogRouter.js";
 
 // Configuración de la aplicación
 const app = express();
+
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json' assert { type: "json" };
+
 const port = process.env.PORT || 4000;
 
 // Middleware
@@ -20,6 +24,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 connectDB();
 
 // Rutas
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/dogs", dogRouter);
 
 // Ruta raíz

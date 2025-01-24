@@ -8,7 +8,7 @@ const doc = {
         title: 'Dog API',
         description: 'API for get list dog',
     },
-    host: 'localhost:4000',
+    host: 'localhost:4001',
     schemes: ['http', 'https'],
 };
 

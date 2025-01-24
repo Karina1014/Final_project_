@@ -21,7 +21,7 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use(express.json());
 
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api', vaccineRouter);
 
 app.listen(PORT, () => {

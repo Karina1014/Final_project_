@@ -7,6 +7,10 @@ import path from 'path';
 
 // Configuración de la aplicación
 const app = express();
+
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json' assert { type: "json" };
+
 const port = process.env.PORT || 4003;
 
 // Middleware
@@ -25,6 +29,7 @@ connectDB().then(() => {
 });
 
 // Configuración de rutas
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/dogs", dogRouter);
 
 // Ruta para probar la API

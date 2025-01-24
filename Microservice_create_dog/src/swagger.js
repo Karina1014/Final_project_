@@ -1,14 +1,15 @@
 import swaggerAutogen from 'swagger-autogen';
 
 const outputFile = './swagger.json';
-const endpointsFiles = ['./routes/vaccineRouter.js'];
+const endpointsFiles = ['./routes/dogRouter.js'];
 
 const doc = {
     info: {
-        title: 'Vaccine API',
-        description: 'API for creating vaccines',
+        title: 'Dog API',
+        description: 'API for creating dog',
     },
-    host: 'localhost:3001',
+
+    host: 'localhost:4000',
     schemes: ['http', 'https'],
 };
 
