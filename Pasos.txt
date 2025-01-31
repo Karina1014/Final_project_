@@ -1,2 +1,0 @@
-1.Install for socket
-npm install socket.io-client
