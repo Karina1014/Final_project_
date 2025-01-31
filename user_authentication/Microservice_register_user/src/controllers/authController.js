@@ -1,30 +1,43 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import userModel from '../models/userModel.js';
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
 
-  // Verificar que todos los campos estén presentes
   if (!name || !email || !password) {
     return res.json({ success: false, message: 'Missing details' });
   }
 
   try {
-    // Verificar si el usuario ya existe
     const existingUser = await userModel.findOne({ email });
 
     if (existingUser) {
       return res.json({ success: false, message: 'User already exists' });
     }
 
-    // Hashear la contraseña
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Crear un nuevo usuario
     const user = new userModel({ name, email, password: hashedPassword });
     await user.save();
 
-    return res.json({ success: true, message: 'User registered successfully' });
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días en milisegundos
+    });
+    
+       await transporter.sendMail(mailOption);
+    //Sending welcome email fin
+
+    return res.json({ success: true });
   } catch (error) {
     console.error(error);
     res.json({ success: false, message: 'Something went wrong. Please try again later.' });
