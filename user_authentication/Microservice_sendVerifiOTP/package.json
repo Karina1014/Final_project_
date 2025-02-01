@@ -1,5 +1,5 @@
 {
-  "name": "src",
+  "name": "microservice_sendverifiotp",
   "version": "1.0.0",
   "main": "server.js",
   "type": "module",
@@ -16,7 +16,6 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.9.6",
-    "nodemailer": "^6.10.0"
+    "mongoose": "^8.9.6"
   }
 }

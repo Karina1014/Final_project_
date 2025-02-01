@@ -1,0 +1,11 @@
+
+*.env
+
+*.vscode/
+
+/go.sum
+/go.work
+/go.work.sum
+
+*.test
+cover.out

@@ -1,14 +1,13 @@
 import express from "express";
 import 'dotenv/config';
 import cookieParser from "cookie-parser";
-import connectDB from "./config/mongodb.js"; 
+import connectDB from "./config/mongodb.js"; // Asegúrate del nombre del archivo
 import authRouter from "./routes/authRoutes.js";
 
 const app = express();
-const port = 3010;
+const port = 3014;
 
 connectDB();
-
 
 app.use(express.json());
 app.use(cookieParser());
