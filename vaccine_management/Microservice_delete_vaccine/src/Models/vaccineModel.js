@@ -1,25 +1,24 @@
-import { connectDB } from '../config/postgredb.js';
+import { connectDB } from '../config/postgredb.js';  
 
 const deleteVaccine = async (id) => {
     try {
-        const { data, error } = await connectDB
-            .from('vaccine')
-            .delete()
-            .eq('id', id) 
-            .select(); 
-
-        if (error) {
-            throw new Error(error.message);  
+        if (!id || isNaN(id)) {
+            throw new Error('Invalid ID provided');
+        }
+        const result = await connectDB.query(
+            'DELETE FROM vaccine WHERE id_vaccine = $1 RETURNING *',
+            [id] 
+        );
+        if (result.rows.length === 0) {
+            return null; 
         }
 
-        if (data.length === 0) {
-            return null;
-        }
-
-        return data[0]; 
+        return result.rows[0]; 
     } catch (error) {
         throw new Error(`Error deleting vaccine: ${error.message}`);
     }
 };
 
 export { deleteVaccine };
+
+
