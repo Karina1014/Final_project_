@@ -1,14 +1,15 @@
-import dogModel from "../models/dogModel.js";
+import { DogModel } from '../models/dogModel.js';
 
-//get all dogs
-const listProduct = async (req, res) => {
-  try {
-    const dogs = await dogModel.find({}); 
-    res.json({ success: true, dogs }); 
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "ERROR" }); 
+class DogController {
+  async getAllDogs(req, res) {
+    try {
+      const dogs = await DogModel.findAll();
+      res.json({ success: true, dogs });
+    } catch (error) {
+      console.error('Error fetching dogs:', error);
+      res.status(500).json({ success: false, message: 'Error fetching dogs' });
+    }
   }
-};
-
-export { listProduct };
+}
+const dogController = new DogController();
+export { dogController };

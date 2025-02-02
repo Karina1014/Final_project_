@@ -1,26 +1,26 @@
-import productModel from "../models/dogModel.js"; // Corrected the typo
-import fs from "fs"
+import { DogModel } from '../models/dogModel.js';
 
-// Add product item
-const addDog = async (req, res) => {
-  // Corrected string interpolation for image filename
-  let image_filename = `${req.file.filename}`;
+class DogController {
+  async addDog(req, res) {
+    try {
+      const { nameDog, breed, age, gener } = req.body;
+      let imageBuffer = req.file ? req.file.buffer : null;
 
-  const product = new productModel({
-    nameDog: req.body.nameDog,
-    breed: req.body.breed,
-    age: req.body.age,
-    gener: req.body.gener,
-    image: image_filename,
-  });
+      await DogModel.create({
+        nameDog,
+        breed,
+        age,
+        gener,
+        image: imageBuffer,
+      });
 
-  try {
-    await product.save();
-    res.json({ success: true, message: "Dog Added" });
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error adding Dog" }); // Fixed error message
+      res.json({ success: true, message: 'Dog added successfully' });
+    } catch (error) {
+      console.error('Error adding Dog:', error);
+      res.status(500).json({ success: false, message: 'Error adding Dog' });
+    }
   }
 }
 
-export { addDog };
+const dogController = new DogController();
+export { dogController };

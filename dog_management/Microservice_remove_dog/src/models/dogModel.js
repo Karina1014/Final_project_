@@ -1,15 +1,15 @@
-import mongoose from 'mongoose';
+import { database } from '../config/mysqldb.js';
+import { DataTypes } from 'sequelize';
 
-// Esquema para el perro (dog)
-const dogSchema = new mongoose.Schema({
-  nameDog: { type: String, required: true },
-  breed: { type: String, required: true },
-  age: { type: Number, required: true },
-  image: { type: String, required: true },  // Aquí es donde se guarda el nombre de la imagen
-  gener: { type: String, required: true },
+const DogModel = database.define('Dog', {
+  nameDog: { type: DataTypes.STRING, allowNull: false },
+  breed: { type: DataTypes.STRING, allowNull: false },
+  age: { type: DataTypes.INTEGER, allowNull: false },
+  gener: { type: DataTypes.STRING, allowNull: false },
+  image: { type: DataTypes.BLOB('medium'), allowNull: true },
+}, {
+  tableName: 'dogs',
+  timestamps: false,
 });
 
-// Crear el modelo para el perro (dog)
-const dogModel = mongoose.models.Dog || mongoose.model('dogs', dogSchema);
-
-export default dogModel;
+export { DogModel };
