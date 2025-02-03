@@ -3,62 +3,56 @@ name: CI/CD - Docker Build & Deploy
 on:
   push:
     branches:
-      - test  # O la rama que estés utilizando
+      - test  # Or the branch you're using
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # Log in to Docker Hub
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      # Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # Build and Push Client Docker Image
-    - name: Build and Push Client Docker image
-      run: |
-        docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest .
-        docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
-
-    # Build and Push Server Docker Image
-    - name: Build and Push Server Docker image
-      run: |
-        docker build -f server/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/servidor:latest .
-        docker push ${{ secrets.DOCKER_USERNAME }}/servidor:latest
+      # Build and Push Client Docker Image
+      - name: Build and Push Client Docker image
+        run: |
+          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
   deploy-client:
     runs-on: ubuntu-latest
     needs: build-and-push
 
     steps:
-    - name: SSH into EC2 (Client) and deploy Docker container
-      uses: appleboy/ssh-action@v1.2.0
-      with:
-        host: ${{ secrets.EC2_CLIENT_SERVER }}
-        username: ubuntu
-        key: ${{ secrets.CLIENT_SERVER_KEY }}
-        script: |
-          # Instalar Docker en la instancia EC2 (Cliente)
-          sudo apt update && sudo apt install -y docker.io
+      - name: SSH into EC2 (Client) and deploy Docker container
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_CLIENT_SERVER }}
+          username: ubuntu
+          key: ${{ secrets.CLIENT_SERVER_KEY }}
+          script: |
+            # Install Docker on the EC2 instance (Client)
+            sudo apt update && sudo apt install -y docker.io
 
-          # Hacer que Docker se inicie automáticamente
-          sudo systemctl enable --now docker
+            # Ensure Docker starts automatically
+            sudo systemctl enable --now docker
 
-          # Descargar la última imagen del cliente desde Docker Hub
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+            # Pull the latest client image from Docker Hub
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
-          # Detener cualquier contenedor en ejecución
-          sudo docker ps -q | xargs sudo docker stop || true
-          sudo docker ps -q | xargs sudo docker rm || true
+            # Stop any running containers
+            sudo docker ps -q | xargs sudo docker stop || true
+            sudo docker ps -q | xargs sudo docker rm || true
 
-          # Iniciar el nuevo contenedor con la imagen descargada
-          sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+            # Start the new container with the pulled image
+            sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
-          # Verificar el contenedor en ejecución
-          sudo docker ps
+            # Verify the container is running
+            sudo docker ps
