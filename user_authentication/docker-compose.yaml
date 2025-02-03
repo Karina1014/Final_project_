@@ -1,0 +1,66 @@
+version: '3.9'
+
+services:
+  microservice_login:
+    build:
+      context: ./Microservice_login
+      dockerfile: Dockerfile
+    image: janneth5/microservice_login:v1
+    ports:
+      - "3011:3011"
+    env_file:
+      - ./Microservice_login/src/.env
+    networks:
+      - auth_network
+
+  microservice_logout:
+    build:
+      context: ./Microservice_logout
+      dockerfile: Dockerfile
+    image: janneth5/microservice_logout:v1
+    ports:
+      - "3012:3012"
+    env_file:
+      - ./Microservice_logout/src/.env
+    networks:
+      - auth_network
+
+  microservice_register_user:
+    build:
+      context: ./Microservice_register_user
+      dockerfile: Dockerfile
+    image: janneth5/microservice_register_user:v1
+    ports:
+      - "3010:3010"
+    env_file:
+      - ./Microservice_register_user/src/.env
+    networks:
+      - auth_network
+
+  microservice_sendVerifiOTP:
+    build:
+      context: ./Microservice_sendVerifiOTP
+      dockerfile: Dockerfile
+    image: janneth5/microservice_sendverifiotp:v1
+    ports:
+      - "3013:3013"
+    env_file:
+      - ./Microservice_sendVerifiOTP/src/.env  
+    networks:
+      - auth_network
+
+  microservice_verifiEmail:
+    build:
+      context: ./Microservice_verifiEmail
+      dockerfile: Dockerfile
+    image: janneth5/microservice_verifiemail:v1
+    ports:
+      - "3014:3014"
+    env_file:
+      - ./Microservice_verifiEmail/src/.env
+    networks:
+      - auth_network
+
+networks:
+  auth_network:
+    driver: bridge
