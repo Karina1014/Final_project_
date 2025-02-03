@@ -1,15 +1,14 @@
 import { connectDB } from '../config/postgredb.js';
 
 const getVaccines = async () => {
-  const { data, error } = await connectDB
-    .from('vaccine')
-    .select('*');
-
-  if (error) {
-    throw new Error(`Error fetching vaccines: ${error.message}`);
+  try {
+    const res = await connectDB.query('SELECT * FROM vaccine');
+    return res.rows; 
+  } catch (err) {
+    throw new Error(`Error fetching vaccines: ${err.message}`);
   }
-
-  return data;
 };
+
 export { getVaccines };
+
 

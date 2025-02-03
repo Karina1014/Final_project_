@@ -1,33 +1,31 @@
-import dogModel from "../models/dogModel.js"; // Importa correctamente el modelo
+import { DogModel } from '../models/dogModel.js';
 
-// Actualizar un perro por ID
-const updateDog = async (req, res) => {
-  const { id } = req.params; // Obtiene el ID del perro desde los parámetros
-  const updates = req.body; // Obtiene las actualizaciones desde el cuerpo de la solicitud
+class DogController {
+  async updateDog(req, res) {
+    try {
+      const { id } = req.params;
+      const { nameDog, breed, age, gener } = req.body;
+      let imageBuffer = req.file ? req.file.buffer : null;
 
-  try {
-    // Busca y actualiza el perro por su ID
-    const updatedDog = await dogModel.findByIdAndUpdate(
-      id,
-      updates,
-      { new: true, runValidators: true } // Retorna el documento actualizado y valida los datos
-    );
+      const dog = await DogModel.findByPk(id);
+      if (!dog) {
+        return res.status(404).json({ success: false, message: 'Dog not found' });
+      }
 
-    if (!updatedDog) {
-      return res.status(404).json({ message: "Dog not found" });
+      await dog.update({
+        nameDog,
+        breed,
+        age,
+        gener,
+        image: imageBuffer || dog.image,
+      });
+
+      res.json({ success: true, message: 'Dog updated successfully', dog });
+    } catch (error) {
+      console.error('Error updating dog:', error);
+      res.status(500).json({ success: false, message: 'Error updating dog' });
     }
-
-    res.status(200).json({
-      message: "Dog updated successfully",
-      dog: updatedDog, // Retorna el perro actualizado
-    });
-  } catch (err) {
-    console.error("Error updating dog:", err);
-    res.status(500).json({
-      error: "An error occurred while updating the dog.",
-      details: err.message, // Detalles del error
-    });
   }
-};
-
-export { updateDog }; // Exporta la función correctamente
+}
+const dogController = new DogController();
+export { dogController };

@@ -1,13 +1,16 @@
-import mongoose from 'mongoose';
+import { database } from '../config/mysqldb.js';
+import { DataTypes } from 'sequelize';
 
-const productSchema = new mongoose.Schema({
-  nameDog: { type: String, required: true },
-  breed: { type: String, required: true },
-  age: { type: Number, required: true },
-  image:{type:String, required: true},
-  gener: { type: String, required: true },
+const DogModel = database.define('Dog', {
+  nameDog: { type: DataTypes.STRING, allowNull: false },
+  breed: { type: DataTypes.STRING, allowNull: false },
+  age: { type: DataTypes.INTEGER, allowNull: false },
+  gener: { type: DataTypes.STRING, allowNull: false },
+  image: { type: DataTypes.BLOB('medium'), allowNull: true },
+}, {
+  tableName: 'dogs',
+  timestamps: false,
 });
 
-const productModel = mongoose.models.product || mongoose.model('dogs', productSchema);
+export { DogModel };
 
-export default productModel;

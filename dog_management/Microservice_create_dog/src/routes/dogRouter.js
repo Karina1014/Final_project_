@@ -1,19 +1,12 @@
 import express from "express";
-import multer from "multer"; // Importing multer
-import { addDog } from "../controllers/dogController.js"; // Make sure the path is correct
+import multer from "multer";
+import { dogController } from "../controllers/dogController.js";
 
 const dogRouter = express.Router();
 
-// Image Storage Engine
-const storage = multer.diskStorage({
-  destination: "uploads",
-  filename: (req, file, cb) => {
-    return cb(null, `${Date.now()}${file.originalname}`);
-  },
-});
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-dogRouter.post("/add", upload.single("image"), addDog);
+dogRouter.post("/add", upload.single("image"), (req, res) => dogController.addDog(req, res));
 
 export default dogRouter;

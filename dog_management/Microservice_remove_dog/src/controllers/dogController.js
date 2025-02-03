@@ -1,14 +1,22 @@
-import dogModel from "../models/dogModel.js";
+import { DogModel } from '../models/dogModel.js';
 
-// Obtener todos los perros
-const listProduct = async (req, res) => {
-  try {
-    const dogs = await dogModel.find({}); // Obtener todos los perros
-    res.json({ success: true, dogs }); // Cambié 'data' por 'dogs' para consistencia con tu frontend
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "ERROR" }); // Corrección de 'falase' a 'false'
+class DogController {
+  async deleteDog(req, res) {
+    try {
+      const { id } = req.params;
+      const dog = await DogModel.findByPk(id);
+      if (!dog) {
+        return res.status(404).json({ success: false, message: 'Dog not found' });
+      }
+
+      await dog.destroy();
+      res.json({ success: true, message: 'Dog deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting dog:', error);
+      res.status(500).json({ success: false, message: 'Error deleting dog' });
+    }
   }
-};
+}
 
-export { listProduct };
+const dogController = new DogController();
+export { dogController };
