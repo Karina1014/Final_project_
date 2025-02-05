@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js"; // Asegúrate del nombre del archivo
 import authRouter from "./routes/authRoutes.js";
 import cors from "cors";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 const port = 3013;
@@ -18,6 +19,8 @@ app.use(cors({ origin: allowedOrigins, credentials: true }));
 
 app.get('/', (req, res) => res.send("API working"));
 app.use('/api/auth', authRouter);
+app.use('/api/user', userRoutes);
+
 
 app.use((req, res) => {
     res.status(404).json({ success: false, message: 'Ruta no encontrada' });

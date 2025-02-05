@@ -1,96 +1,194 @@
-import { useContext } from 'react';
-import { assets } from '../assets/assets';
-import { useNavigate } from 'react-router-dom'; // Navegar Hook en enrutador
+import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppContent } from '../context/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FiArrowRight } from 'react-icons/fi'; // Ícono de flecha
+import { assets } from '../assets/assets';
+import { FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
+import { HiArrowNarrowRight } from 'react-icons/hi'; // Ícono de flecha
 
-const NavbarUser = () => {
+export const Login = () => {
   const navigate = useNavigate();
-  const { userData, backendUrl, setUserData, setIsLoggedin } = useContext(AppContent);
+  const backendUrlLogin = "http://localhost:3011";
+  const { backendUrl, setIsLoggedin, getUserData, userData } = useContext(AppContent);
 
-  // Función para cerrar sesión
-  const logout = async () => {
+  const [state, setState] = useState('Sign Up'); // Estado para alternar entre 'Sign Up' y 'Login'
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+
+    axios.defaults.withCredentials = true;
+
     try {
-      axios.defaults.withCredentials = true;
-      const { data } = await axios.post(`${backendUrl}/api/auth/logout`);
-  
-      console.log('Backend response:', data); // Verifica la respuesta del backend
-      data.success && setIsLoggedin(false)
-      data.success && setUserData(false)
-      if (data.succes) {
-        setIsLoggedin(false);  // Cambia el estado de inicio de sesión
-        setUserData(false);      // Limpia los datos del usuario
-        
-        toast.success('Successfully logged out');
-        navigate('/');         // Redirige al inicio
-      } else {
-        toast.error('Error logging out');
+      if (state === 'Sign Up') {
+        // Lógica para el registro
+        const { data } = await axios.post(`${backendUrl}/api/auth/register`, {
+          name,
+          email,
+          password,
+        });
+
+        if (data.success) {
+          setIsLoggedin(true);
+          getUserData();
+          navigate('/');
+        } else {
+          toast.error(data.message);
+        }
+      } else if (state === 'Login') {
+        // Lógica para el login
+        const { data } = await axios.post(`${backendUrlLogin}/api/auth/login`, {
+          email,
+          password,
+        });
+
+        if (data.success) {
+          setIsLoggedin(true);
+          getUserData();
+          navigate('/email-verify');
+        } else {
+          toast.error(data.message);
+        }
       }
     } catch (error) {
-      console.error('Logout error:', error);
-      toast.error(error?.response?.data?.message || 'Error during logout');
+      toast.error(error.message);
     }
   };
 
-  
   // Función para manejar la verificación de correo
   const sendVerifiOTP = async () => {
     try {
       axios.defaults.withCredentials = true;
 
-      const { data } = await axios.post(`${backendUrl}/api/auth/send-verify-otp`);
+      // Utiliza el backendUrl para enviar el OTP de verificación
+      const { data } = await axios.post(`http://localhost:3013/api/auth/send-verify-otp`);
 
       if (data.success) {
-        navigate('/email-verify')
-        toast.success(data.message +' Verification email sent!');
+        navigate('/email-verify');
+        toast.success('Verification email sent!');
       } else {
         toast.error(data.message || 'Error sending verification email');
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Error during logout');
-    
+      toast.error(error?.response?.data?.message || 'Error during OTP sending');
     }
   };
 
-
   return (
-    <div className='w-full flex justify-between items-center p-4 sm:p-6 sm:px-24 absolute top-0'>
-      <img src={assets.logo} alt="logo" className='w-28 sm:w-32' />
+    <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
+      <div className="flex items-center space-x-4 absolute left-5 top-5">
+        <img
+          onClick={() => navigate('/')}
+          src={assets.vaccine} // Asegúrate de que 'assets.vaccine' tenga la ruta correcta
+          alt="logo"
+          height={50}
+          width={50}
+          className="w-12 h-12 sm:w-16 sm:h-16 cursor-pointer" // Ajusta el tamaño según necesidad
+        />
+      </div>
 
-      {userData ?
-        <div className='w-8 h-8 flex justify-center items-center rounded-full bg-black text-white relative group'>
-          {/* Mostrar la primera letra del nombre del usuario */}
-          {userData.name.charAt(0).toUpperCase()}
-          
-          {/* Menú desplegable al hacer hover */}
-          <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-10'>
-            <ul className='list-none m-0 p-2 bg-gray-100 text-sm'>
-              {/* Mostrar la opción de "Verify email" solo si el usuario tiene la cuenta verificada */}
-              {!userData.isAccountVerified && 
-                <li onClick={sendVerifiOTP}className='py-1 px-2 hover:bg-gray-200 cursor-pointer'>
-                  Verify email
-                </li>
-              }
+      <div className="bg-slate-900 p-10 rounded-lg shadow-lg w-full sm:w-96 text-indigo-300 text-sm">
+        <h2 className="text-xl font-bold mb-4">
+          {state === 'Sign Up' ? 'Create Account' : 'Login'}
+        </h2>
+        <p className="mb-6">
+          {state === 'Sign Up' ? 'Create your account' : 'Login to your account!'}
+        </p>
+        <form onSubmit={onSubmitHandler}>
+          {/* Campo Nombre solo en Sign Up */}
+          {state === 'Sign Up' && (
+            <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+              <FaUser className="text-white" />
+              <input
+                onChange={(e) => setName(e.target.value)}
+                value={name}
+                className="bg-transparent outline-none w-full text-white"
+                type="text"
+                placeholder="Full name"
+                required
+              />
+            </div>
+          )}
 
-              {/* Opción para cerrar sesión */}
-              <li onClick={logout} className='py-1 px-2 hover:bg-gray-200 cursor-pointer'>
-                Logout
-              </li>
-            </ul>
+          {/* Campo Email */}
+          <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+            <FaEnvelope className="text-white" />
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              className="bg-transparent outline-none w-full text-white"
+              type="email"
+              placeholder="Email ID"
+              required
+            />
           </div>
-        </div>
-          : 
-        <button
-          onClick={() => navigate('/login')}
-          className='flex items-center gap-2 border border-gray-500 rounded-full px-6 py-2 text-gray-800 hover:bg-gray-100 transition-all'
-        >
-          Login
-          <img src={assets.arrow_icon} alt="Flecha" />
-        </button>
-      }
+
+          {/* Campo Password */}
+          <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">
+            <FaLock className="text-white" />
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              className="bg-transparent outline-none w-full text-white"
+              type="password"
+              placeholder="Password"
+              required
+            />
+          </div>
+
+          {state === 'Login' && (
+            <p
+              onClick={() => navigate('/reset-password')}
+              className="mb-4 text-indigo-500 cursor-pointer"
+            >
+              Forgot password?
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium"
+          >
+            <span>{state}</span>
+            <HiArrowNarrowRight className="ml-2" />
+          </button>
+        </form>
+
+        {/* Verificación de correo solo si no está verificado */}
+        {!userData?.isAccountVerified && (
+          <li onClick={sendVerifiOTP} className="py-1 px-2 hover:bg-gray-200 cursor-pointer">
+            Verify email
+          </li>
+        )}
+
+        {state === 'Sign Up' ? (
+          <p className="text-gray-400 text-center text-xs mt-4">
+            Already have an account?{' '}
+            <span
+              onClick={() => setState('Login')}
+              className="text-blue-400 cursor-pointer underline"
+            >
+              Login here
+            </span>
+          </p>
+        ) : (
+          <p className="text-gray-400 text-center text-xs mt-4">
+            Don't have an account?{' '}
+            <span
+              onClick={() => setState('Sign Up')}
+              className="text-blue-400 cursor-pointer underline"
+            >
+              Sign up
+            </span>
+          </p>
+        )}
+      </div>
     </div>
   );
 };
 
-export default NavbarUser;
+export default Login;
