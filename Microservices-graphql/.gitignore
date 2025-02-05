@@ -1,0 +1,51 @@
+# Logs y archivos temporales
+/log/*
+/tmp/*
+/storage/*
+!/log/.keep
+!/tmp/.keep
+
+# Archivos de configuración y credenciales
+/config/master.key
+/config/credentials.yml.enc
+
+# Archivos de dependencias de Ruby
+/vendor/bundle
+*.gem
+
+# Archivos de dependencias de Node.js (si usas webpacker o React)
+node_modules/
+yarn-error.log
+package-lock.json
+
+# Caché de Rails y otras carpetas generadas
+/public/assets
+/public/packs
+/public/packs-test
+/public/system
+/public/uploads
+.byebug_history
+
+# Archivos de Docker (si no los usas en producción)
+.dockerignore
+Dockerfile
+
+# Archivos de configuración de IDEs (VSCode, JetBrains)
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos innecesarios de Git
+*.orig
+/storage/
+/vendor/
+/log/
+/tmp/
+/.github/
+/public/assets/
+/lib/
+/public/packs/
+.rubocop.yml
+/test/
+/public/
