@@ -3,7 +3,7 @@ name: CI/CD - Docker Build & Deploy
 on:
   push:
     branches:
-      - test  # Or the branch you're using
+      - test  # O la rama que estás utilizando para despliegues
 
 jobs:
   build-and-push:
@@ -20,11 +20,111 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # Build and Push Microservice Update Vaccine Docker Image
+      - name: Build and Push Microservice Update Vaccine Docker image
+        run: |
+          docker build -f vaccine_management/microservice_update_vacine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest ./vaccine_management/microservice_update_vacine
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest
+
+      # Build and Push Microservice Create Vaccine Docker Image
+      - name: Build and Push Microservice Create Vaccine Docker image
+        run: |
+          docker build -f vaccine_management/microservice_create_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest ./vaccine_management/microservice_create_vaccine
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
+
+      # Build and Push Microservice List Vaccine Docker Image
+      - name: Build and Push Microservice List Vaccine Docker image
+        run: |
+          docker build -f vaccine_management/microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest ./vaccine_management/microservice_list_vaccine
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
+
+      # Build and Push Microservice Delete Vaccine Docker Image
+      - name: Build and Push Microservice Delete Vaccine Docker image
+        run: |
+          docker build -f vaccine_management/microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest ./vaccine_management/microservice_delete_vaccine
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
+
       # Build and Push Client Docker Image
       - name: Build and Push Client Docker image
         run: |
-          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest .
+          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest ./client
           docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+
+  deploy-vaccine-management:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: SSH into EC2 (Vaccine Management) and deploy Docker containers
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_VACCINE_SERVER }}
+          username: ubuntu
+          key: ${{ secrets.VACCINE_SERVER_KEY }}
+          script: |
+            # Install Docker on the EC2 instance (Vaccine Management)
+            sudo apt update && sudo apt install -y docker.io
+
+            # Ensure Docker starts automatically
+            sudo systemctl enable --now docker
+
+            # Pull the latest microservice images from Docker Hub
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_create_vacine:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_vacine:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vacine:latest
+
+            # Stop any running containers
+            sudo docker ps -q | xargs sudo docker stop || true
+            sudo docker ps -q | xargs sudo docker rm || true
+
+            # Start the new containers with the pulled images
+            # Iniciar contenedor microservicio update_vacine
+            sudo docker run -d -p 3004:3004 \
+              -e DB_HOST=${{ secrets.REACT_APP_RDS_HOST }} \
+              -e DB_PORT=${{ secrets.REACT_APP_RDS_PORT }} \
+              -e DB_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }} \
+              -e DB_USER=${{ secrets.REACT_APP_RDS_USER }} \
+              -e DB_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }} \
+              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              -e API_KEY=${{ secrets.API_KEY }} \
+              ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest
+
+            # Iniciar contenedor microservicio create_vacine
+            sudo docker run -d -p 3001:3001 \
+              -e DB_HOST=${{ secrets.REACT_APP_RDS_HOST }} \
+              -e DB_PORT=${{ secrets.REACT_APP_RDS_PORT }} \
+              -e DB_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }} \
+              -e DB_USER=${{ secrets.REACT_APP_RDS_USER }} \
+              -e DB_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }} \
+              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              -e API_KEY=${{ secrets.API_KEY }} \
+              ${{ secrets.DOCKER_USERNAME }}/microservice_create_vacine:latest
+
+            # Iniciar contenedor microservicio list_vacine
+            sudo docker run -d -p 3002:3002 \
+              -e DB_HOST=${{ secrets.REACT_APP_RDS_HOST }} \
+              -e DB_PORT=${{ secrets.REACT_APP_RDS_PORT }} \
+              -e DB_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }} \
+              -e DB_USER=${{ secrets.REACT_APP_RDS_USER }} \
+              -e DB_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }} \
+              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              -e API_KEY=${{ secrets.API_KEY }} \
+              ${{ secrets.DOCKER_USERNAME }}/microservice_list_vacine:latest
+
+            # Iniciar contenedor microservicio delete_vacine
+            sudo docker run -d -p 3003:3003 \
+              -e DB_HOST=${{ secrets.REACT_APP_RDS_HOST }} \
+              -e DB_PORT=${{ secrets.REACT_APP_RDS_PORT }} \
+              -e DB_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }} \
+              -e DB_USER=${{ secrets.REACT_APP_RDS_USER }} \
+              -e DB_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }} \
+              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
+              -e API_KEY=${{ secrets.API_KEY }} \
+              ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vacine:latest
+
+            # Verify the containers are running
+            sudo docker ps
 
   deploy-client:
     runs-on: ubuntu-latest
