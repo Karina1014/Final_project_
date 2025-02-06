@@ -11,7 +11,7 @@ import { HiArrowNarrowRight } from 'react-icons/hi'; // Ícono de flecha
 export const Login = () => {
   const navigate = useNavigate();
   const backendUrlLogin = "http://localhost:3011";
-  const { backendUrl, setIsLoggedin, getUserData, userData } = useContext(AppContent);
+  const {  setIsLoggedin, getUserData, userData } = useContext(AppContent);
 
   const [state, setState] = useState('Sign Up'); // Estado para alternar entre 'Sign Up' y 'Login'
   const [name, setName] = useState('');
@@ -26,7 +26,7 @@ export const Login = () => {
     try {
       if (state === 'Sign Up') {
         // Lógica para el registro
-        const { data } = await axios.post(`${backendUrl}/api/auth/register`, {
+        const { data } = await axios.post(`http://localhost:3010/api/auth/register`, {
           name,
           email,
           password,
@@ -59,22 +59,22 @@ export const Login = () => {
     }
   };
 
-  // Función para manejar la verificación de correo
-  const sendVerifiOTP = async () => {
+   // Función para manejar la verificación de correo
+   const sendVerifiOTP = async () => {
     try {
       axios.defaults.withCredentials = true;
 
-      // Utiliza el backendUrl para enviar el OTP de verificación
-      const { data } = await axios.post(`http://localhost:3013/api/auth/send-verify-otp`);
+      const { data } = await axios.post(`${backendUrl}/api/auth/send-verify-otp`);
 
       if (data.success) {
-        navigate('/email-verify');
-        toast.success('Verification email sent!');
+        navigate('/email-verify')
+        toast.success(data.message +' Verification email sent!');
       } else {
         toast.error(data.message || 'Error sending verification email');
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Error during OTP sending');
+      toast.error(error?.response?.data?.message || 'Error during logout');
+    
     }
   };
 
@@ -149,7 +149,7 @@ export const Login = () => {
             </p>
           )}
 
-          <button
+          <button onClick={sendVerifiOTP} 
             type="submit"
             className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium"
           >
@@ -158,12 +158,6 @@ export const Login = () => {
           </button>
         </form>
 
-        {/* Verificación de correo solo si no está verificado */}
-        {!userData?.isAccountVerified && (
-          <li onClick={sendVerifiOTP} className="py-1 px-2 hover:bg-gray-200 cursor-pointer">
-            Verify email
-          </li>
-        )}
 
         {state === 'Sign Up' ? (
           <p className="text-gray-400 text-center text-xs mt-4">

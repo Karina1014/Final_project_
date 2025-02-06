@@ -22,14 +22,11 @@ export const Header = () => {
         />
       </h1>
       <h2 className='text-3xl sm:text-5xl font-semibold mb-4'>
-        Welcome to our app
-      </h2>
-      <p className='mb-8 max-w-md'>
-        Let's start with a product tour, and we will have you up and running in no time!
-      </p>
-      <button className='border border-gray-500 rounded-full px-8 py-2.5 hover:bg-gray-100 transition-all'>
-        Get Started
-      </button>
+        Welcome to the Dog Vaccination System
+    </h2>
+    <p className='mb-8 max-w-md'>
+        Let's get started with a quick guide on essential vaccines for your dog. With this information, your pet will stay protected and healthy.
+    </p>
     </div>
   );
 };

@@ -9,7 +9,6 @@ export const AppContextProvider = (props) => {
   axios.defaults.withCredentials = true; // Asegurarse de que las cookies se envíen correctamente.
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const backendUrlIsAuth = "http://localhost:3015";
   const backendUrlData = "http://localhost:3013";
   
   const [isLoggedin, setIsLoggedin] = useState(false);

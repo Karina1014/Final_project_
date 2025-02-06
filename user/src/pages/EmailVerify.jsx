@@ -35,7 +35,6 @@ const EmailVerify = () => {
       }
     })
   }
- 
   const onSubmitHandler = async (e) => {
     try {
       e.preventDefault();
@@ -47,7 +46,7 @@ const EmailVerify = () => {
       if(data.success) {
         toast.success(data.message)
         getUserData()
-        navigate('/')
+        navigate('/admin')
       }else {
         toast.error(data.message)
       }
@@ -56,6 +55,25 @@ const EmailVerify = () => {
     }
   }
 
+  // Función para manejar la verificación de correo
+  const sendVerifiOTP = async () => {
+    try {
+      axios.defaults.withCredentials = true;
+
+      const { data } = await axios.post(`http://localhost:3015/api/auth/send-verify-otp`);
+
+      if (data.success) {
+        navigate('/email-verify')
+        toast.success(data.message +' Verification email sent!');
+      } else {
+        toast.error(data.message || 'Error sending verification email');
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || 'Error during logout');
+    
+    }
+  };
+
   useEffect(() => {
     isLoggedin && userData && userData.isAccountVerified && navigate('/')
   }, [isLoggedin, userData])
@@ -63,7 +81,7 @@ const EmailVerify = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-200 to-purple-400">
       <img
-        onClick={() => navigate('/admin')}
+        onClick={() => navigate('/')}
         src={assets.logo}
         alt="logo"
         className="absolute left-5 sm:left-20 top-5 w-28 sm:w-32 cursor-pointer"
@@ -83,7 +101,7 @@ const EmailVerify = () => {
             />
           ))}
         </div>
-        <button className='w-full py-3 bg-gradient-to-r from-indigo-500 
+        <button onClick={sendVerifiOTP}  className='w-full py-3 bg-gradient-to-r from-indigo-500 
         to-indigo-900 text-white rounded-full'>Verify email</button>
       </form>
     </div>
