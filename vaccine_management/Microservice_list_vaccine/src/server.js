@@ -1,12 +1,17 @@
 import express from 'express';
 import vaccineRoute from './routes/vaccineRouter.js';
-
+import cors from "cors";
 const app = express();
 
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger.json' assert { type: "json" };
 
 const PORT = 3002;
+
+const allowedOrigins = ['http://localhost:5173'];  
+app.use(express.json());
+app.use(cors({ origin: allowedOrigins, credentials: true })); 
+
 
 // Configuration cors - Middleware
 app.use((req, res, next) => {
