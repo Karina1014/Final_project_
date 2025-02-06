@@ -3,7 +3,7 @@ import cors from "cors";
 import { connectDB } from './config/mysqldb.js';
 import 'dotenv/config';
 import dogRouter from "./routes/dogRouter.js";
-
+import cors from "cors";
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './swagger.json' assert { type: "json" };
 
@@ -11,8 +11,10 @@ const app = express();
 const port = process.env.PORT || 4000;
 
 // Middleware
+const allowedOrigins = ['http://localhost:5173'];  
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({ origin: allowedOrigins, credentials: true })); 
 
 connectDB();
 

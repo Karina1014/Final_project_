@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose port 3011 (the port the service will listen to by default)
-EXPOSE 3011
+EXPOSE 3013
 
 # Run the application using node, starting from the src/server.js file
 CMD ["node", "src/server.js"]
