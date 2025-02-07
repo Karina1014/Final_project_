@@ -20,35 +20,35 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build and Push Microservice Login Docker Image
-      - name: Build and Push Microservice Login Docker image
+      # Build and Push Microservice Update Vaccine Docker Image
+      - name: Build and Push Microservice Update Vaccine Docker image
         run: |
-          docker build -f Microservice_login/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest ./Microservice_login
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest
+          docker build -f ../../vaccine_management/microservice_update_vacine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest ../../vaccine_management/microservice_update_vacine
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest
 
-      # Build and Push Microservice Logout Docker Image
-      - name: Build and Push Microservice Logout Docker image
+      # Build and Push Microservice Create Vaccine Docker Image
+      - name: Build and Push Microservice Create Vaccine Docker image
         run: |
-          docker build -f Microservice_logout/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest ./Microservice_logout
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest
+          docker build -f ../../vaccine_management/microservice_create_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest ../../vaccine_management/microservice_create_vaccine
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
 
-      # Build and Push Microservice Register User Docker Image
-      - name: Build and Push Microservice Register User Docker image
+      # Build and Push Microservice List Vaccine Docker Image
+      - name: Build and Push Microservice List Vaccine Docker image
         run: |
-          docker build -f Microservice_register_user/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_register_user:latest ./Microservice_register_user
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_register_user:latest
+          docker build -f ../../vaccine_management/microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest ../../vaccine_management/microservice_list_vaccine
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
 
-      # Build and Push Microservice Send OTP Docker Image
-      - name: Build and Push Microservice Send OTP Docker image
+      # Build and Push Microservice Delete Vaccine Docker Image
+      - name: Build and Push Microservice Delete Vaccine Docker image
         run: |
-          docker build -f Microservice_sendVerifiOTP/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_send_verifi_otp:latest ./Microservice_sendVerifiOTP
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_send_verifi_otp:latest
+          docker build -f ../../vaccine_management/microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest ../../vaccine_management/microservice_delete_vaccine
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
 
-      # Build and Push Microservice Verifi Email Docker Image
-      - name: Build and Push Microservice Verifi Email Docker image
+      # Build and Push Client Docker Image
+      - name: Build and Push Client Docker image
         run: |
-          docker build -f Microservice_verifiEmail/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_verifi_email:latest ./Microservice_verifiEmail
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_verifi_email:latest
+          docker build -f ../../client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest ../../client
+          docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
   deploy-vaccine-management:
     runs-on: ubuntu-latest
