@@ -20,35 +20,35 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build and Push Microservice Update Vaccine Docker Image
-      - name: Build and Push Microservice Update Vaccine Docker image
+      # Build and Push Microservice Login Docker Image
+      - name: Build and Push Microservice Login Docker image
         run: |
-          docker build -f vaccine_management/microservice_update_vacine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest ./vaccine_management/microservice_update_vacine
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest
+          docker build -f Microservice_login/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest ./Microservice_login
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest
 
-      # Build and Push Microservice Create Vaccine Docker Image
-      - name: Build and Push Microservice Create Vaccine Docker image
+      # Build and Push Microservice Logout Docker Image
+      - name: Build and Push Microservice Logout Docker image
         run: |
-          docker build -f vaccine_management/microservice_create_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest ./vaccine_management/microservice_create_vaccine
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
+          docker build -f Microservice_logout/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest ./Microservice_logout
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest
 
-      # Build and Push Microservice List Vaccine Docker Image
-      - name: Build and Push Microservice List Vaccine Docker image
+      # Build and Push Microservice Register User Docker Image
+      - name: Build and Push Microservice Register User Docker image
         run: |
-          docker build -f vaccine_management/microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest ./vaccine_management/microservice_list_vaccine
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
+          docker build -f Microservice_register_user/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_register_user:latest ./Microservice_register_user
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_register_user:latest
 
-      # Build and Push Microservice Delete Vaccine Docker Image
-      - name: Build and Push Microservice Delete Vaccine Docker image
+      # Build and Push Microservice Send OTP Docker Image
+      - name: Build and Push Microservice Send OTP Docker image
         run: |
-          docker build -f vaccine_management/microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest ./vaccine_management/microservice_delete_vaccine
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
+          docker build -f Microservice_sendVerifiOTP/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_send_verifi_otp:latest ./Microservice_sendVerifiOTP
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_send_verifi_otp:latest
 
-      # Build and Push Client Docker Image
-      - name: Build and Push Client Docker image
+      # Build and Push Microservice Verifi Email Docker Image
+      - name: Build and Push Microservice Verifi Email Docker image
         run: |
-          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest ./client
-          docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+          docker build -f Microservice_verifiEmail/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_verifi_email:latest ./Microservice_verifiEmail
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_verifi_email:latest
 
   deploy-vaccine-management:
     runs-on: ubuntu-latest
@@ -69,59 +69,23 @@ jobs:
             sudo systemctl enable --now docker
 
             # Pull the latest microservice images from Docker Hub
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_create_vacine:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_vacine:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vacine:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_register_user:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_send_verifi_otp:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_verifi_email:latest
 
             # Stop any running containers
             sudo docker ps -q | xargs sudo docker stop || true
             sudo docker ps -q | xargs sudo docker rm || true
 
             # Start the new containers with the pulled images
-            # Iniciar contenedor microservicio update_vacine
-            sudo docker run -d -p 3004:3004 \
-              -e DB_HOST=${{ secrets.REACT_APP_RDS_HOST }} \
-              -e DB_PORT=${{ secrets.REACT_APP_RDS_PORT }} \
-              -e DB_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }} \
-              -e DB_USER=${{ secrets.REACT_APP_RDS_USER }} \
-              -e DB_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }} \
-              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
-              -e API_KEY=${{ secrets.API_KEY }} \
-              ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest
-
-            # Iniciar contenedor microservicio create_vacine
-            sudo docker run -d -p 3001:3001 \
-              -e DB_HOST=${{ secrets.REACT_APP_RDS_HOST }} \
-              -e DB_PORT=${{ secrets.REACT_APP_RDS_PORT }} \
-              -e DB_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }} \
-              -e DB_USER=${{ secrets.REACT_APP_RDS_USER }} \
-              -e DB_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }} \
-              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
-              -e API_KEY=${{ secrets.API_KEY }} \
-              ${{ secrets.DOCKER_USERNAME }}/microservice_create_vacine:latest
-
-            # Iniciar contenedor microservicio list_vacine
-            sudo docker run -d -p 3002:3002 \
-              -e DB_HOST=${{ secrets.REACT_APP_RDS_HOST }} \
-              -e DB_PORT=${{ secrets.REACT_APP_RDS_PORT }} \
-              -e DB_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }} \
-              -e DB_USER=${{ secrets.REACT_APP_RDS_USER }} \
-              -e DB_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }} \
-              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
-              -e API_KEY=${{ secrets.API_KEY }} \
-              ${{ secrets.DOCKER_USERNAME }}/microservice_list_vacine:latest
-
-            # Iniciar contenedor microservicio delete_vacine
-            sudo docker run -d -p 3003:3003 \
-              -e DB_HOST=${{ secrets.REACT_APP_RDS_HOST }} \
-              -e DB_PORT=${{ secrets.REACT_APP_RDS_PORT }} \
-              -e DB_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }} \
-              -e DB_USER=${{ secrets.REACT_APP_RDS_USER }} \
-              -e DB_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }} \
-              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
-              -e API_KEY=${{ secrets.API_KEY }} \
-              ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vacine:latest
+            # Example: Start the microservice containers
+            sudo docker run -d -p 3011:3011 ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest
+            sudo docker run -d -p 3012:3012 ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest
+            sudo docker run -d -p 3010:3010 ${{ secrets.DOCKER_USERNAME }}/microservice_register_user:latest
+            sudo docker run -d -p 3013:3013 ${{ secrets.DOCKER_USERNAME }}/microservice_send_verifi_otp:latest
+            sudo docker run -d -p 3014:3014 ${{ secrets.DOCKER_USERNAME }}/microservice_verifi_email:latest
 
             # Verify the containers are running
             sudo docker ps
