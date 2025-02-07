@@ -1,4 +1,4 @@
-name: Deploy Vaccine Management
+name: Deploy Vaccine Management on EC2
 
 on:
   push:
@@ -35,16 +35,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Pull Docker Images
-        run: |
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
+      - name: SSH into EC2 (Client) and deploy Docker container
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_CLIENT_SERVER }} # IP de la EC2
+          username: ubuntu
+          key: ${{ secrets.CLIENT_SERVER_KEY }} # Tu clave privada de EC2
+          script: |
+            # Instalar Docker en la instancia EC2 (Cliente)
+            sudo apt update && sudo apt install -y docker.io
 
-      - name: Run Docker Containers
-        run: |
-          sudo docker run -d --name microservice_create_vaccine -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
-          sudo docker run -d --name microservice_update_vaccine -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
-          sudo docker run -d --name microservice_list_vaccine -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
-          sudo docker run -d --name microservice_delete_vaccine -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
+            # Hacer que Docker se inicie automáticamente
+            sudo systemctl enable --now docker
+
+            # Descargar las últimas imágenes desde Docker Hub
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
+
+            # Detener y eliminar cualquier contenedor en ejecución
+            sudo docker ps -q | xargs sudo docker stop || true
+            sudo docker ps -q | xargs sudo docker rm || true
+
+            # Ejecutar los contenedores Docker
+            sudo docker run -d --name microservice_create_vaccine -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
+            sudo docker run -d --name microservice_update_vaccine -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
+            sudo docker run -d --name microservice_list_vaccine -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
+            sudo docker run -d --name microservice_delete_vaccine -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
