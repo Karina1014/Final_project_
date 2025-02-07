@@ -54,9 +54,15 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
 
-            # Detener y eliminar cualquier contenedor en ejecución
-            sudo docker ps -q | xargs sudo docker stop || true
-            sudo docker ps -q | xargs sudo docker rm || true
+            # Detener y eliminar los contenedores existentes por nombre
+            sudo docker stop microservice_create_vaccine || true
+            sudo docker rm microservice_create_vaccine || true
+            sudo docker stop microservice_update_vaccine || true
+            sudo docker rm microservice_update_vaccine || true
+            sudo docker stop microservice_list_vaccine || true
+            sudo docker rm microservice_list_vaccine || true
+            sudo docker stop microservice_delete_vaccine || true
+            sudo docker rm microservice_delete_vaccine || true
 
             # Generar el archivo .env con los secretos
             echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" > .env
@@ -65,7 +71,7 @@ jobs:
             echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> .env
             echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> .env
 
-            # Ejecutar los contenedores Docker
+            # Ejecutar los nuevos contenedores Docker
             sudo docker run -d --name microservice_create_vaccine -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
             sudo docker run -d --name microservice_update_vaccine -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
             sudo docker run -d --name microservice_list_vaccine -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
