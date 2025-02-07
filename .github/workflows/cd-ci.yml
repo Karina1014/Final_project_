@@ -23,31 +23,31 @@ jobs:
       # Build and Push Microservice Update Vaccine Docker Image
       - name: Build and Push Microservice Update Vaccine Docker image
         run: |
-          docker build -f vaccine_management/microservice_update_vacine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest ../../vaccine_management/microservice_update_vacine
+          docker build -f vaccine_management/microservice_update_vacine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest vaccine_management/microservice_update_vacine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest
 
       # Build and Push Microservice Create Vaccine Docker Image
       - name: Build and Push Microservice Create Vaccine Docker image
         run: |
-          docker build -f vaccine_management/microservice_create_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest ../../vaccine_management/microservice_create_vaccine
+          docker build -f vaccine_management/microservice_create_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest vaccine_management/microservice_create_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
 
       # Build and Push Microservice List Vaccine Docker Image
       - name: Build and Push Microservice List Vaccine Docker image
         run: |
-          docker build -f vaccine_management/microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest ../../vaccine_management/microservice_list_vaccine
+          docker build -f vaccine_management/microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest vaccine_management/microservice_list_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
 
       # Build and Push Microservice Delete Vaccine Docker Image
       - name: Build and Push Microservice Delete Vaccine Docker image
         run: |
-          docker build -f vaccine_management/microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest ../../vaccine_management/microservice_delete_vaccine
+          docker build -f vaccine_management/microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest vaccine_management/microservice_delete_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
 
       # Build and Push Client Docker Image
       - name: Build and Push Client Docker image
         run: |
-          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest ../../client
+          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest client
           docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
   deploy-vaccine-management:
