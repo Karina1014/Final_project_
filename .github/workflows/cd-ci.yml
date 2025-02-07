@@ -3,7 +3,7 @@ name: Deploy Vaccine Management
 on:
   push:
     branches:
-      - main
+      - test
 
 jobs:
   build-and-push:
@@ -44,7 +44,7 @@ jobs:
 
       - name: Run Docker Containers
         run: |
-          sudo docker run -d --name microservice_create_vaccine -p 5001:5001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
-          sudo docker run -d --name microservice_update_vaccine -p 5002:5002 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
-          sudo docker run -d --name microservice_list_vaccine -p 5003:5003 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
-          sudo docker run -d --name microservice_delete_vaccine -p 5004:5004 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
+          sudo docker run -d --name microservice_create_vaccine -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
+          sudo docker run -d --name microservice_update_vaccine -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
+          sudo docker run -d --name microservice_list_vaccine -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
+          sudo docker run -d --name microservice_delete_vaccine -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
