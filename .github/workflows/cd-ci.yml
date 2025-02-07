@@ -1,122 +1,50 @@
-name: CI/CD - Docker Build & Deploy
+name: Deploy Vaccine Management
 
 on:
   push:
     branches:
-      - test  # O la rama que estás utilizando para despliegues
+      - main
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Log in to Docker Hub
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # Build and Push Microservice Update Vaccine Docker Image
-      - name: Build and Push Microservice Update Vaccine Docker image
+      - name: Build and Push Docker Images
         run: |
-          docker build -f vaccine_management/microservice_update_vacine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest vaccine_management/microservice_update_vacine
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_update_vacine:latest
-
-      # Build and Push Microservice Create Vaccine Docker Image
-      - name: Build and Push Microservice Create Vaccine Docker image
-        run: |
-          docker build -f vaccine_management/microservice_create_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest vaccine_management/microservice_create_vaccine
+          docker build -f vaccine_management/Microservice_create_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest vaccine_management/Microservice_create_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
 
-      # Build and Push Microservice List Vaccine Docker Image
-      - name: Build and Push Microservice List Vaccine Docker image
-        run: |
-          docker build -f vaccine_management/microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest vaccine_management/microservice_list_vaccine
+          docker build -f vaccine_management/Microservice_update_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest vaccine_management/Microservice_update_vaccine
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
+
+          docker build -f vaccine_management/Microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest vaccine_management/Microservice_list_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
 
-      # Build and Push Microservice Delete Vaccine Docker Image
-      - name: Build and Push Microservice Delete Vaccine Docker image
-        run: |
-          docker build -f vaccine_management/microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest vaccine_management/microservice_delete_vaccine
+          docker build -f vaccine_management/Microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest vaccine_management/Microservice_delete_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
 
-      # Build and Push Client Docker Image
-      - name: Build and Push Client Docker image
-        run: |
-          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest client
-          docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
-
   deploy-vaccine-management:
-    runs-on: ubuntu-latest
     needs: build-and-push
+    runs-on: ubuntu-latest
 
     steps:
-      - name: SSH into EC2 (Vaccine Management) and deploy Docker containers
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_VACCINE_SERVER }}
-          username: ubuntu
-          key: ${{ secrets.VACCINE_SERVER_KEY }}
-          script: |
-            # Install Docker on the EC2 instance (Vaccine Management)
-            sudo apt update && sudo apt install -y docker.io
+      - name: Pull Docker Images
+        run: |
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
 
-            # Ensure Docker starts automatically
-            sudo systemctl enable --now docker
-
-            # Pull the latest microservice images from Docker Hub
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_register_user:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_send_verifi_otp:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_verifi_email:latest
-
-            # Stop any running containers
-            sudo docker ps -q | xargs sudo docker stop || true
-            sudo docker ps -q | xargs sudo docker rm || true
-
-            # Start the new containers with the pulled images
-            # Example: Start the microservice containers
-            sudo docker run -d -p 3011:3011 ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest
-            sudo docker run -d -p 3012:3012 ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest
-            sudo docker run -d -p 3010:3010 ${{ secrets.DOCKER_USERNAME }}/microservice_register_user:latest
-            sudo docker run -d -p 3013:3013 ${{ secrets.DOCKER_USERNAME }}/microservice_send_verifi_otp:latest
-            sudo docker run -d -p 3014:3014 ${{ secrets.DOCKER_USERNAME }}/microservice_verifi_email:latest
-
-            # Verify the containers are running
-            sudo docker ps
-
-  deploy-client:
-    runs-on: ubuntu-latest
-    needs: build-and-push
-
-    steps:
-      - name: SSH into EC2 (Client) and deploy Docker container
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_CLIENT_SERVER }}
-          username: ubuntu
-          key: ${{ secrets.CLIENT_SERVER_KEY }}
-          script: |
-            # Install Docker on the EC2 instance (Client)
-            sudo apt update && sudo apt install -y docker.io
-
-            # Ensure Docker starts automatically
-            sudo systemctl enable --now docker
-
-            # Pull the latest client image from Docker Hub
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cliente:latest
-
-            # Stop any running containers
-            sudo docker ps -q | xargs sudo docker stop || true
-            sudo docker ps -q | xargs sudo docker rm || true
-
-            # Start the new container with the pulled image
-            sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/cliente:latest
-
-            # Verify the container is running
-            sudo docker ps
+      - name: Run Docker Containers
+        run: |
+          sudo docker run -d --name microservice_create_vaccine -p 5001:5001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
+          sudo docker run -d --name microservice_update_vaccine -p 5002:5002 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
+          sudo docker run -d --name microservice_list_vaccine -p 5003:5003 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
+          sudo docker run -d --name microservice_delete_vaccine -p 5004:5004 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
