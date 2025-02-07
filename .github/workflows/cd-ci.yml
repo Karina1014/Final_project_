@@ -64,12 +64,18 @@ jobs:
             sudo docker stop microservice_delete_vaccine || true
             sudo docker rm microservice_delete_vaccine || true
 
+            # Vuelve al directorio raíz del contenedor
+            cd /usr/src/app/src
+
             # Generar el archivo .env con los secretos
             echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" > .env
             echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> .env
             echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> .env
             echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> .env
             echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> .env
+
+            # Verifica que el archivo .env esté en el directorio correcto
+            ls -la
 
             # Ejecutar los nuevos contenedores Docker
             sudo docker run -d --name microservice_create_vaccine -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
