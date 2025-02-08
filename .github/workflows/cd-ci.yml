@@ -35,15 +35,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: SSH into EC2 (Client) and deploy Docker container
+      - name: SSH into EC2 and deploy Docker containers
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.EC2_CLIENT_SERVER }} # IP de la EC2
+          host: ${{ secrets.EC2_CLIENT_SERVER }}
           username: ubuntu
-          key: ${{ secrets.CLIENT_SERVER_KEY }} # Tu clave privada de EC2
+          key: ${{ secrets.CLIENT_SERVER_KEY }}
           script: |
-            # Instalar Docker en la instancia EC2 (Cliente)
-            sudo apt update && sudo apt install -y docker.io
+            # Verificar si Docker está instalado, si no, instalarlo
+            if ! command -v docker &> /dev/null; then
+              echo "Docker no está instalado. Instalando..."
+              sudo apt update && sudo apt install -y docker.io
+            fi
 
             # Hacer que Docker se inicie automáticamente
             sudo systemctl enable --now docker
@@ -64,21 +67,18 @@ jobs:
             sudo docker stop microservice_delete_vaccine || true
             sudo docker rm microservice_delete_vaccine || true
 
-            # Exportar las variables de entorno
+            # Configurar las variables de entorno (se cargan en ~/.bashrc)
             echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" >> ~/.bashrc
             echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> ~/.bashrc
             echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> ~/.bashrc
             echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> ~/.bashrc
             echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> ~/.bashrc
 
-            # Volver a cargar las variables de entorno
+            # Recargar las variables de entorno
             source ~/.bashrc
 
-            # Vuelve al directorio raíz del contenedor
-            cd /usr/src/app/src
-
-            # Verifica que las variables de entorno estén disponibles
-            echo $REACT_APP_RDS_HOST
+            # Verifica las variables de entorno
+            echo "Base de datos: $REACT_APP_RDS_HOST"
 
             # Generar el archivo .env con las variables de entorno
             echo "REACT_APP_RDS_HOST=$REACT_APP_RDS_HOST" > .env
@@ -87,11 +87,8 @@ jobs:
             echo "REACT_APP_RDS_USER=$REACT_APP_RDS_USER" >> .env
             echo "REACT_APP_RDS_PASSWORD=$REACT_APP_RDS_PASSWORD" >> .env
 
-            # Verifica que el archivo .env esté en el directorio correcto
-            ls -la
-
-            # Ejecutar los nuevos contenedores Docker
-            sudo docker run -d --name microservice_create_vaccine  --env-file .env \ -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
-            sudo docker run -d --name microservice_update_vaccine  --env-file .env \ -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
-            sudo docker run -d --name microservice_list_vaccine  --env-file .env \ -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
-            sudo docker run -d --name microservice_delete_vaccine  --env-file .env \ -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
+            # Ejecutar contenedores Docker con el archivo .env
+            sudo docker run -d --name microservice_create_vaccine --env-file .env -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
+            sudo docker run -d --name microservice_update_vaccine --env-file .env -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
+            sudo docker run -d --name microservice_list_vaccine --env-file .env -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
+            sudo docker run -d --name microservice_delete_vaccine --env-file .env -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
