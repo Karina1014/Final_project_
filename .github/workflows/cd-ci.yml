@@ -85,5 +85,5 @@ jobs:
             # Ejecutar contenedores Docker con el archivo .env
             sudo docker run -d --name microservice_create_vaccine --env-file src/.env -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
             sudo docker run -d --name microservice_update_vaccine --env-file src/.env -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
-            sudo docker run -d --name microservice_list_vaccine --env-file src/.env -p 3002:3002 janneth5/microservice_list_vaccine:latest
+            sudo docker run -d --name microservice_list_vaccine --env-file src/.env -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
             sudo docker run -d --name microservice_delete_vaccine --env-file src/.env -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
