@@ -20,7 +20,7 @@ const Vaccine = () => {
   // Fetch vaccines from the backend
   const obtenerVacunas = async () => {
     try {
-      const response = await axios.get("http://localhost:3002/api/vaccines");
+      const response = await axios.get("http://3.86.177.162:3002/api/vaccines");
       setData(response.data); // Set the fetched data to state
     } catch (error) {
       toast.error("Error while fetching vaccines");
@@ -70,7 +70,7 @@ const Vaccine = () => {
   // Insert a new vaccine into the database
   const insertar = async () => {
     try {
-      await axios.post("http://localhost:3001/api/createVaccines", form);
+      await axios.post("http://3.86.177.162:3001/api/createVaccines", form);
       obtenerVacunas(); // Refresh the vaccine list
       setModalInsertar(false); // Close the insert modal
       toast.success("Vaccine inserted successfully");
@@ -82,7 +82,7 @@ const Vaccine = () => {
   // Edit an existing vaccine
   const editar = async () => {
     try {
-      const response = await axios.put(`http://localhost:3004/api/updateVaccines`, form);
+      const response = await axios.put(`http://3.86.177.162:3004/api/updateVaccines`, form);
       if (response.data) {
         toast.success("Vaccine updated successfully");
         obtenerVacunas(); // Refresh the vaccine list
@@ -99,7 +99,7 @@ const Vaccine = () => {
   // Delete a vaccine
   const eliminar = async (id_vaccine) => {
     try {
-      const response = await axios.delete(`http://localhost:3003/api/deleteVaccine/${id_vaccine}`);
+      const response = await axios.delete(`http://3.86.177.162:3003/api/deleteVaccine/${id_vaccine}`);
       if (response.data) {
         toast.success("Vaccine deleted successfully");
         obtenerVacunas(); // Refresh the vaccine list
