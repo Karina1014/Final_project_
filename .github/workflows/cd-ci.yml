@@ -67,25 +67,16 @@ jobs:
             sudo docker stop microservice_delete_vaccine || true
             sudo docker rm microservice_delete_vaccine || true
 
-            # Configurar las variables de entorno (se cargan en ~/.bashrc)
-            echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" >> ~/.bashrc
-            echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> ~/.bashrc
-            echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> ~/.bashrc
-            echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> ~/.bashrc
-            echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> ~/.bashrc
-
-            source ~/.bashrc  # Recargar las variables de entorno
-
             # Verificar las variables de entorno antes de generar el archivo
             echo "Base de datos: $REACT_APP_RDS_HOST"
 
             # Crear el archivo .env dentro de la carpeta src
             mkdir -p src
-            echo "REACT_APP_RDS_HOST=$REACT_APP_RDS_HOST" > src/.env
-            echo "REACT_APP_RDS_PORT=$REACT_APP_RDS_PORT" >> src/.env
-            echo "REACT_APP_RDS_DATABASE=$REACT_APP_RDS_DATABASE" >> src/.env
-            echo "REACT_APP_RDS_USER=$REACT_APP_RDS_USER" >> src/.env
-            echo "REACT_APP_RDS_PASSWORD=$REACT_APP_RDS_PASSWORD" >> src/.env
+            echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" >> src/.env
+            echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> src/.env
+            echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> src/.env
+            echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> src/.env
+            echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> src/.env
 
             # Verificar que el archivo .env se ha creado correctamente
             cat src/.env
