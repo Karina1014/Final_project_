@@ -8,7 +8,7 @@ const app = express();
 
 const PORT = 3001;
 
-const allowedOrigins = ['http://44.202.149.76:5173'];  
+const allowedOrigins = ['http://44.204.11.188:5173'];  
 app.use(express.json());
 app.use(cors({ origin: allowedOrigins, credentials: true })); 
 
