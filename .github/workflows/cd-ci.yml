@@ -38,9 +38,9 @@ jobs:
       - name: SSH into EC2 and deploy Docker containers
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.EC2_CLIENT_SERVER }}
+          host: ${{ secrets.EC2_VACCINE_SERVER }}
           username: ubuntu
-          key: ${{ secrets.CLIENT_SERVER_KEY }}
+          key: ${{ secrets.VACCINE_SERVER_KEY }}
           script: |
             # Verificar si Docker está instalado, si no, instalarlo
             if ! command -v docker &> /dev/null; then
