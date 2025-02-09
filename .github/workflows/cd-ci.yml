@@ -74,21 +74,24 @@ jobs:
             echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> ~/.bashrc
             echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> ~/.bashrc
 
-            # Recargar las variables de entorno
-            source ~/.bashrc
+            source ~/.bashrc  # Recargar las variables de entorno
 
-            # Verifica las variables de entorno
+            # Verificar las variables de entorno antes de generar el archivo
             echo "Base de datos: $REACT_APP_RDS_HOST"
 
-            # Generar el archivo .env con las variables de entorno
-            echo "REACT_APP_RDS_HOST=$REACT_APP_RDS_HOST" > .env
-            echo "REACT_APP_RDS_PORT=$REACT_APP_RDS_PORT" >> .env
-            echo "REACT_APP_RDS_DATABASE=$REACT_APP_RDS_DATABASE" >> .env
-            echo "REACT_APP_RDS_USER=$REACT_APP_RDS_USER" >> .env
-            echo "REACT_APP_RDS_PASSWORD=$REACT_APP_RDS_PASSWORD" >> .env
+            # Crear el archivo .env dentro de la carpeta src
+            mkdir -p src
+            echo "REACT_APP_RDS_HOST=$REACT_APP_RDS_HOST" > src/.env
+            echo "REACT_APP_RDS_PORT=$REACT_APP_RDS_PORT" >> src/.env
+            echo "REACT_APP_RDS_DATABASE=$REACT_APP_RDS_DATABASE" >> src/.env
+            echo "REACT_APP_RDS_USER=$REACT_APP_RDS_USER" >> src/.env
+            echo "REACT_APP_RDS_PASSWORD=$REACT_APP_RDS_PASSWORD" >> src/.env
 
-            # Ejecutar contenedores Docker con el archivo .env
-            sudo docker run -d --name microservice_create_vaccine --env-file .env -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
-            sudo docker run -d --name microservice_update_vaccine --env-file .env -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
-            sudo docker run -d --name microservice_list_vaccine --env-file .env -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
-            sudo docker run -d --name microservice_delete_vaccine --env-file .env -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
+            # Verificar que el archivo .env se ha creado correctamente
+            cat src/.env
+
+            # Ejecutar los contenedores Docker con el archivo .env dentro de src
+            sudo docker run -d --name microservice_create_vaccine --env-file src/.env -p 3001:3001
+            sudo docker run -d --name microservice_update_vaccine --env-file src/.env -p 3004:3004
+            sudo docker run -d --name microservice_list_vaccine --env-file src/.env -p 3002:3002
+            sudo docker run -d --name microservice_delete_vaccine --env-file src/.env -p 3003:3003
