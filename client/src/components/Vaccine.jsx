@@ -189,10 +189,10 @@ const Vaccine = () => {
       <Modal isOpen={modalUpdate}>
         <ModalHeader>Update Vaccine</ModalHeader>
         <ModalBody>
-        <FormGroup>
+          <FormGroup>
             <label>ID</label>
-            <Input type="text" name="ID" value={form.id} readOnly />        
-              </FormGroup>
+            <Input type="text" name="id" value={form.id} readOnly />     
+          </FormGroup>
           <FormGroup>
             <label>Name</label>
             <Input type="text" name="name" value={form.name} onChange={handleChange} />
