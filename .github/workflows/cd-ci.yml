@@ -16,29 +16,22 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # Build and push vaccine microservices (Create, Update, List, Delete)
-      - name: Build and Push Docker Images for Vaccine Microservices
+      - name: Build and Push Docker Images
         run: |
-          echo "Building and pushing microservice_create_vaccine..."
           docker build -f vaccine_management/Microservice_create_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest vaccine_management/Microservice_create_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
 
-          echo "Building and pushing microservice_update_vaccine..."
           docker build -f vaccine_management/Microservice_update_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest vaccine_management/Microservice_update_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
 
-          echo "Building and pushing microservice_list_vaccine..."
           docker build -f vaccine_management/Microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest vaccine_management/Microservice_list_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
 
-          echo "Building and pushing microservice_delete_vaccine..."
           docker build -f vaccine_management/Microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest vaccine_management/Microservice_delete_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
-          
-      # Build and push the Client image
-      - name: Build and Push Docker Image for Client
+
+      - name: Build and Push Docker Images
         run: |
-          echo "Building and pushing cliente (frontend)..."
           docker build -f cliente/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest cliente
           docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
@@ -67,8 +60,8 @@ jobs:
             sudo docker ps -q | xargs sudo docker stop || true
             sudo docker ps -q | xargs sudo docker rm || true
 
-            # Start the new container with the pulled image (with the custom port)
-            sudo docker run -d -p 5163:80 ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+            # Start the new container with the pulled image
+            sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
             # Verify the container is running
             sudo docker ps
@@ -81,9 +74,9 @@ jobs:
       - name: SSH into EC2 and deploy Docker containers
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.EC2_VACCINE_SERVER }}
+          host: ${{ secrets.EC2_CLIENT_SERVER }}
           username: ubuntu
-          key: ${{ secrets.VACCINE_SERVER_KEY }}
+          key: ${{ secrets.CLIENT_SERVER_KEY }}
           script: |
             # Verificar si Docker está instalado, si no, instalarlo
             if ! command -v docker &> /dev/null; then
@@ -95,14 +88,10 @@ jobs:
             sudo systemctl enable --now docker
 
             # Descargar las últimas imágenes desde Docker Hub
-            echo "Descargando imágenes..."
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
-
-            # Verificar si las imágenes fueron descargadas correctamente
-            sudo docker images
 
             # Detener y eliminar los contenedores existentes por nombre
             sudo docker stop microservice_create_vaccine || true
@@ -130,14 +119,9 @@ jobs:
 
             # Ejecutar los contenedores Docker con el archivo .env dentro de src
             # Ejecutar contenedores Docker con el archivo .env
-            echo "Ejecutando microservice_create_vaccine..."
             sudo docker run -d --name microservice_create_vaccine --env-file src/.env -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
-            echo "Ejecutando microservice_update_vaccine..."
             sudo docker run -d --name microservice_update_vaccine --env-file src/.env -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
-            echo "Ejecutando microservice_list_vaccine..."
-            sudo docker run -d --name microservice_list_vaccine --env-file src/.env -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
-            echo "Ejecutando microservice_delete_vaccine..."
+            sudo docker run -d --name microservice_list_vaccine --env-file src/.env -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}:latest
             sudo docker run -d --name microservice_delete_vaccine --env-file src/.env -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
 
-            # Verificar que los contenedores están corriendo
-            sudo docker ps
+            docker ps
