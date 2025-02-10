@@ -88,26 +88,36 @@ const Vaccine = () => {
   };
 
   // Edit an existing vaccine
-  const update = async () => {
-    try {
-      const response = await axios.put('http://52.90.87.142:3004/api/updateVaccines', 
-        JSON.stringify(form), {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true
+const update = async () => {
+  try {
+    // Asegúrate de que 'form' contenga el ID junto con los campos que deseas actualizar
+    const response = await axios.put('http://52.90.87.142:3004/api/updateVaccines', 
+      {
+        id: form.id,                // El ID de la vacuna que no se debe cambiar
+        name: form.name,            // Nombre de la vacuna
+        description: form.description,  // Descripción de la vacuna
+        dosis: form.dosis           // Dosis de la vacuna
+      }, {
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true
     });
 
-      if (response.data) {
-        toast.success("Vaccine updated successfully");
-        fetchVaccines(); // Refresh the vaccine list
-        setModalUpdate(false);
-      } else {
-        toast.error("Error while updating vaccine");
-      }
-    } catch (error) {
+    // Verifica lo que devuelve la respuesta
+    console.log(response); // Esto te ayudará a depurar la respuesta
+
+    if (response.data) {
+      toast.success("Vaccine updated successfully");
+      fetchVaccines(); // Refresh the vaccine list
+      setModalUpdate(false); // Cierra el modal solo si la actualización fue exitosa
+    } else {
       toast.error("Error while updating vaccine");
-      console.error(error); // Log for debugging
     }
-  };
+  } catch (error) {
+    toast.error("Error while updating vaccine");
+    console.error(error); // Log for debugging
+  }
+};
+
 
   // Delete a vaccine
   const deleteVaccine = async (id) => {
