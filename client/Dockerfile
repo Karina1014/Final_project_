@@ -18,7 +18,7 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 COPY --from=build /app/dist ./
 
-# Exponer el puerto 80 para servir la aplicación
-EXPOSE 80
+# Exponer el puerto 5173 para servir la aplicación
+EXPOSE 5173
 
 CMD ["nginx", "-g", "daemon off;"]

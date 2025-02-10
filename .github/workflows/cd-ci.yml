@@ -1,28 +1,30 @@
-name: Deploy Vaccine Management on EC2
-#docker test N°10 
+name: CI/CD - Docker Build & Deploy
+
 on:
   push:
     branches:
-      - test
+      - test  # Or the branch you're using
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      # Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker Image to Docker Hub
+      # Build and Push Client Docker Image
+      - name: Build and Push Client Docker image
         run: |
-          # Construir la imagen Docker
-          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/client:latest client
-
-          # Subir la imagen a Docker Hub
-          docker push ${{ secrets.DOCKER_USERNAME }}/client:latest
+          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
   deploy-client:
     runs-on: ubuntu-latest
@@ -36,21 +38,21 @@ jobs:
           username: ubuntu
           key: ${{ secrets.CLIENT_SERVER_KEY }}
           script: |
-            # Instalar Docker en la instancia EC2 (si no está instalado)
+            # Install Docker on the EC2 instance (Client)
             sudo apt update && sudo apt install -y docker.io
 
-            # Asegurarse de que Docker inicie automáticamente
+            # Ensure Docker starts automatically
             sudo systemctl enable --now docker
 
-            # Descargar la última imagen de cliente de Docker Hub
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/client:latest
+            # Pull the latest client image from Docker Hub
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
-            # Detener y eliminar contenedores en ejecución
+            # Stop any running containers
             sudo docker ps -q | xargs sudo docker stop || true
             sudo docker ps -q | xargs sudo docker rm || true
 
-            # Iniciar el contenedor con la imagen descargada
-            sudo docker run -d -p 5173:5173 ${{ secrets.DOCKER_USERNAME }}/client:latest
+            # Start the new container with the pulled image
+            sudo docker run -d -p 5173:5173 ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
-            # Verificar que el contenedor se esté ejecutando
-            sudo docker ps -a
+            # Verify the container is running
+            sudo docker ps
