@@ -2,9 +2,9 @@ import * as vaccineModel from '../models/vaccineModel.js';
 
 const updateVaccine = async (req, res) => {
   try {
-    const { id, name, description, dose } = req.body;
+    const { name, description, dose } = req.body;
 
-    if (!id || !name || !description || !dose) {
+    if (!name || !description || !dose) {
       return res.status(400).json({ message: 'All fields are required: id, name, description, dose' });
     }
 
