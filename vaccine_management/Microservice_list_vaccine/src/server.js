@@ -7,7 +7,7 @@ const PORT = 3002;
 
 // Configuración de CORS usando el paquete 'cors'
 const corsOptions = {
-  origin: 'http://54.208.61.22:5173', // Permite solicitudes desde el frontend en este puerto
+  origin: 'http://54.208.61.22', // Permite solicitudes desde el frontend en este puerto
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
   allowedHeaders: ['Content-Type'], // Cabeceras permitidas
   credentials: true, // Si estás utilizando cookies o autenticación con credenciales
