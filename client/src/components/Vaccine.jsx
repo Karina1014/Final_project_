@@ -43,7 +43,7 @@ const Vaccine = () => {
   };
   
   
-  
+
 
   useEffect(() => {
     obtenerVacunas(); // Fetch vaccines when the component mounts
@@ -85,22 +85,26 @@ const Vaccine = () => {
     setModalActualizar(false);
   };
 
-  // Insert a new vaccine into the database
-  const insertar = async () => {
-    try {
-      await axios.post("http://localhost:3001/api/createVaccines", form);
-      obtenerVacunas(); // Refresh the vaccine list
-      setModalInsertar(false); // Close the insert modal
-      toast.success("Vaccine inserted successfully");
-    } catch (error) {
-      toast.error("Error while inserting vaccine");
-    }
-  };
+// Insert a new vaccine into the database
+const insertar = async () => {
+  try {
+    // Realiza la solicitud POST para insertar la nueva vacuna
+    await axios.post("http://54.161.148.130:3001/api/createVaccines", form, { withCredentials: true });
+    obtenerVacunas();
+    setModalInsertar(false);
+    toast.success("Vaccine inserted successfully");
+  } catch (error) {
+    toast.error("Error while inserting vaccine");
+    console.error(error); // Log para depuración
+  }
+};
+
 
   // Edit an existing vaccine
   const editar = async () => {
     try {
-      const response = await axios.put(`http://localhost:3004/api/updateVaccines`, form);
+      const response = await axios.put(`http://localhost:3004/api/updateVaccines`, form,
+      { withCredentials: true });
       if (response.data) {
         toast.success("Vaccine updated successfully");
         obtenerVacunas(); // Refresh the vaccine list
@@ -117,7 +121,8 @@ const Vaccine = () => {
   // Delete a vaccine
   const eliminar = async (id_vaccine) => {
     try {
-      const response = await axios.delete(`http://localhost:3003/api/deleteVaccine/${id_vaccine}`);
+      const response = await axios.delete(`http://localhost:3003/api/deleteVaccine/${id_vaccine}`,
+      { withCredentials: true });
       if (response.data) {
         toast.success("Vaccine deleted successfully");
         obtenerVacunas(); // Refresh the vaccine list

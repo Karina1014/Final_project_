@@ -9,19 +9,17 @@ const app = express();
 
 const PORT = 3003;
 
-const allowedOrigins = ['http://44.204.11.188'];  
-app.use(express.json());
-app.use(cors({ origin: allowedOrigins, credentials: true })); 
+// Configuración de CORS
+const allowedOrigins = ['http://52.91.76.250'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
 
+const corsOptions = {
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true,
+};
 
-// Configuration cors - Middleware
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', ['*']); 
-//   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE'); 
-//   res.header('Access-Control-Allow-Headers', 'Content-Type'); 
-//   next();
-// });
-
+app.use(cors(corsOptions)); // Aplica CORS
 
 app.use(cors());
 app.use(express.json());
