@@ -20,12 +20,14 @@ const Vaccine = () => {
   // Fetch vaccines from the backend
   const obtenerVacunas = async () => {
     try {
-      const response = await axios.get("http://52.203.219.32:3002/api/vaccines");
-      setData(response.data); // Set the fetched data to state
+      const response = await axios.get("http://52.203.95.187:3002/api/vaccines");
+      setData(response.data); // Establece los datos de las vacunas en el estado
     } catch (error) {
       toast.error("Error while fetching vaccines");
+      console.error(error); // Ayuda a diagnosticar el error
     }
   };
+  
 
   useEffect(() => {
     obtenerVacunas(); // Fetch vaccines when the component mounts
