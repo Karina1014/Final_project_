@@ -1,5 +1,7 @@
 import React from 'react';
-import { BsHouse, BsPersonPlus } from 'react-icons/bs'; // Íconos para la navegación
+import { GiSyringe } from 'react-icons/gi';
+
+import { BsHouse } from 'react-icons/bs'; // Íconos para la navegación
 
 const Sidebar = ({ onSelect }) => {
   return (
@@ -18,17 +20,18 @@ const Sidebar = ({ onSelect }) => {
             <span className="text-lg font-medium">Inicio</span>
           </li>
 
-          {/* Opción de Conquistadores */}
-          <li 
-            onClick={() => onSelect('Conquistadores')}
-            className="flex items-center gap-4 p-3 rounded-lg text-gray-200 cursor-pointer hover:bg-blue-600 hover:text-white transition duration-300 transform hover:scale-105"
-          >
-            <BsPersonPlus size={22} />
-            <span className="text-lg font-medium">Conquistadores</span>
-          </li>
+      {/* Opción de Vaccine */}
+        <li
+          onClick={() => onSelect('Vaccine')}
+          className="flex items-center gap-4 p-3 rounded-lg text-gray-200 cursor-pointer hover:bg-blue-600 hover:text-white transition duration-300 transform hover:scale-105"
+        >
+          <GiSyringe size={22} />
+          <span className="text-lg font-medium">Vaccine</span>
+        </li>
+
 
           {/* Puedes agregar más opciones aquí con el mismo formato */}
-          <li 
+          {/* <li 
             onClick={() => onSelect('ConquistadorScore')}
             className="flex items-center gap-4 p-3 rounded-lg text-gray-200 cursor-pointer hover:bg-blue-600 hover:text-white transition duration-300 transform hover:scale-105"
           >
@@ -41,7 +44,7 @@ const Sidebar = ({ onSelect }) => {
           >
             <BsPersonPlus size={22} />
             <span className="text-lg font-medium">Ranking</span>
-          </li>
+          </li> */}
         </ul>
       </div>
     </div>

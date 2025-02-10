@@ -6,7 +6,7 @@ import { ResetPassword } from './pages/ResetPassword';
 import EmailVerify from './pages/EmailVerify';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Vaccine from './components/Vaccine';
+import Admin from './pages/Admin';
 
 const App = () => {
   return (
@@ -17,7 +17,7 @@ const App = () => {
         <Route path='/login' element={<Login/>}></Route>
         <Route path='/email-verify' element={<EmailVerify/>}></Route>
         <Route path='/reset-password' element={<ResetPassword/>}></Route>
-        <Route path='/vaccine' element={<Vaccine/>}></Route>
+        <Route path='/admin' element={<Admin/>}></Route>
       </Routes>
     </div>
   );
