@@ -90,9 +90,11 @@ const Vaccine = () => {
   // Edit an existing vaccine
   const update = async () => {
     try {
-      const response = await axios.put('http://52.90.87.142:3004/api/updateVaccines', form, {
+      const response = await axios.put('http://52.90.87.142:3004/api/updateVaccines', 
+        JSON.stringify(form), {
+        headers: { 'Content-Type': 'application/json' },
         withCredentials: true
-      });
+    });
 
       if (response.data) {
         toast.success("Vaccine updated successfully");
