@@ -1,34 +1,26 @@
 import express from 'express';
 import vaccineRoute from './routes/vaccineRouter.js';
-import cors from "cors";
+import cors from 'cors';
+
 const app = express();
-
-// import swaggerUi from 'swagger-ui-express';
-// import swaggerDocument from './swagger.json' assert { type: "json" };
-
 const PORT = 3002;
 
-const allowedOrigins = ['http://44.204.11.188'];  
-app.use(express.json());
-app.use(cors({ origin: allowedOrigins, credentials: true })); 
+// Configuración de CORS usando el paquete 'cors'
+const corsOptions = {
+  origin: 'http://54.208.61.22:5173', // Permite solicitudes desde el frontend en este puerto
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos permitidos
+  allowedHeaders: ['Content-Type'], // Cabeceras permitidas
+  credentials: true, // Si estás utilizando cookies o autenticación con credenciales
+};
 
+app.use(cors(corsOptions)); // Aplicamos la configuración de CORS a todas las rutas
 
-// Configuration cors - Middleware
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', ['*']); 
-//   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE'); 
-//   res.header('Access-Control-Allow-Headers', 'Content-Type'); 
-//   next();
-// });
-
+// Middleware para procesar JSON
 app.use(express.json());
 
-// app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Rutas de la API
 app.use('/api', vaccineRoute);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-}); 
-
-
-
+});
