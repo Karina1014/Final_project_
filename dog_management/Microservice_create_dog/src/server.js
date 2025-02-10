@@ -4,28 +4,35 @@ import { connectDB } from './config/mysqldb.js';
 import 'dotenv/config';
 import dogRouter from "./routes/dogRouter.js";
 import cors from "cors";
-import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './swagger.json' assert { type: "json" };
+// import swaggerUi from 'swagger-ui-express';
+// import swaggerDocument from './swagger.json' assert { type: "json" };
 
 const app = express();
-const port = process.env.PORT || 4000;
-
-// Middleware
-const allowedOrigins = ['http://localhost:5173'];  
-app.use(express.json());
-app.use(cookieParser());
-app.use(cors({ origin: allowedOrigins, credentials: true })); 
+const port = 4000;
 
 connectDB();
 
+// Configuración de CORS
+const allowedOrigins = ['http://52.91.76.250'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
+
+const corsOptions = {
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions)); // Aplica CORS
 // Routes
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use("/api/dogs", dogRouter);
+// app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/api/dog", dogRouter);
 
 app.get("/", (req, res) => {
   res.send("API Working");
 });
 
-app.listen(port, () => {
-  console.log(`Server started on http://localhost:${port}`);
-});
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+}); 
+
+
