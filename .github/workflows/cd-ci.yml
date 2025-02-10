@@ -30,8 +30,8 @@ jobs:
           docker build -f vaccine_management/Microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest vaccine_management/Microservice_delete_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
 
-          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest cliente
-          docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/client:latest client
+          docker push ${{ secrets.DOCKER_USERNAME }}/client:latest
 
   deploy-client:
     runs-on: ubuntu-latest
@@ -52,14 +52,14 @@ jobs:
             sudo systemctl enable --now docker
 
             # Pull the latest client image from Docker Hub
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/client:latest
 
             # Stop any running containers
             sudo docker ps -q | xargs sudo docker stop || true
             sudo docker ps -q | xargs sudo docker rm || true
 
             # Start the new container with the pulled image
-            sudo docker run -d -p 5173:5173 ${{ secrets.DOCKER_USERNAME }}/cliente:latest
+            sudo docker run -d -p 5173:5173 ${{ secrets.DOCKER_USERNAME }}/client:latest
 
             # Verify the container is running
             sudo docker ps
