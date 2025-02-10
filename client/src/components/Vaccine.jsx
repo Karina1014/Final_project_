@@ -11,7 +11,7 @@ const Vaccine = () => {
   const [modalInsert, setModalInsert] = useState(false); // State to control the insert modal
   const [modalUpdate, setModalUpdate] = useState(false); // State to control the update modal
   const [form, setForm] = useState({
-    id_vaccine: "", // Vaccine ID (used for editing and deleting)
+    id: "", // Vaccine ID (used for editing and deleting)
     name: "", // Vaccine name
     description: "", // Vaccine description
     dose: "", // Dose of the vaccine
@@ -48,7 +48,7 @@ const Vaccine = () => {
   // Show the modal for inserting a new vaccine
   const showInsertModal = () => {
     setForm({
-      id_vaccine: "",
+      id: "",
       name: "",
       description: "",
       dose: "",
@@ -110,9 +110,9 @@ const Vaccine = () => {
   };
 
   // Delete a vaccine
-  const deleteVaccine = async (id_vaccine) => {
+  const deleteVaccine = async (id) => {
     try {
-      const response = await axios.delete(`http://52.90.87.142:3003/api/deleteVaccine/${id_vaccine}`, {
+      const response = await axios.delete(`http://52.90.87.142:3003/api/deleteVaccine/${id}`, {
         withCredentials: true
       });
       if (response.data) {
