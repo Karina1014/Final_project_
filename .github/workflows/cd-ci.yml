@@ -16,21 +16,12 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build and Push Docker Images
+      - name: Build and Push Docker Image to Docker Hub
         run: |
-          docker build -f vaccine_management/Microservice_create_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest vaccine_management/Microservice_create_vaccine
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
-
-          docker build -f vaccine_management/Microservice_update_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest vaccine_management/Microservice_update_vaccine
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
-
-          docker build -f vaccine_management/Microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest vaccine_management/Microservice_list_vaccine
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
-
-          docker build -f vaccine_management/Microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest vaccine_management/Microservice_delete_vaccine
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
-
+          # Construir la imagen Docker
           docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/client:latest client
+
+          # Subir la imagen a Docker Hub
           docker push ${{ secrets.DOCKER_USERNAME }}/client:latest
 
   deploy-client:
@@ -45,81 +36,21 @@ jobs:
           username: ubuntu
           key: ${{ secrets.CLIENT_SERVER_KEY }}
           script: |
-            # Install Docker on the EC2 instance (Client)
+            # Instalar Docker en la instancia EC2 (si no está instalado)
             sudo apt update && sudo apt install -y docker.io
 
-            # Ensure Docker starts automatically
+            # Asegurarse de que Docker inicie automáticamente
             sudo systemctl enable --now docker
 
-            # Pull the latest client image from Docker Hub
+            # Descargar la última imagen de cliente de Docker Hub
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/client:latest
 
-            # Stop any running containers
+            # Detener y eliminar contenedores en ejecución
             sudo docker ps -q | xargs sudo docker stop || true
             sudo docker ps -q | xargs sudo docker rm || true
 
-            # Start the new container with the pulled image
+            # Iniciar el contenedor con la imagen descargada
             sudo docker run -d -p 5173:5173 ${{ secrets.DOCKER_USERNAME }}/client:latest
 
-            # Verify the container is running
-            sudo docker ps
-
-  deploy-vaccine-management:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: SSH into EC2 and deploy Docker containers
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_CLIENT_SERVER }}
-          username: ubuntu
-          key: ${{ secrets.CLIENT_SERVER_KEY }}
-          script: |
-            # Verificar si Docker está instalado, si no, instalarlo
-            if ! command -v docker &> /dev/null; then
-              echo "Docker no está instalado. Instalando..."
-              sudo apt update && sudo apt install -y docker.io
-            fi
-
-            # Hacer que Docker se inicie automáticamente
-            sudo systemctl enable --now docker
-
-            # Descargar las últimas imágenes desde Docker Hub
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
-
-            # Detener y eliminar los contenedores existentes por nombre
-            sudo docker stop microservice_create_vaccine || true
-            sudo docker rm microservice_create_vaccine || true
-            sudo docker stop microservice_update_vaccine || true
-            sudo docker rm microservice_update_vaccine || true
-            sudo docker stop microservice_list_vaccine || true
-            sudo docker rm microservice_list_vaccine || true
-            sudo docker stop microservice_delete_vaccine || true
-            sudo docker rm microservice_delete_vaccine || true
-
-            # Verificar las variables de entorno antes de generar el archivo
-            echo "Base de datos: $REACT_APP_RDS_HOST"
-
-            # Crear el archivo .env dentro de la carpeta src
-            mkdir -p src
-            echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" >> src/.env
-            echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> src/.env
-            echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> src/.env
-            echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> src/.env
-            echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> src/.env
-
-            # Verificar que el archivo .env se ha creado correctamente
-            cat src/.env
-
-            # Ejecutar los contenedores Docker con el archivo .env dentro de src
-            # Ejecutar contenedores Docker con el archivo .env
-            sudo docker run -d --name microservice_create_vaccine --env-file src/.env -p 3001:3001 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
-            sudo docker run -d --name microservice_update_vaccine --env-file src/.env -p 3004:3004 ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
-            sudo docker run -d --name microservice_list_vaccine --env-file src/.env -p 3002:3002 ${{ secrets.DOCKER_USERNAME }}:latest
-            sudo docker run -d --name microservice_delete_vaccine --env-file src/.env -p 3003:3003 ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
-
-            docker ps
+            # Verificar que el contenedor se esté ejecutando
+            sudo docker ps -a
