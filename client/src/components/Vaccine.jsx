@@ -16,12 +16,16 @@ const Vaccine = () => {
     description: "", // Vaccine description
     dose: "", // Dose of the vaccine
   });
-  const backendUrl = import.meta.env.VITE_API_URL;
+  // const backendUrl = import.meta.env.VITE_API_URL;
 
   // Fetch vaccines from the backend
   const obtenerVacunas = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/vaccines`);
+      const response = await axios.get('http://54.161.148.130:3002/api/vaccines', {
+        withCredentials: true
+      })
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
       const vaccinesData = response.data; // Asigna los datos recibidos a una variable
   
       // Si necesitas extraer valores específicos (como ID, nombre, descripción, etc.), puedes hacerlo aquí
