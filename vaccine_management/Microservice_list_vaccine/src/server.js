@@ -7,16 +7,19 @@ const app = express();
 const PORT = 3002;
 
 // Configuración de CORS
-const allowedOrigins = ['http://52.91.76.250'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
+// const allowedOrigins = ['http://52.91.76.250'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
+const allowedOrigins = ['http://52.91.76.250'];  
+app.use(express.json());
+app.use(cors({ origin: allowedOrigins, credentials: true })); 
 
-const corsOptions = {
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: allowedOrigins,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   allowedHeaders: ['Content-Type'],
+//   credentials: true,
+// };
 
-app.use(cors(corsOptions)); // Aplica CORS
+// app.use(cors(corsOptions)); // Aplica CORS
 
 // Middleware para procesar JSON
 app.use(express.json());
