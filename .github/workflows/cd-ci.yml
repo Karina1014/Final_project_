@@ -30,9 +30,7 @@ jobs:
           docker build -f vaccine_management/Microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest vaccine_management/Microservice_delete_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
 
-      - name: Build and Push Docker Images
-        run: |
-          docker build -f cliente/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest cliente
+          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest cliente
           docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
   deploy-client:
