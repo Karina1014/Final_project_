@@ -3,7 +3,7 @@ import Sidebar from '../components/Sidebar';
 import Vaccine from '../components/Vaccine'; 
 import HeaderAdmin from '../components/HeaderAdmin';
 import NavbarAdmin from '../components/NavbarAdmin';
-
+import Dog from '../components/Dog'; 
 
 const Admin = () => {
   const [selectedMenu, setSelectedMenu] = useState('Inicio'); // Estado para controlar el menú seleccionado
@@ -31,6 +31,9 @@ const Admin = () => {
 
           {selectedMenu === 'Vaccine' && (
             <Vaccine />  
+          )}
+          {selectedMenu === 'Dog' && (
+            <Dog />  
           )}
           
         </div>

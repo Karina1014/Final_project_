@@ -1,6 +1,6 @@
 import React from 'react';
 import { GiSyringe } from 'react-icons/gi';
-
+import { FaDog } from 'react-icons/fa'; // Icono de perro
 import { BsHouse } from 'react-icons/bs'; // Íconos para la navegación
 
 const Sidebar = ({ onSelect }) => {
@@ -27,24 +27,17 @@ const Sidebar = ({ onSelect }) => {
         >
           <GiSyringe size={22} />
           <span className="text-lg font-medium">Vaccine</span>
+          </li>
+
+        {/* Opción de Dog */}
+        <li
+          onClick={() => onSelect('Dog')}
+          className="flex items-center gap-4 p-3 rounded-lg text-gray-200 cursor-pointer hover:bg-blue-600 hover:text-white transition duration-300 transform hover:scale-105"
+        >
+          <FaDog size={22} />
+          <span className="text-lg font-medium">Dog</span>
         </li>
 
-
-          {/* Puedes agregar más opciones aquí con el mismo formato */}
-          {/* <li 
-            onClick={() => onSelect('ConquistadorScore')}
-            className="flex items-center gap-4 p-3 rounded-lg text-gray-200 cursor-pointer hover:bg-blue-600 hover:text-white transition duration-300 transform hover:scale-105"
-          >
-            <BsPersonPlus size={22} />
-            <span className="text-lg font-medium">ConquistadorScore</span>
-          </li>
-          <li 
-            onClick={() => onSelect('Ranking')}
-            className="flex items-center gap-4 p-3 rounded-lg text-gray-200 cursor-pointer hover:bg-blue-600 hover:text-white transition duration-300 transform hover:scale-105"
-          >
-            <BsPersonPlus size={22} />
-            <span className="text-lg font-medium">Ranking</span>
-          </li> */}
         </ul>
       </div>
     </div>

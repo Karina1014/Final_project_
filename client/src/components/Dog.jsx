@@ -6,7 +6,7 @@ import { FaEdit, FaTrashAlt } from 'react-icons/fa'; // Icons for edit and delet
 import { ToastContainer, toast } from 'react-toastify'; // Toastify for notifications
 import 'react-toastify/dist/ReactToastify.css'; // CSS for Toastify
 
-const Vaccine = () => {
+const Dog = () => {
   const [data, setData] = useState([]); // State to store vaccine data
   const [modalInsert, setModalInsert] = useState(false); // State to control the insert modal
   const [modalUpdate, setModalUpdate] = useState(false); // State to control the update modal
@@ -20,7 +20,7 @@ const Vaccine = () => {
   // Fetch vaccines from the backend
   const fetchVaccines = async () => {
     try {
-      const response = await axios.get('http://52.90.87.142:3002/api/vaccines', {
+      const response = await axios.get('http://54.161.148.130:3002/api/vaccines', {
         withCredentials: true
       });
 
@@ -75,7 +75,7 @@ const Vaccine = () => {
   // Insert a new vaccine into the database
   const insert = async () => {
     try {
-      await axios.post('http://52.90.87.142:3001/api/createVaccines', form, {
+      await axios.post('http://54.161.148.130:3001/api/createVaccines', form, {
         withCredentials: true
       });
       fetchVaccines(); // Refresh the vaccine list
@@ -90,7 +90,7 @@ const Vaccine = () => {
   // Edit an existing vaccine
   const update = async () => {
     try {
-      const response = await axios.put('http://52.90.87.142:3004/api/updateVaccines', form, {
+      const response = await axios.put('http://54.161.148.130:3004/api/updateVaccines', form, {
         withCredentials: true
       });
 
@@ -110,7 +110,7 @@ const Vaccine = () => {
   // Delete a vaccine
   const deleteVaccine = async (id_vaccine) => {
     try {
-      const response = await axios.delete(`http://52.90.87.142:3003/api/deleteVaccine/${id_vaccine}`, {
+      const response = await axios.delete(`http://54.161.148.130:3003/api/deleteVaccine/${id_vaccine}`, {
         withCredentials: true
       });
       if (response.data) {
@@ -212,4 +212,4 @@ const Vaccine = () => {
   );
 };
 
-export default Vaccine;
+export default Dog;
