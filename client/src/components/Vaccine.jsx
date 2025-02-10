@@ -23,9 +23,10 @@ const Vaccine = () => {
     try {
       const response = await axios.get('http://54.161.148.130:3002/api/vaccines', {
         withCredentials: true
-      })
-      .then(response => console.log(response.data))
-      .catch(error => console.error(error));
+      });
+      
+      console.log(response.data); // Verifica los datos en la consola
+      setData(response.data); // Guarda los datos en el estado
       const vaccinesData = response.data; // Asigna los datos recibidos a una variable
   
       // Si necesitas extraer valores específicos (como ID, nombre, descripción, etc.), puedes hacerlo aquí
