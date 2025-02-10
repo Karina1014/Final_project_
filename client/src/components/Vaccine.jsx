@@ -143,8 +143,8 @@ const Vaccine = () => {
           </thead>
           <tbody>
             {data.map((vaccine) => (
-              <tr key={vaccine.id_vaccine}>
-                <td>{vaccine.id_vaccine}</td> {/* Display vaccine ID */}
+              <tr key={vaccine.id}>
+                <td>{vaccine.id}</td> {/* Display vaccine ID */}
                 <td>{vaccine.name}</td> {/* Display vaccine name */}
                 <td>{vaccine.description}</td> {/* Display vaccine description */}
                 <td>{vaccine.dose}</td> {/* Display vaccine dose */}
@@ -189,6 +189,10 @@ const Vaccine = () => {
       <Modal isOpen={modalUpdate}>
         <ModalHeader>Update Vaccine</ModalHeader>
         <ModalBody>
+        <FormGroup>
+            <label>ID</label>
+            <Input type="text" name="ID" value={form.id} readOnly />        
+              </FormGroup>
           <FormGroup>
             <label>Name</label>
             <Input type="text" name="name" value={form.name} onChange={handleChange} />
