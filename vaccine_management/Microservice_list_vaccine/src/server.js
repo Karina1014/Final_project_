@@ -6,13 +6,18 @@ import cors from 'cors';
 const app = express();
 const PORT = 3002;
 
+const allowedOrigins = ['52.206.95.187:80'];  
+app.use(express.json());
+app.use(cors({ origin: allowedOrigins, credentials: true })); 
+
+
 // Configuración de CORS
-const corsOptions = {
-  origin: 'http://52.206.95.187:80',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: 'http://52.206.95.187:80',
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   allowedHeaders: ['Content-Type'],
+//   credentials: true,
+// };
 
 app.use(cors(corsOptions)); // Aplica CORS
 
