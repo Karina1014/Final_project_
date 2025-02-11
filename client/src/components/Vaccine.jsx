@@ -1,113 +1,148 @@
-import { useState, useEffect } from 'react';
-import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from 'reactstrap';
-import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from "reactstrap";
+import { FaEdit, FaTrashAlt } from 'react-icons/fa'; 
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const Vaccine = () => {
   const [data, setData] = useState([]);
   const [modalInsertar, setModalInsertar] = useState(false);
   const [modalActualizar, setModalActualizar] = useState(false);
-  const [form, setForm] = useState({ name: '', description: '', dose: '' });
-  const [selectedVaccine, setSelectedVaccine] = useState(null);
+  const [form, setForm] = useState({
+    id_vaccine: "",
+    name: "",
+    description: "",
+    dose: "",
+  });
+
+// Obtener las vacunas
+const obtenerVacunas = async () => {
+  try {
+    const response = await axios.get("http://52.91.76.250:3002/api/vaccines", {
+      withCredentials: true, // Permite enviar cookies si el backend lo requiere
+    });
+
+    console.log(response.data); // Verifica los datos en la consola
+    setData(response.data); // Guarda los datos en el estado
+  } catch (error) {
+    toast.error("Error while fetching vaccines");
+    console.error(error); // Log the error for debugging
+  }
+};
 
   useEffect(() => {
-    fetchVaccines();
+    obtenerVacunas();
   }, []);
 
-  const fetchVaccines = async () => {
-    try {
-      const response = await fetch('http://54.167.144.194:3002/api/vaccines');
-      const result = await response.json();
-      setData(result);
-    } catch (error) {
-      toast.error('Error fetching vaccines');
-      console.error(error);
-    }
-  };
-
+  // Actualizar el estado del formulario con los cambios
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm({
+      ...form,
+      [name]: value,
+    });
   };
 
+  // Mostrar el modal de inserción
+  const mostrarModalInsertar = () => {
+    setForm({
+      id_vaccine: "",
+      name: "",
+      description: "",
+      dose: "",
+    });
+    setModalInsertar(true);
+  };
+
+  // Cerrar el modal de inserción
+  const cerrarModalInsertar = () => {
+    setModalInsertar(false);
+  };
+
+  // Mostrar el modal de actualización
+  const mostrarModalActualizar = (dato) => {
+    setForm(dato);
+    setModalActualizar(true);
+  };
+
+  // Cerrar el modal de actualización
+  const cerrarModalActualizar = () => {
+    setModalActualizar(false);
+  };
+
+  // Insertar una nueva vacuna
   const insertar = async () => {
     try {
-      await fetch('http://54.167.144.194:3001/api/vaccines', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      });
-      toast.success('Vacuna insertada');
+      await axios.post("http://52.91.76.250:3002/api/vaccines", form);
+      obtenerVacunas();
       setModalInsertar(false);
-      fetchVaccines();
+      toast.success("Vacuna insertada correctamente");
     } catch (error) {
-      toast.error('Error insertando vacuna');
-      console.error(error);
+      toast.error("Error al insertar la vacuna");
     }
   };
 
+  // Editar una vacuna
   const editar = async () => {
     try {
-      await fetch(`http://54.167.144.194:3004/api/vaccines/${selectedVaccine.id_vaccine}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      });
-      toast.success('Vacuna actualizada');
+      await axios.put(`http://52.91.76.250:3002/api/vaccines/${form.id_vaccine}`, form);
+      toast.success("Vacuna actualizada");
+      obtenerVacunas();
       setModalActualizar(false);
-      fetchVaccines();
     } catch (error) {
-      toast.error('Error actualizando vacuna');
-      console.error(error);
+      toast.error("Error al actualizar la vacuna");
     }
   };
 
-  const eliminar = async (id_vaccine) => {
+  // Eliminar una vacuna
+  const eliminar = async (id) => {
     try {
-      await fetch(`http://54.167.144.194:3003/api/vaccines/${id_vaccine}`, { method: 'DELETE' });
-      toast.success('Vacuna eliminada');
-      fetchVaccines();
+      await axios.delete(`http://52.91.76.250:3002/api/vaccines/${id}`);
+      toast.success("Vacuna eliminada");
+      obtenerVacunas();
     } catch (error) {
-      toast.error('Error eliminando vacuna');
-      console.error(error);
+      toast.error("Error al eliminar la vacuna");
     }
   };
 
   return (
     <>
-      <Button color="success" onClick={() => setModalInsertar(true)}>Insertar Nueva Vacuna</Button>
+      <Button color="success" onClick={mostrarModalInsertar}>Insertar Nueva Vacuna</Button>
       <div className="mt-4">
-        <Table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Fabricante</th>
-              <th>Dosis</th>
-              <th>Acción</th>
+      <Table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Dosis</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((vaccine) => (
+            <tr key={vaccine.id_vaccine}>
+              <td>{vaccine.id_vaccine}</td>
+              <td>{vaccine.name}</td>
+              <td>{vaccine.description}</td>
+              <td>{vaccine.dose}</td>
+              <td>
+                <Button color="primary" onClick={() => mostrarModalActualizar(vaccine)}>
+                  <FaEdit />
+                </Button>
+                <Button color="danger" className="ml-2" onClick={() => eliminar(vaccine.id_vaccine)}>
+                  <FaTrashAlt />
+                </Button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {data.map((vaccine) => (
-              <tr key={vaccine.id}>
-                <td>{vaccine.id}</td>
-                <td>{vaccine.name}</td>
-                <td>{vaccine.manufacturer}</td>
-                <td>{vaccine.doses}</td>
-                <td>
-                  <Button color="primary" onClick={() => { setSelectedVaccine(vaccine); setForm(vaccine); setModalActualizar(true); }}>
-                    <FaEdit />
-                  </Button>
-                  <Button color="danger" className="ml-2" onClick={() => eliminar(vaccine.id)}>
-                    <FaTrashAlt />
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+          ))}
+        </tbody>
+      </Table>
       </div>
 
+      {/* Modal de Inserción */}
       <Modal isOpen={modalInsertar}>
         <ModalHeader>Insertar Vacuna</ModalHeader>
         <ModalBody>
@@ -116,20 +151,21 @@ const Vaccine = () => {
             <Input type="text" name="name" value={form.name} onChange={handleChange} />
           </FormGroup>
           <FormGroup>
-            <label>Fabricante</label>
-            <Input type="text" name="manufacturer" value={form.manufacturer} onChange={handleChange} />
+            <label>Descripción</label>
+            <Input type="text" name="description" value={form.description} onChange={handleChange} />
           </FormGroup>
           <FormGroup>
             <label>Dosis</label>
-            <Input type="number" name="doses" value={form.doses} onChange={handleChange} />
+            <Input type="text" name="dose" value={form.dose} onChange={handleChange} />
           </FormGroup>
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={insertar}>Insertar</Button>
-          <Button color="secondary" onClick={() => setModalInsertar(false)}>Cancelar</Button>
+          <Button color="secondary" onClick={cerrarModalInsertar}>Cancelar</Button>
         </ModalFooter>
       </Modal>
 
+      {/* Modal de Actualización */}
       <Modal isOpen={modalActualizar}>
         <ModalHeader>Actualizar Vacuna</ModalHeader>
         <ModalBody>
@@ -138,20 +174,21 @@ const Vaccine = () => {
             <Input type="text" name="name" value={form.name} onChange={handleChange} />
           </FormGroup>
           <FormGroup>
-            <label>Fabricante</label>
-            <Input type="text" name="manufacturer" value={form.manufacturer} onChange={handleChange} />
+            <label>Descripción</label>
+            <Input type="text" name="description" value={form.description} onChange={handleChange} />
           </FormGroup>
           <FormGroup>
             <label>Dosis</label>
-            <Input type="number" name="doses" value={form.doses} onChange={handleChange} />
+            <Input type="text" name="dose" value={form.dose} onChange={handleChange} />
           </FormGroup>
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={editar}>Actualizar</Button>
-          <Button color="secondary" onClick={() => setModalActualizar(false)}>Cancelar</Button>
+          <Button color="secondary" onClick={cerrarModalActualizar}>Cancelar</Button>
         </ModalFooter>
       </Modal>
 
+      {/* Contenedor de los toasts */}
       <ToastContainer />
     </>
   );
