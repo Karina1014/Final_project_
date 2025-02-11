@@ -17,12 +17,11 @@ export const updateVaccine = async (id, name, description, dose) => {
     const res = await connectDB.query(query, values);
 
     if (res.rowCount === 0) {
-      throw new Error('No vaccine found with the given id');
+      return null; // Para que el controlador maneje el error correctamente
     }
 
     return res.rows[0];  
   } catch (err) {
-    throw new Error(`Error updating vaccine: ${err.message}`);
+    throw new Error(Error updating vaccine: ${err.message});
   }
 };
-

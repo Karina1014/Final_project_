@@ -11,7 +11,7 @@ const app = express();
 
 const PORT = 3004;
 // Configuración de CORS
-const allowedOrigins = ['http://3.80.157.117'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
+const allowedOrigins = ['http://18.212.65.16'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
 
 const corsOptions = {
   origin: allowedOrigins,
