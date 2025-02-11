@@ -11,16 +11,14 @@ const app = express();
 
 const PORT = 3004;
 connectDB();
-const corsOptions = {
-  origin: ['http://54.165.181.30'],  // El origen de tu frontend
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
-  // No es necesario credentials: true si no usas cookies o autenticación
-};
 
-app.use(cors(corsOptions)); // Aplica CORS sin credenciales
+const allowedOrigins = ['http://localhost:5173'];  // Si estás trabajando localmente con Vite
 
-app.use(cors(corsOptions)); // Aplica CORS
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({ origin: allowedOrigins, credentials: true })); // Permitir cualquier origen
+
 
 app.use(express.json());
 

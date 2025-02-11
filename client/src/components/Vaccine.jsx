@@ -11,29 +11,36 @@ const Vaccine = () => {
   // Función para obtener las vacunas desde la API
   const obtenerVacunas = async () => {
     try {
-      const response = await axios.get("http://3.82.128.130:3002/api/vaccines");
-      
-      if (Array.isArray(response.data)) {
-        setData(response.data); // Guarda los datos en el estado
-      } else {
-        toast.error("Invalid data format");
-      }
+      const response = await axios.get("http://localhost:3002/api/vaccines", {
+        withCredentials: true, // Permite credenciales (cookies, sesiones, etc.)
+      });
 
-    } catch (error) {
-      toast.error("Error while fetching vaccines");
-    }
-  };
+     setData(response.data); // Save the data in the state
+           console.log(response.data); // Verifica los datos en la consola
+           setData(response.data); // Guarda los datos en el estado
+           const vaccinesData = response.data; // Asigna los datos recibidos a una variable
+       
+           // Si necesitas extraer valores específicos (como ID, nombre, descripción, etc.), puedes hacerlo aquí
+           vaccinesData.forEach(vaccine => {
+             const { id_vaccine, name, description, dose } = vaccine;
+             console.log(id_vaccine, name, description, dose); // Para verificar los datos
+           });
+       
+           setData(vaccinesData); // Establece los datos de las vacunas en el estado
+         } catch (error) {
+           toast.error("Error while fetching vaccines");
+         }
+       };
 
   // Llamar a la función obtenerVacunas cuando el componente se monta
   useEffect(() => {
     obtenerVacunas();
-  }, []); // El arreglo vacío asegura que se ejecute solo una vez al montar el componente
+  }, []); 
 
   return (
     <div>
       <ToastContainer /> {/* Aquí se mostrarán las notificaciones */}
 
-      {/* Tabla de Vacunas */}
       <Table striped>
         <thead>
           <tr>

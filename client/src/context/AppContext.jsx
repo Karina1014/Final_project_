@@ -8,7 +8,7 @@ export const AppContextProvider = (props) => {
   
   axios.defaults.withCredentials = true; // Asegurarse de que las cookies se envíen correctamente.
 
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = "http://3.82.128.130";
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null); // Inicializar en null
 
