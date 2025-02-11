@@ -24,8 +24,8 @@ const Vaccine = () => {
         withCredentials: true
       });
 
-      console.log(response.data); // Check data in console
-      setData(response.data); // Save data in state
+      console.log(response.data); // Verifica los datos en la consola
+      setData(response.data); // Guarda los datos en el estado
     } catch (error) {
       toast.error("Error while fetching vaccines");
       console.error(error); // Log the error for debugging
