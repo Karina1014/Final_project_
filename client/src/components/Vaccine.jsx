@@ -21,17 +21,17 @@ const Vaccine = () => {
   const fetchVaccines = async () => {
     try {
       const response = await axios.get('http://54.167.144.194:3002/api/vaccines', {
-        withCredentials: true
+        withCredentials: true // Esto asegura que las cookies/autenticación sean enviadas
       });
-
-      console.log(response.data); // Verifica los datos en la consola
-      setData(response.data); // Guarda los datos en el estado
-      fetchVaccines(); // Refresh the vaccine list
+  
+      console.log(response.data);
+      setData(response.data);
     } catch (error) {
       toast.error("Error while fetching vaccines");
-      console.error(error); // Log the error for debugging
+      console.error(error);
     }
   };
+  
 
   useEffect(() => {
     fetchVaccines(); // Fetch vaccines when the component mounts
