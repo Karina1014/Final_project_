@@ -24,7 +24,8 @@ const Vaccine = () => {
       const response = await axios.get(`${backendUrl}:3002/api/vaccines`, {
         withCredentials: true,  // Aquí está el objeto de configuración correcto
       });
-      setData(response.data); // Set the fetched data to state
+      console.log(response.data); // Verifica los datos en la consola
+      setData(response.data); // Guarda los datos en el estado
     } catch (error) {
       toast.error("Error while fetching vaccines");
       console.error(error); // Log the error for debugging
@@ -85,6 +86,7 @@ const Vaccine = () => {
       toast.success("Vaccine inserted successfully");
     } catch (error) {
       toast.error("Error while inserting vaccine");
+      console.error(error); // Log the error for debugging
     }
   };
 
@@ -123,6 +125,7 @@ const Vaccine = () => {
       }
     } catch (error) {
       toast.error("Error while deleting vaccine");
+      console.error(error); // Log the error for debugging
     }
   };
 
