@@ -10,11 +10,9 @@ const app = express();
 // import swaggerDocument from './swagger.json' assert { type: "json" };
 
 const PORT = 3004;
-// Configuración de CORS
-const allowedOrigins = ['http://54.167.144.194'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
 
 const corsOptions = {
-  origin: allowedOrigins,
+  origin: ['http://34.227.117.50', 'http://54.167.144.194'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type'],
   credentials: true,
