@@ -54,7 +54,7 @@ const Vaccine = () => {
   // Insertar vacuna
   const insertar = async () => {
     try {
-      await axios.post("http://100.24.31.209:3002/api/vaccines", form, { withCredentials: true });
+      await axios.post("http://100.24.31.209:3001/api/createVaccines", form, { withCredentials: true });
       obtenerVacunas();
       cerrarModalInsertar();
       toast.success("Vacuna insertada correctamente");
@@ -66,7 +66,7 @@ const Vaccine = () => {
   // Editar vacuna
   const editar = async () => {
     try {
-      await axios.put(`http://100.24.31.209:3002/api/vaccines/${form.id_vaccine}`, form, { withCredentials: true });
+      await axios.put(`http://100.24.31.209:3004/api/updateVaccines/${form.id_vaccine}`, form, { withCredentials: true });
       obtenerVacunas();
       cerrarModalActualizar();
       toast.success("Vacuna actualizada correctamente");
@@ -78,7 +78,7 @@ const Vaccine = () => {
   // Eliminar vacuna
   const eliminar = async (id) => {
     try {
-      await axios.delete(`http://100.24.31.209:3002/api/vaccines/${id}`, { withCredentials: true });
+      await axios.delete(`http://100.24.31.209:3003/api/vaccines/${id}`, { withCredentials: true });
       obtenerVacunas();
       toast.success("Vacuna eliminada correctamente");
     } catch (error) {
