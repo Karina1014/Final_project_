@@ -1,9 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import vaccineRoute from './routes/vaccineRouter.js';
+import { connectDB } from './config/postgredb.js';
 
 const app = express();
 const PORT = 3002;
+
+connectDB();
 
 // Configuración de CORS
 const corsOptions = {

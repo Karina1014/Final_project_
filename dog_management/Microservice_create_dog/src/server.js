@@ -3,7 +3,7 @@ import cors from "cors";
 import { connectDB } from './config/mysqldb.js';
 import 'dotenv/config';
 import dogRouter from "./routes/dogRouter.js";
-import cors from "cors";
+
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: "json" };
 
