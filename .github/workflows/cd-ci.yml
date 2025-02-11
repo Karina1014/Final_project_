@@ -141,5 +141,3 @@ jobs:
 
             # Verificar que los contenedores están corriendo
             sudo docker ps -a
-
-  

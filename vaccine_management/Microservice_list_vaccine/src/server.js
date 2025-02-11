@@ -8,7 +8,7 @@ const PORT = 3002;
 
 connectDB();
 // Configuración de CORS
-const allowedOrigins = ['http://52.91.76.250']; 
+const allowedOrigins = ['http://54.165.181.30']; 
 // Configuración de CORS
 const corsOptions = {
   origin: allowedOrigins,

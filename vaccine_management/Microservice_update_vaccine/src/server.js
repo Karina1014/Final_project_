@@ -12,7 +12,7 @@ const app = express();
 const PORT = 3004;
 connectDB();
 const corsOptions = {
-  origin: ['http://34.227.117.50'],  // El origen de tu frontend
+  origin: ['http://54.165.181.30'],  // El origen de tu frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type'],
   // No es necesario credentials: true si no usas cookies o autenticación

@@ -13,7 +13,7 @@ const PORT = 3001;
 connectDB();
 
 // Configuración de CORS
-const allowedOrigins = ['http://34.227.117.50'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
+const allowedOrigins = ['http://54.165.181.30'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
 
 const corsOptions = {
   origin: allowedOrigins,
