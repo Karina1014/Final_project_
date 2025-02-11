@@ -21,7 +21,7 @@ const Vaccine = () => {
 
   const obtenerVacunas = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/vaccines`, {
+      const response = await axios.get(`${backendUrl}:3002/api/vaccines`, {
         withCredentials: true,  // Aquí está el objeto de configuración correcto
       });
       setData(response.data); // Set the fetched data to state
@@ -77,7 +77,7 @@ const Vaccine = () => {
   // Insert a new vaccine into the database
   const insertar = async () => {
     try {
-      await axios.post(`${backendUrl}/api/createVaccines`, form,{
+      await axios.post(`${backendUrl}:3001/api/createVaccines`, form,{
         withCredentials: true,  // Aquí está el objeto de configuración correcto
       });
       obtenerVacunas(); // Refresh the vaccine list
@@ -91,7 +91,7 @@ const Vaccine = () => {
   // Edit an existing vaccine
   const editar = async () => {
     try {
-      const response = await axios.put(`${backendUrl}/api/updateVaccines`, form,
+      const response = await axios.put(`${backendUrl}:3004/api/updateVaccines`, form,
         {
           withCredentials: true,  // Aquí está el objeto de configuración correcto
         });
@@ -111,7 +111,7 @@ const Vaccine = () => {
   // Delete a vaccine
   const eliminar = async (id_vaccine) => {
     try {
-      const response = await axios.delete(`${backendUrl}/api/deleteVaccine/${id_vaccine}`,
+      const response = await axios.delete(`${backendUrl}:3003/api/deleteVaccine/${id_vaccine}`,
       {
         withCredentials: true,  // Aquí está el objeto de configuración correcto
       });
