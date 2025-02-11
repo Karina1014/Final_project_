@@ -20,7 +20,7 @@ const Vaccine = () => {
 // Obtener las vacunas
 const obtenerVacunas = async () => {
   try {
-    const response = await axios.get("http://52.91.76.250:3002/api/vaccines", {
+    const response = await axios.get("http://54.167.144.194:3002/api/vaccines", {
       withCredentials: true, // Permite enviar cookies si el backend lo requiere
     });
 
@@ -85,7 +85,7 @@ const obtenerVacunas = async () => {
   // Insertar una nueva vacuna
   const insertar = async () => {
     try {
-      await axios.post("http://52.91.76.250:3002/api/vaccines", form);
+      await axios.post("http://54.167.144.194:3001/api/createVaccines", form);
       obtenerVacunas();
       setModalInsertar(false);
       toast.success("Vacuna insertada correctamente");
@@ -97,7 +97,7 @@ const obtenerVacunas = async () => {
   // Editar una vacuna
   const editar = async () => {
     try {
-      await axios.put(`http://52.91.76.250:3002/api/vaccines/${form.id_vaccine}`, form);
+      await axios.put(`http://54.167.144.194:3002/api/vaccines/${form.id_vaccine}`, form);
       toast.success("Vacuna actualizada");
       obtenerVacunas();
       setModalActualizar(false);
@@ -109,7 +109,7 @@ const obtenerVacunas = async () => {
   // Eliminar una vacuna
   const eliminar = async (id) => {
     try {
-      await axios.delete(`http://52.91.76.250:3002/api/vaccines/${id}`);
+      await axios.delete(`http://54.167.144.194:3002/api/vaccines/${id}`);
       toast.success("Vacuna eliminada");
       obtenerVacunas();
     } catch (error) {
