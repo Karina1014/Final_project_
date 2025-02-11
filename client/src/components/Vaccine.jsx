@@ -17,17 +17,20 @@ const Vaccine = () => {
     dose: "", // Dose of the vaccine
   });
 
-  const backendUrl =' http://54.167.144.194'
-  // Fetch vaccines from the backend
+  const backendUrl = 'http://54.167.144.194';
+
   const obtenerVacunas = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/vaccines`);
+      const response = await axios.get(`${backendUrl}/api/vaccines`, {
+        withCredentials: true,  // Aquí está el objeto de configuración correcto
+      });
       setData(response.data); // Set the fetched data to state
     } catch (error) {
       toast.error("Error while fetching vaccines");
       console.error(error); // Log the error for debugging
     }
   };
+  
   
   
 
@@ -74,7 +77,9 @@ const Vaccine = () => {
   // Insert a new vaccine into the database
   const insertar = async () => {
     try {
-      await axios.post(`${backendUrl}/api/createVaccines`, form);
+      await axios.post(`${backendUrl}/api/createVaccines`, form,{
+        withCredentials: true,  // Aquí está el objeto de configuración correcto
+      });
       obtenerVacunas(); // Refresh the vaccine list
       setModalInsertar(false); // Close the insert modal
       toast.success("Vaccine inserted successfully");
@@ -86,7 +91,10 @@ const Vaccine = () => {
   // Edit an existing vaccine
   const editar = async () => {
     try {
-      const response = await axios.put(`${backendUrl}/api/updateVaccines`, form);
+      const response = await axios.put(`${backendUrl}/api/updateVaccines`, form,
+        {
+          withCredentials: true,  // Aquí está el objeto de configuración correcto
+        });
       if (response.data) {
         toast.success("Vaccine updated successfully");
         obtenerVacunas(); // Refresh the vaccine list
@@ -103,7 +111,10 @@ const Vaccine = () => {
   // Delete a vaccine
   const eliminar = async (id_vaccine) => {
     try {
-      const response = await axios.delete(`${backendUrl}/api/deleteVaccine/${id_vaccine}`);
+      const response = await axios.delete(`${backendUrl}/api/deleteVaccine/${id_vaccine}`,
+      {
+        withCredentials: true,  // Aquí está el objeto de configuración correcto
+      });
       if (response.data) {
         toast.success("Vaccine deleted successfully");
         obtenerVacunas(); // Refresh the vaccine list
