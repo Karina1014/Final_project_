@@ -25,12 +25,22 @@ const obtenerVacunas = async () => {
     });
 
     console.log(response.data); // Verifica los datos en la consola
-    setData(response.data); // Guarda los datos en el estado
-  } catch (error) {
-    toast.error("Error while fetching vaccines");
-    console.error(error); // Log the error for debugging
-  }
-};
+      setData(response.data); // Guarda los datos en el estado
+      const vaccinesData = response.data; // Asigna los datos recibidos a una variable
+  
+      // Si necesitas extraer valores específicos (como ID, nombre, descripción, etc.), puedes hacerlo aquí
+      vaccinesData.forEach(vaccine => {
+        const { id_vaccine, name, description, dose } = vaccine;
+        console.log(id_vaccine, name, description, dose); // Para verificar los datos
+      });
+  
+      setData(vaccinesData); // Establece los datos de las vacunas en el estado
+      setData(response.data); // Save the data in the state
+    } catch (error) {
+      toast.error("Error while fetching vaccines");
+      console.error(error); // Log the error for debugging
+    }
+  };
 
   useEffect(() => {
     obtenerVacunas();
