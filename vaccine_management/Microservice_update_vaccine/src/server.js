@@ -1,7 +1,7 @@
 import express from 'express';
 import vaccineUpdateRoute from './routes/vaccineRouter.js';
 import dotenv from 'dotenv';
-dotenv.config(); 
+import { connectDB } from './config/postgredb.js';
 import cors from "cors";
 
 const app = express();
@@ -10,7 +10,7 @@ const app = express();
 // import swaggerDocument from './swagger.json' assert { type: "json" };
 
 const PORT = 3004;
-
+connectDB();
 const corsOptions = {
   origin: ['http://34.227.117.50'],  // El origen de tu frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'],

@@ -1,12 +1,16 @@
 import express from 'express';
 import vaccineRoute from './routes/vaccineRouter.js';
 import cors from "cors";
+import { connectDB } from './config/postgredb.js';
+
 const app = express();
 
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: "json" };
 
 const PORT = 3001;
+
+connectDB();
 
 // Configuración de CORS
 const allowedOrigins = ['http://34.227.117.50'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
