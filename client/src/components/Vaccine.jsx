@@ -16,17 +16,16 @@ const Vaccine = () => {
     description: "", // Vaccine description
     dose: "", // Dose of the vaccine
   });
-  // const backendUrl = import.meta.env.VITE_API_URL;
+  
 
   // Fetch vaccines from the backend
   const obtenerVacunas = async () => {
     try {
-      const response =await axios.get('http://3.88.173.233:3002/api/vaccines', {
+      const response = await axios.get('http://54.161.148.130:3002/api/vaccines', {
         withCredentials: true
-      });
-      
-      console.log(response.data); // Verifica los datos en la consola
-      setData(response.data); // Guarda los datos en el estado
+      })
+      .then(response => console.log(response.data))
+      .catch(error => console.error(error));
       const vaccinesData = response.data; // Asigna los datos recibidos a una variable
   
       // Si necesitas extraer valores específicos (como ID, nombre, descripción, etc.), puedes hacerlo aquí
@@ -42,9 +41,6 @@ const Vaccine = () => {
     }
   };
   
-  
-  
-
   useEffect(() => {
     obtenerVacunas(); // Fetch vaccines when the component mounts
   }, []);
@@ -85,46 +81,39 @@ const Vaccine = () => {
     setModalActualizar(false);
   };
 
-// Insert a new vaccine into the database
-const insertar = async () => {
-  try {
-    await axios.post('http://3.88.173.233:3001/api/createVaccines', form, {
-      withCredentials: true
-    });
-    obtenerVacunas(); // Refresh the vaccine list
-    setModalInsertar(false);
-    toast.success("Vaccine inserted successfully");
-  } catch (error) {
-    toast.error("Error while inserting vaccine");
-    console.error(error); 
-  }
-};
+  // Insert a new vaccine into the database
+  const insertar = async () => {
+    try {
+      await axios.post("http://localhost:3001/api/createVaccines", form);
+      obtenerVacunas(); // Refresh the vaccine list
+      setModalInsertar(false); // Close the insert modal
+      toast.success("Vaccine inserted successfully");
+    } catch (error) {
+      toast.error("Error while inserting vaccine");
+    }
+  };
 
   // Edit an existing vaccine
   const editar = async () => {
     try {
-      const response = await axios.put(`http://3.88.173.233:3004/api/updateVaccines/${form.id_vaccine}`, form, {
-        withCredentials: true
-      });
-  
+      const response = await axios.put(`http://localhost:3004/api/updateVaccines`, form);
       if (response.data) {
         toast.success("Vaccine updated successfully");
         obtenerVacunas(); // Refresh the vaccine list
-        setModalActualizar(false);
+        setModalActualizar(false); // Close the update modal
       } else {
         toast.error("Error while updating vaccine");
       }
     } catch (error) {
       toast.error("Error while updating vaccine");
-      console.error(error); // Log para depuración
+      console.error(error); // Log the error for debugging
     }
   };
-  
 
   // Delete a vaccine
   const eliminar = async (id_vaccine) => {
     try {
-      const response = await axios.delete(`http://3.88.173.233:3003/api/deleteVaccine/${id_vaccine}`);
+      const response = await axios.delete(`http://localhost:3003/api/deleteVaccine/${id_vaccine}`);
       if (response.data) {
         toast.success("Vaccine deleted successfully");
         obtenerVacunas(); // Refresh the vaccine list
