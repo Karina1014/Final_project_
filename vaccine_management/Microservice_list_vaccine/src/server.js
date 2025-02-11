@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import vaccineRouter from "./routes/vaccineRouter.js";
+import morgan from 'morgan'
 
 const app = express();
 const PORT = 3002;
@@ -14,6 +15,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(morgan('dev'))
 app.use(express.json());
 app.use(cookieParser()); // Middleware para manejar cookies
 
