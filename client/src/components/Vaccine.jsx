@@ -14,13 +14,23 @@ const Vaccine = () => {
       const response = await axios.get("http://3.82.128.130:3002/api/vaccines", {
         withCredentials: true,
       });
-      setData(response.data); // Guardar los datos en el estado
-      console.log(response.data); // Verifica los datos en la consola
-    } catch (error) {
-      toast.error("Error al obtener las vacunas");
-      console.error("Error fetching vaccines:", error);
-    }
-  };
+     setData(response.data); // Save the data in the state
+           console.log(response.data); // Verifica los datos en la consola
+           setData(response.data); // Guarda los datos en el estado
+           const vaccinesData = response.data; // Asigna los datos recibidos a una variable
+       
+           // Si necesitas extraer valores específicos (como ID, nombre, descripción, etc.), puedes hacerlo aquí
+           vaccinesData.forEach(vaccine => {
+             const { id_vaccine, name, description, dose } = vaccine;
+             console.log(id_vaccine, name, description, dose); // Para verificar los datos
+           });
+       
+           setData(vaccinesData); // Establece los datos de las vacunas en el estado
+         } catch (error) {
+           toast.error("Error while fetching vaccines");
+         }
+       };
+       
 
   // Llamar a la función obtenerVacunas cuando el componente se monta
   useEffect(() => {
