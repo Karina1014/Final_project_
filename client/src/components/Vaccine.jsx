@@ -11,7 +11,7 @@ const Vaccine = () => {
   const [modalInsert, setModalInsert] = useState(false); // State to control the insert modal
   const [modalUpdate, setModalUpdate] = useState(false); // State to control the update modal
   const [form, setForm] = useState({
-    id: "", // Vaccine ID (used for editing and deleting)
+    id_vaccine: "", // Vaccine ID (used for editing and deleting)
     name: "", // Vaccine name
     description: "", // Vaccine description
     dose: "", // Dose of the vaccine
@@ -48,7 +48,7 @@ const Vaccine = () => {
   // Show the modal for inserting a new vaccine
   const showInsertModal = () => {
     setForm({
-      id: "",
+      id_vaccine: "",
       name: "",
       description: "",
       dose: "",
@@ -90,11 +90,9 @@ const Vaccine = () => {
   // Edit an existing vaccine
   const update = async () => {
     try {
-      const response = await axios.put('http://3.88.173.233:3004/api/updateVaccines', 
-        JSON.stringify(form), {
-        headers: { 'Content-Type': 'application/json' },
+      const response = await axios.put('http://3.88.173.233:3004/api/updateVaccines', form, {
         withCredentials: true
-    });
+      });
 
       if (response.data) {
         toast.success("Vaccine updated successfully");
@@ -110,9 +108,9 @@ const Vaccine = () => {
   };
 
   // Delete a vaccine
-  const deleteVaccine = async (id) => {
+  const deleteVaccine = async (id_vaccine) => {
     try {
-      const response = await axios.delete(`http://3.88.173.233:3003/api/deleteVaccine/${id}`, {
+      const response = await axios.delete(`http://3.88.173.233:3003/api/deleteVaccine/${id_vaccine}`, {
         withCredentials: true
       });
       if (response.data) {
@@ -143,8 +141,8 @@ const Vaccine = () => {
           </thead>
           <tbody>
             {data.map((vaccine) => (
-              <tr key={vaccine.id}>
-                <td>{vaccine.id}</td> {/* Display vaccine ID */}
+              <tr key={vaccine.id_vaccine}>
+                <td>{vaccine.id_vaccine}</td> {/* Display vaccine ID */}
                 <td>{vaccine.name}</td> {/* Display vaccine name */}
                 <td>{vaccine.description}</td> {/* Display vaccine description */}
                 <td>{vaccine.dose}</td> {/* Display vaccine dose */}
@@ -189,10 +187,6 @@ const Vaccine = () => {
       <Modal isOpen={modalUpdate}>
         <ModalHeader>Update Vaccine</ModalHeader>
         <ModalBody>
-        <FormGroup>
-            <label>ID</label>
-            <Input type="text" name="ID" value={form.id} readOnly />        
-              </FormGroup>
           <FormGroup>
             <label>Name</label>
             <Input type="text" name="name" value={form.name} onChange={handleChange} />
