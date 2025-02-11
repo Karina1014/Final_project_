@@ -25,22 +25,12 @@ const obtenerVacunas = async () => {
     });
 
     console.log(response.data); // Verifica los datos en la consola
-      setData(response.data); // Guarda los datos en el estado
-      const vaccinesData = response.data; // Asigna los datos recibidos a una variable
-  
-      // Si necesitas extraer valores específicos (como ID, nombre, descripción, etc.), puedes hacerlo aquí
-      vaccinesData.forEach(vaccine => {
-        const { id_vaccine, name, description, dose } = vaccine;
-        console.log(id_vaccine, name, description, dose); // Para verificar los datos
-      });
-  
-      setData(vaccinesData); // Establece los datos de las vacunas en el estado
-      setData(response.data); // Save the data in the state
-    } catch (error) {
-      toast.error("Error while fetching vaccines");
-      console.error(error); // Log the error for debugging
-    }
-  };
+    setData(response.data); // Guarda los datos en el estado
+  } catch (error) {
+    toast.error("Error while fetching vaccines");
+    console.error(error); // Log the error for debugging
+  }
+};
 
   useEffect(() => {
     obtenerVacunas();
@@ -85,7 +75,7 @@ const obtenerVacunas = async () => {
   // Insertar una nueva vacuna
   const insertar = async () => {
     try {
-      await axios.post("http://54.167.144.194:3001/api/createVaccines", form);
+      await axios.post("http://52.91.76.250:3002/api/vaccines", form);
       obtenerVacunas();
       setModalInsertar(false);
       toast.success("Vacuna insertada correctamente");
@@ -97,7 +87,7 @@ const obtenerVacunas = async () => {
   // Editar una vacuna
   const editar = async () => {
     try {
-      await axios.put(`http://54.167.144.194:3002/api/vaccines/${form.id_vaccine}`, form);
+      await axios.put(`http://52.91.76.250:3002/api/vaccines/${form.id_vaccine}`, form);
       toast.success("Vacuna actualizada");
       obtenerVacunas();
       setModalActualizar(false);
@@ -109,7 +99,7 @@ const obtenerVacunas = async () => {
   // Eliminar una vacuna
   const eliminar = async (id) => {
     try {
-      await axios.delete(`http://54.167.144.194:3002/api/vaccines/${id}`);
+      await axios.delete(`http://52.91.76.250:3002/api/vaccines/${id}`);
       toast.success("Vacuna eliminada");
       obtenerVacunas();
     } catch (error) {
