@@ -2,20 +2,14 @@ import * as vaccineModel from '../models/vaccineModel.js';
 
 const updateVaccine = async (req, res) => {
   try {
-    const { id } = req.params;  // Tomar el id de la URL
-    const { name, description, dose } = req.body; // Los demás datos del cuerpo
+    const { id, name, description, dose } = req.body;
 
-    if (!id || isNaN(id) || !name || !description || !dose) {
-      return res.status(400).json({ message: 'All fields are required: id (in URL), name, description, dose' });
+    if (!id || !name || !description || !dose) {
+      return res.status(400).json({ message: 'All fields are required: id, name, description, dose' });
     }
 
     const updatedVaccine = await vaccineModel.updateVaccine(id, name, description, dose);
-    
-    if (!updatedVaccine) {
-      return res.status(404).json({ message: 'Vaccine not found' });
-    }
-
-    res.status(200).json({ message: 'Vaccine updated successfully', vaccine: updatedVaccine });
+    res.status(200).json(updatedVaccine);
   } catch (err) {
     console.error('Error updating vaccine', err);
     res.status(500).json({ message: 'Error updating vaccine' });

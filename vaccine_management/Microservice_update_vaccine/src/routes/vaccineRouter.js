@@ -1,8 +1,8 @@
 import express from 'express';
-import { updateVaccine } from '../controllers/updateVaccine.js';
+import * as vaccineController from '../controllers/vaccineController.js';
 
 const router = express.Router();
 
-router.put('/updateVaccine/:id', updateVaccine);
+router.put('/updateVaccines', vaccineController.updateVaccine);  
 
 export default router;
