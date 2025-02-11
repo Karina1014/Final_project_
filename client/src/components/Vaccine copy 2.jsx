@@ -3,6 +3,7 @@ import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, I
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const Vaccine = () => {
   const [data, setData] = useState([]);
@@ -12,23 +13,25 @@ const Vaccine = () => {
   const [selectedVaccine, setSelectedVaccine] = useState(null);
 
   useEffect(() => {
-    fetchVaccines();
-  }, []);
+    fetchActiveVaccines();
+}, []);
 
-  const fetchVaccines = async () => {
+const fetchActiveVaccines = async () => {
     try {
-      const response = await fetch('http://54.167.144.194:3002/api/vaccines');
-      const result = await response.json();
-      setData(result);
+        const response = await axios.get('http://54.167.144.194:3002/api/vaccines');
+        const activeVaccines = response.data.filter(vaccine => 
+            vaccine.status === "active" && vaccine.available_doses > 0
+        );
+        setData(activeVaccines);
     } catch (error) {
-      toast.error('Error fetching vaccines');
-      console.error(error);
+        toast.error('Error fetching active vaccines');
+        console.error(error);
     }
-  };
+};
 
-  const handleChange = (e) => {
+const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
+};
 
   const insertar = async () => {
     try {

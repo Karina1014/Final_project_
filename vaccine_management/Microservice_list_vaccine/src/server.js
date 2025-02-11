@@ -1,6 +1,6 @@
+// En el archivo de servidor de Express (por ejemplo, `server.js`)
 import express from 'express';
 import cors from 'cors';
-import vaccineRoute from './routes/vaccineRouter.js';
 import { connectDB } from './config/postgredb.js';
 
 const app = express();
@@ -8,24 +8,16 @@ const PORT = 3002;
 
 connectDB();
 // Configuración de CORS
-const allowedOrigins = ['http://54.165.181.30']; 
-// Configuración de CORS
+const allowedOrigins = ['http://44.201.85.67']; // Asegúrate de que este sea tu dominio o IP correcta
 const corsOptions = {
   origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type'],
-  credentials: true,
+  credentials: true,  // Permite enviar cookies de sesión (si es necesario)
 };
-// Aplica el middleware de CORS
-app.use(cors(corsOptions)); // Aplica CORS
 
-// Middleware para procesar JSON
-app.use(express.json());
+app.use(cors(corsOptions));
 
-// Rutas de la API
-app.use('/api', vaccineRoute);
-
-// Inicia el servidor
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
