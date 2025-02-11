@@ -26,17 +26,6 @@ const Vaccine = () => {
 
       console.log(response.data); // Verifica los datos en la consola
       setData(response.data); // Guarda los datos en el estado
-      const vaccinesData = response.data; // Asigna los datos recibidos a una variable
-  
-      // Si necesitas extraer valores específicos (como ID, nombre, descripción, etc.), puedes hacerlo aquí
-      vaccinesData.forEach(vaccine => {
-        const { id_vaccine, name, description, dose } = vaccine;
-        console.log(id_vaccine, name, description, dose); // Para verificar los datos
-      });
-  
-      setData(vaccinesData); // Establece los datos de las vacunas en el estado
-      console.log(response.data); // Check data in console
-      setData(response.data); // Save data in state
     } catch (error) {
       toast.error("Error while fetching vaccines");
       console.error(error); // Log the error for debugging
@@ -56,73 +45,66 @@ const Vaccine = () => {
     });
   };
 
+  // Show the modal for inserting a new vaccine
   const mostrarModalInsertar = () => {
-      setForm({
-        id_vaccine: "",
-        name: "",
-        description: "",
-        dose: "",
-      });
-      setModalInsertar(true); // Open the insert modal
-    };
-
-   // Close the insert modal
-   const cerrarModalInsertar = () => {
-    setModalInsertar(false);
-   }
- 
-   // Close the update modal
-   const cerrarModalActualizar = () => {
-    setModalActualizar(false);
-  
-  
-  // Close the update modal
-  const closeUpdateModal = () => {
-    setModalUpdate(false);
+    setForm({
+      id_vaccine: "",
+      name: "",
+      description: "",
+      dose: "",
+    });
+    setModalInsertar(true); // Open the insert modal
   };
 
-  // Insert a new vaccine into the database
+  // Close the insert modal
+  const cerrarModalInsertar = () => {
+    setModalInsertar(false);
+  };
+
+  // Show the modal for updating an existing vaccine
+  const mostrarModalActualizar = (vaccine) => {
+    setForm(vaccine); // Set the form with the vaccine data to be updated
+    setModalActualizar(true); // Open the update modal
+  };
+
+  // Close the update modal
+  const cerrarModalActualizar = () => {
+    setModalActualizar(false);
+  };
+
   // Insert a new vaccine into the database
   const insertar = async () => {
     try {
-      // Realiza la solicitud POST para insertar la nueva vacuna
       await axios.post('http://54.167.144.194:3001/api/createVaccines', form, {
         withCredentials: true
       });
-      // Después de insertar la vacuna, obtenemos la lista actualizada de vacunas
       obtenerVacunas(); // Refresh the vaccine list
-      // Cierra el modal de inserción
-      setModalInsertar(false);
-      // Muestra un mensaje de éxito
+      setModalInsertar(false); // Close the insert modal
       toast.success("Vaccine inserted successfully");
     } catch (error) {
-      // Si ocurre un error, mostramos un mensaje de error
       toast.error("Error while inserting vaccine");
-      console.error(error); // Log para depuración
+      console.error(error); // Log the error for debugging
     }
   };
 
-
+  // Edit an existing vaccine
   const editar = async () => {
-      try {
-        const response = await axios.put('http://54.161.148.130:3004/api/updateVaccines', form, {
-          withCredentials: true
-        });
-        if (response.data) {
-          toast.success("Vaccine updated successfully");
-          obtenerVacunas(); // Refresh the vaccine list
-          setModalActualizar(false); // Close the update modal
-          fetchVaccines(); // Refresh the vaccine list
-          setModalUpdate(false);
-        } else {
-          toast.error("Error while updating vaccine");
-        }
-      } catch (error) {
+    try {
+      const response = await axios.put('http://54.167.144.194:3004/api/updateVaccines', form, {
+        withCredentials: true
+      });
+      if (response.data) {
+        toast.success("Vaccine updated successfully");
+        obtenerVacunas(); // Refresh the vaccine list
+        setModalActualizar(false); // Close the update modal
+      } else {
         toast.error("Error while updating vaccine");
-        console.error(error); // Log the error for debugging
-        console.error(error); // Log for debugging
       }
-    };
+    } catch (error) {
+      toast.error("Error while updating vaccine");
+      console.error(error); // Log the error for debugging
+    }
+  };
 
   // Delete a vaccine
   const deleteVaccine = async (id_vaccine) => {
@@ -132,19 +114,19 @@ const Vaccine = () => {
       });
       if (response.data) {
         toast.success("Vaccine deleted successfully");
-        fetchVaccines(); // Refresh the vaccine list
+        obtenerVacunas(); // Refresh the vaccine list
       } else {
         toast.error("Error while deleting vaccine");
       }
     } catch (error) {
       toast.error("Error while deleting vaccine");
-      console.error(error); // Log for debugging
+      console.error(error); // Log the error for debugging
     }
   };
 
   return (
     <>
-<Button color="success" onClick={mostrarModalInsertar}>Insert New Vaccine</Button>
+      <Button color="success" onClick={mostrarModalInsertar}>Insert New Vaccine</Button>
       <div className="mt-4">
         <Table>
           <thead>
@@ -164,7 +146,7 @@ const Vaccine = () => {
                 <td>{vaccine.description}</td> {/* Display vaccine description */}
                 <td>{vaccine.dose}</td> {/* Display vaccine dose */}
                 <td>
-                  <Button color="primary" onClick={() => showUpdateModal(vaccine)}>
+                  <Button color="primary" onClick={() => mostrarModalActualizar(vaccine)}>
                     <FaEdit /> {/* Icon to edit vaccine */}
                   </Button>
                   <Button color="danger" className="ml-2" onClick={() => deleteVaccine(vaccine.id_vaccine)}>
@@ -195,8 +177,8 @@ const Vaccine = () => {
           </FormGroup>
         </ModalBody>
         <ModalFooter>
-        <Button color="primary" onClick={insertar}>Insert</Button>
-        <Button color="secondary" onClick={cerrarModalInsertar}>Cancel</Button>
+          <Button color="primary" onClick={insertar}>Insert</Button>
+          <Button color="secondary" onClick={cerrarModalInsertar}>Cancel</Button>
         </ModalFooter>
       </Modal>
 
@@ -218,8 +200,8 @@ const Vaccine = () => {
           </FormGroup>
         </ModalBody>
         <ModalFooter>
-        <Button color="primary" onClick={editar}>Update</Button>
-        <Button color="secondary" onClick={cerrarModalActualizar}>Cancel</Button>
+          <Button color="primary" onClick={editar}>Update</Button>
+          <Button color="secondary" onClick={cerrarModalActualizar}>Cancel</Button>
         </ModalFooter>
       </Modal>
 
