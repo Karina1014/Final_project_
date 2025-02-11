@@ -6,13 +6,13 @@ const app = express();
 const PORT = 3002;
 
 // Configuración de CORS
-const allowedOrigins = ['http://34.227.117.50'];  // IP o URL del frontend (asegúrate de que sea correcto)
+const allowedOrigins = ['http://34.227.117.50'];  // Asegúrate de agregar todas las IPs necesarias para tu frontend
 
 const corsOptions = {
-  origin: allowedOrigins, // Permitir solo tu frontend
+  origin: allowedOrigins,  // Permitir sólo las URLs del frontend específicas
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,  // Permitir el manejo de credenciales
+  credentials: true,  // Permite el manejo de credenciales (cookies, sesiones, etc.)
 };
 
 app.use(cors(corsOptions));  // Aplica CORS a todas las rutas
@@ -21,9 +21,12 @@ app.use(cors(corsOptions));  // Aplica CORS a todas las rutas
 app.use(express.json());
 
 // Rutas de la API
-app.use('/api', vaccineRoute);  // Asegúrate de que '/api/vaccines' esté correctamente configurado
+app.use('/api', vaccineRoute);  // Asegúrate de que '/api/vaccines' esté bien configurado en tu enrutador
 
-// Inicia el servidor
+// Manejo de solicitudes OPTIONS
+app.options('*', cors(corsOptions));  // Permite el manejo de las solicitudes preflight OPTIONS (esto es importante para las solicitudes con credenciales)
+
+// Verifica que el servidor esté corriendo
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });
