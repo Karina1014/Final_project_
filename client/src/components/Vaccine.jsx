@@ -11,7 +11,7 @@ const Vaccine = () => {
   const [modalInsertar, setModalInsertar] = useState(false); // State to control the insert modal
   const [modalActualizar, setModalActualizar] = useState(false); // State to control the update modal
   const [form, setForm] = useState({
-    id: "", // Vaccine ID (used for editing and deleting)
+    id_vaccine: "", // Vaccine ID (used for editing and deleting)
     name: "", // Vaccine name
     description: "", // Vaccine description
     dose: "", // Dose of the vaccine
@@ -101,30 +101,30 @@ const insertar = async () => {
 };
 
   // Edit an existing vaccine
-const editar = async () => {
-  try {
-    const response = await axios.put('http://3.88.173.233:3004/api/updateVaccines', form, {
-      withCredentials: true
-    });
-
-    if (response.data) {
-      toast.success("Vaccine updated successfully");
-      obtenerVacunas(); // Refresh the vaccine list
-      setModalActualizar(false);
-    } else {
+  const editar = async () => {
+    try {
+      const response = await axios.put(`http://3.88.173.233:3004/api/updateVaccines/${form.id_vaccine}`, form, {
+        withCredentials: true
+      });
+  
+      if (response.data) {
+        toast.success("Vaccine updated successfully");
+        obtenerVacunas(); // Refresh the vaccine list
+        setModalActualizar(false);
+      } else {
+        toast.error("Error while updating vaccine");
+      }
+    } catch (error) {
       toast.error("Error while updating vaccine");
+      console.error(error); // Log para depuración
     }
-  } catch (error) {
-    toast.error("Error while updating vaccine");
-    console.error(error); // Log para depuración
-  }
-};
-
+  };
+  
 
   // Delete a vaccine
-  const eliminar = async (id) => {
+  const eliminar = async (id_vaccine) => {
     try {
-      const response = await axios.delete(`http://3.88.173.233:3003/api/deleteVaccine/${id}`);
+      const response = await axios.delete(`http://3.88.173.233:3003/api/deleteVaccine/${id_vaccine}`);
       if (response.data) {
         toast.success("Vaccine deleted successfully");
         obtenerVacunas(); // Refresh the vaccine list
