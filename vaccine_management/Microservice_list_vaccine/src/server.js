@@ -17,7 +17,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(morgan('dev'))
 app.use(express.json());
-app.use(cookieParser()); // Middleware para manejar cookies
+app.use(cookieParser()); // Middleware para manejar cookies-prove
 
 // Rutas de vacunas
 app.use("/api", vaccineRouter);
