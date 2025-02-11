@@ -26,6 +26,7 @@ const Vaccine = () => {
 
       console.log(response.data); // Verifica los datos en la consola
       setData(response.data); // Guarda los datos en el estado
+      fetchVaccines(); // Refresh the vaccine list
     } catch (error) {
       toast.error("Error while fetching vaccines");
       console.error(error); // Log the error for debugging

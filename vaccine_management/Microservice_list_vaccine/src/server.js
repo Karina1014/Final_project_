@@ -12,12 +12,12 @@ const allowedOrigins = ['http://18.212.65.16'];  // Tu IP del frontend (debería
 const corsOptions = {
   origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],  // Asegúrate de incluir Authorization si es necesario
+  allowedHeaders: ['Content-Type'],
   credentials: true,
 };
 
-app.use(cors(corsOptions));  // Aplica CORS
-app.options('*', cors(corsOptions));
+app.use(cors(corsOptions)); // Aplica CORS
+
 // Middleware para procesar JSON
 app.use(express.json());
 
