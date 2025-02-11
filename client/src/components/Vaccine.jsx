@@ -22,7 +22,7 @@ const Vaccine = () => {
   const obtenerVacunas = async () => {
     try {
       const response = await axios.get(`${backendUrl}:3002/api/vaccines`, {
-        withCredentials: true,  // Aquí está el objeto de configuración correcto
+        withCredentials: false,  // Aquí está el objeto de configuración correcto
       });
       console.log(response.data); // Verifica los datos en la consola
       setData(response.data); // Guarda los datos en el estado
@@ -79,7 +79,7 @@ const Vaccine = () => {
   const insertar = async () => {
     try {
       await axios.post(`${backendUrl}:3001/api/createVaccines`, form,{
-        withCredentials: true,  // Aquí está el objeto de configuración correcto
+        withCredentials: false,  // Aquí está el objeto de configuración correcto
       });
       obtenerVacunas(); // Refresh the vaccine list
       setModalInsertar(false); // Close the insert modal
@@ -95,7 +95,7 @@ const Vaccine = () => {
     try {
       const response = await axios.put(`${backendUrl}:3004/api/updateVaccines`, form,
         {
-          withCredentials: true,  // Aquí está el objeto de configuración correcto
+          withCredentials: false,  // Aquí está el objeto de configuración correcto
         });
       if (response.data) {
         toast.success("Vaccine updated successfully");
@@ -115,7 +115,7 @@ const Vaccine = () => {
     try {
       const response = await axios.delete(`${backendUrl}:3003/api/deleteVaccine/${id_vaccine}`,
       {
-        withCredentials: true,  // Aquí está el objeto de configuración correcto
+        withCredentials: false,  // Aquí está el objeto de configuración correcto
       });
       if (response.data) {
         toast.success("Vaccine deleted successfully");

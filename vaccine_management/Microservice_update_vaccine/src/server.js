@@ -12,11 +12,13 @@ const app = express();
 const PORT = 3004;
 
 const corsOptions = {
-  origin: ['http://34.227.117.50', 'http://54.167.144.194'],
+  origin: ['http://34.227.117.50'],  // El origen de tu frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type'],
-  credentials: true,
+  // No es necesario credentials: true si no usas cookies o autenticación
 };
+
+app.use(cors(corsOptions)); // Aplica CORS sin credenciales
 
 app.use(cors(corsOptions)); // Aplica CORS
 
