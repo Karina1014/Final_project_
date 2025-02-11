@@ -11,7 +11,7 @@ const Vaccine = () => {
   // Función para obtener las vacunas desde la API
   const obtenerVacunas = async () => {
     try {
-      const response = await axios.get("http://3.92.226.8:3002/api/vaccines", {
+      const response = await axios.get("http://100.24.31.209:3002/api/vaccines", {
         withCredentials: true, // Permite credenciales (cookies, sesiones, etc.)
       });
 
