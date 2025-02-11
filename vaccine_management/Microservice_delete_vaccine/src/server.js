@@ -2,28 +2,24 @@ import express from 'express';
 import cors from 'cors';
 import vaccineRouter from './routes/vaccineRouter.js';
 import cors from "cors";
-import { connectDB } from './config/postgredb.js';
-
-const app = express();
-
+import morgan from 'morgan'
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: "json" };
-
+const app = express();
 const PORT = 3003;
-connectDB();
-// Configuración de CORS
-const allowedOrigins = ['http://54.165.181.30'];  // Tu IP del frontend (debería ser un origen completo, incluyendo el protocolo HTTP)
 
 const corsOptions = {
-  origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
-  credentials: true,
+  origin: "http://52.87.162.206", // Permitir peticiones solo desde el frontend
+  credentials: true, // **IMPORTANTE** Permitir envío de cookies
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
 };
 
-app.use(cors(corsOptions)); // Aplica CORS
+app.use(cors(corsOptions));
+app.use(morgan('dev'))
+app.use(express.json());
+app.use(cookieParser()); // Middleware para manejar cookies-prove
 
-app.use(cors());
 app.use(express.json());
 
 // app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

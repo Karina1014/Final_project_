@@ -19,6 +19,7 @@ app.use(morgan('dev'))
 app.use(express.json());
 app.use(cookieParser()); // Middleware para manejar cookies-prove
 
+app.use(express.json());
 // Rutas de vacunas
 app.use("/api", vaccineRouter);
 
