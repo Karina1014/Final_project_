@@ -20,7 +20,7 @@ const Vaccine = () => {
   // Fetch vaccines from the backend
   const fetchVaccines = async () => {
     try {
-      const response = await axios.get('http://3.88.173.233:3002/api/vaccines', {
+      const response = await axios.get('http://54.167.144.194:3002/api/vaccines', {
         withCredentials: true
       });
 
