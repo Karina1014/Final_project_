@@ -12,7 +12,7 @@ const allowedOrigins = ['http://34.227.117.50'];  // Tu IP del frontend (deberí
 const corsOptions = {
   origin: allowedOrigins,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
