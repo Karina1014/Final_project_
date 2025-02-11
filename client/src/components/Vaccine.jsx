@@ -17,20 +17,21 @@ const Vaccine = () => {
     dose: "", // Dose of the vaccine
   });
 
-  const backendUrl = 'http://54.167.144.194';
+  const backendUrl = 'http://54.167.144.194';  // Asegúrate de que la IP del backend es correcta
 
   const obtenerVacunas = async () => {
     try {
       const response = await axios.get(`${backendUrl}:3002/api/vaccines`, {
-        withCredentials: false,  // Aquí está el objeto de configuración correcto
+        withCredentials: true,  // Si necesitas enviar cookies o sesiones
       });
-      console.log(response.data); // Verifica los datos en la consola
+      console.log(response.data);
       setData(response.data); // Guarda los datos en el estado
     } catch (error) {
       toast.error("Error while fetching vaccines");
       console.error(error); // Log the error for debugging
     }
   };
+  
   
   
   
@@ -79,7 +80,7 @@ const Vaccine = () => {
   const insertar = async () => {
     try {
       await axios.post(`${backendUrl}:3001/api/createVaccines`, form,{
-        withCredentials: false,  // Aquí está el objeto de configuración correcto
+        withCredentials: true,  // Aquí está el objeto de configuración correcto
       });
       obtenerVacunas(); // Refresh the vaccine list
       setModalInsertar(false); // Close the insert modal
@@ -95,7 +96,7 @@ const Vaccine = () => {
     try {
       const response = await axios.put(`${backendUrl}:3004/api/updateVaccines`, form,
         {
-          withCredentials: false,  // Aquí está el objeto de configuración correcto
+          withCredentials: true,  // Aquí está el objeto de configuración correcto
         });
       if (response.data) {
         toast.success("Vaccine updated successfully");
@@ -115,7 +116,7 @@ const Vaccine = () => {
     try {
       const response = await axios.delete(`${backendUrl}:3003/api/deleteVaccine/${id_vaccine}`,
       {
-        withCredentials: false,  // Aquí está el objeto de configuración correcto
+        withCredentials: true,  // Aquí está el objeto de configuración correcto
       });
       if (response.data) {
         toast.success("Vaccine deleted successfully");
