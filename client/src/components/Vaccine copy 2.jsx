@@ -63,10 +63,10 @@ const Vaccine = () => {
       toast.error("Error al insertar la vacuna");
     }
   };
-  
+  // Editar vacuna
   const editar = async () => {
     try {
-      await axios.put("http://54.211.138.107:3004/api/updateVaccines", form, { withCredentials: true });
+      await axios.put(`http://54.211.138.107/api/updateVaccines/${form.id_vaccine}`, form, { withCredentials: true });
       obtenerVacunas();
       cerrarModalActualizar();
       toast.success("Vacuna actualizada correctamente");
@@ -145,31 +145,27 @@ const Vaccine = () => {
       </Modal>
 
       {/* Modal de Actualización */}
-    <Modal isOpen={modalActualizar}>
-      <ModalHeader>Actualizar Vacuna</ModalHeader>
-      <ModalBody>
-        <FormGroup>
-          <label>ID</label>
-          <Input type="text" name="id_vaccine" value={form.id_vaccine || ""} readOnly />
-        </FormGroup>
-        <FormGroup>
-          <label>Nombre</label>
-          <Input type="text" name="name" value={form.name || ""} onChange={handleChange} />
-        </FormGroup>
-        <FormGroup>
-          <label>Descripción</label>
-          <Input type="text" name="description" value={form.description || ""} onChange={handleChange} />
-        </FormGroup>
-        <FormGroup>
-          <label>Dosis</label>
-          <Input type="number" name="dose" value={form.dose || ""} onChange={handleChange} />
-        </FormGroup>
-      </ModalBody>
-      <ModalFooter>
-        <Button color="primary" onClick={editar}>Actualizar</Button>
-        <Button color="secondary" onClick={cerrarModalActualizar}>Cancelar</Button>
-      </ModalFooter>
-    </Modal>
+      <Modal isOpen={modalActualizar}>
+        <ModalHeader>Actualizar Vacuna</ModalHeader>
+        <ModalBody>
+          <FormGroup>
+            <label>Nombre</label>
+            <Input type="text" name="name" value={form.name} onChange={handleChange} />
+          </FormGroup>
+          <FormGroup>
+            <label>Descripción</label>
+            <Input type="text" name="description" value={form.description} onChange={handleChange} />
+          </FormGroup>
+          <FormGroup>
+            <label>Dosis</label>
+            <Input type="number" name="dose" value={form.dose} onChange={handleChange} />
+          </FormGroup>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={editar}>Actualizar</Button>
+          <Button color="secondary" onClick={cerrarModalActualizar}>Cancelar</Button>
+        </ModalFooter>
+      </Modal>
 
       <ToastContainer />
     </>
