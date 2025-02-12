@@ -170,7 +170,7 @@ const eliminar = async (id_vaccine) => {
           </FormGroup>
           <FormGroup>
             <label>Dosis</label>
-            <Input type="number" name="dose" value={form.dose} onChange={handleChange} />
+            <Input type="text" name="dose" value={form.dose} onChange={handleChange} />
           </FormGroup>
         </ModalBody>
         <ModalFooter>
@@ -197,7 +197,7 @@ const eliminar = async (id_vaccine) => {
         </FormGroup>
         <FormGroup>
           <label>Dosis</label>
-          <Input type="number" name="dose" value={form.dose || ""} onChange={handleChange} />
+          <Input type="text" name="dose" value={form.dose || ""} onChange={handleChange} />
         </FormGroup>
       </ModalBody>
       <ModalFooter>
