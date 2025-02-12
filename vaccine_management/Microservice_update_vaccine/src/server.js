@@ -8,7 +8,6 @@ import morgan from 'morgan'
 const app = express();
 const PORT = 3004;
 
-
 const corsOptions = {
   origin: "http://3.93.147.1", // Permitir peticiones solo desde el frontend
   credentials: true, // **IMPORTANTE** Permitir envío de cookies
