@@ -91,16 +91,34 @@ const Vaccine = () => {
   }
 };
 
-  // Eliminar vacuna
+// Eliminar vacuna
 const eliminar = async (id_vaccine) => {
   try {
-    await axios.delete(`http://54.211.138.107:3003/api/deleteVaccine/${id_vaccine}`, { withCredentials: true });
-    obtenerVacunas();
-    toast.success("Vacuna eliminada correctamente");
+    // Realizamos la solicitud de eliminación
+    const response = await axios.delete(`http://54.211.138.107:3003/api/deleteVaccine/${id_vaccine}`, { withCredentials: true });
+
+    // Verificamos si la respuesta tiene un mensaje de éxito
+    if (response.status === 200) {
+      obtenerVacunas(); // Recargar las vacunas después de eliminar
+      toast.success("Vacuna eliminada correctamente");
+    } else {
+      toast.error("No se pudo eliminar la vacuna");
+    }
   } catch (error) {
-    toast.error("Error al eliminar la vacuna");
+    // Manejo de errores con más detalles
+    if (error.response) {
+      // El error tiene una respuesta del servidor
+      toast.error(`Error al eliminar la vacuna: ${error.response.data.message || 'Error desconocido'}`);
+    } else if (error.request) {
+      // El error ocurrió al hacer la solicitud, pero no recibimos respuesta
+      toast.error("No se recibió respuesta del servidor");
+    } else {
+      // Error al configurar la solicitud
+      toast.error(`Error al realizar la solicitud: ${error.message}`);
+    }
   }
 };
+
 
 
   return (
