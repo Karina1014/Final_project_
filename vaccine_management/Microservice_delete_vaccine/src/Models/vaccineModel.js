@@ -2,12 +2,12 @@ import { connectDB } from '../config/postgredb.js';
 
 const deleteVaccine = async (id) => {
     try {
-        if (!id || isNaN(id)) {
+        if (!id_vaccine || isNaN(id)) {
             throw new Error('Invalid ID provided');
         }
         const result = await connectDB.query(
             'DELETE FROM vaccine WHERE id_vaccine = $1 RETURNING *',
-            [id] 
+            [id_vaccine] 
         );
         if (result.rows.length === 0) {
             return null; 

@@ -92,15 +92,16 @@ const Vaccine = () => {
 };
 
   // Eliminar vacuna
-  const eliminar = async (id) => {
-    try {
-      await axios.delete(`http://54.211.138.107:3003/api/deleteVaccine/${id}`, { withCredentials: true });
-      obtenerVacunas();
-      toast.success("Vacuna eliminada correctamente");
-    } catch (error) {
-      toast.error("Error al eliminar la vacuna");
-    }
-  };
+const eliminar = async (id_vaccine) => {
+  try {
+    await axios.delete(`http://54.211.138.107:3003/api/deleteVaccine/${id_vaccine}`, { withCredentials: true });
+    obtenerVacunas();
+    toast.success("Vacuna eliminada correctamente");
+  } catch (error) {
+    toast.error("Error al eliminar la vacuna");
+  }
+};
+
 
   return (
     <>
