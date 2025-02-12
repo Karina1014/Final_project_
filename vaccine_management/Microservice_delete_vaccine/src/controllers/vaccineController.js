@@ -18,4 +18,3 @@ const deleteVaccine = async (req, res) => {
 };
 
 export { deleteVaccine };
-

@@ -6,4 +6,3 @@ const router = express.Router();
 router.delete('/deleteVaccine/:id', vaccineController.deleteVaccine);
 
 export default router;
-

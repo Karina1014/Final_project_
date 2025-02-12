@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar';
-import Conquistador from '../components/Conquistador'; // Para la tabla de Conquistadores
-import Header from '../components/Header';
+import Vaccine from '../components/Vaccine'; 
+import HeaderAdmin from '../components/HeaderAdmin';
 import NavbarAdmin from '../components/NavbarAdmin';
-import ConquistadorScore from '../components/ConquistadorScore';
-import Ranking from '../components/Ranking';
+import Dog from '../components/Dog'; 
 
 const Admin = () => {
   const [selectedMenu, setSelectedMenu] = useState('Inicio'); // Estado para controlar el menú seleccionado
@@ -26,19 +25,17 @@ const Admin = () => {
         <div className="flex-1 p-6 bg-gray-100">
           {selectedMenu === 'Inicio' && (
             <div>
-              <Header />
+              <HeaderAdmin />
             </div>
           )}
 
-          {selectedMenu === 'Conquistadores' && (
-            <Conquistador />  
+          {selectedMenu === 'Vaccine' && (
+            <Vaccine />  
           )}
-          {selectedMenu === 'ConquistadorScore' && (
-            <ConquistadorScore />  
+          {selectedMenu === 'Dog' && (
+            <Dog />  
           )}
-          {selectedMenu === 'Ranking' && (
-            <Ranking />  
-          )}
+          
         </div>
       </div>
     </div>

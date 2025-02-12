@@ -26,9 +26,6 @@ package-lock.json
 /public/uploads
 .byebug_history
 
-# Archivos de Docker (si no los usas en producción)
-.dockerignore
-Dockerfile
 
 # Archivos de configuración de IDEs (VSCode, JetBrains)
 .vscode/
@@ -38,14 +35,7 @@ Dockerfile
 
 # Archivos innecesarios de Git
 *.orig
-/storage/
-/vendor/
-/log/
-/tmp/
 /.github/
 /public/assets/
-/lib/
 /public/packs/
-.rubocop.yml
 /test/
-/public/

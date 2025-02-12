@@ -16,9 +16,8 @@ const deleteVaccine = async (id) => {
         return result.rows[0]; 
     } catch (error) {
         throw new Error(`Error deleting vaccine: ${error.message}`);
+
     }
 };
 
 export { deleteVaccine };
-
-

@@ -1,29 +1,25 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from "cookie-parser";
 import vaccineRouter from './routes/vaccineRouter.js';
-import cors from "cors";
-const app = express();
-
+import morgan from 'morgan'
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: "json" };
-
+const app = express();
 const PORT = 3003;
 
-const allowedOrigins = ['http://localhost:5173'];  
+const corsOptions = {
+  origin: "http://3.93.147.1", // Permitir peticiones solo desde el frontend
+  credentials: true, // **IMPORTANTE** Permitir envío de cookies
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
+};
+
+app.use(cors(corsOptions));
+app.use(morgan('dev'))
 app.use(express.json());
-app.use(cors({ origin: allowedOrigins, credentials: true })); 
+app.use(cookieParser()); // Middleware para manejar cookies-prove
 
-
-// Configuration cors - Middleware
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', ['*']); 
-//   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE'); 
-//   res.header('Access-Control-Allow-Headers', 'Content-Type'); 
-//   next();
-// });
-
-
-app.use(cors());
 app.use(express.json());
 
 // app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
