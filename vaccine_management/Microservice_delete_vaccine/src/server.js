@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from "cookie-parser";
 import vaccineRouter from './routes/vaccineRouter.js';
 import morgan from 'morgan'
 // import swaggerUi from 'swagger-ui-express';
