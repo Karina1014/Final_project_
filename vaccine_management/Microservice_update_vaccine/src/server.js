@@ -9,7 +9,7 @@ const app = express();
 const PORT = 3004;
 
 const corsOptions = {
-  origin: "http://3.93.147.1", // Permitir peticiones solo desde el frontend
+  origin: "http://100.24.35.210", // Permitir peticiones solo desde el frontend
   credentials: true, // **IMPORTANTE** Permitir envío de cookies
   methods: "GET,POST,PUT,DELETE",
   allowedHeaders: "Content-Type,Authorization",
