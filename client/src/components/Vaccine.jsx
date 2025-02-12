@@ -94,7 +94,7 @@ const Vaccine = () => {
   // Eliminar vacuna
   const eliminar = async (id) => {
     try {
-      await axios.delete(`http://54.211.138.107:3003/api/vaccines/${id}`, { withCredentials: true });
+      await axios.delete(`http://54.211.138.107:3003/api/deleteVaccine/${id}`, { withCredentials: true });
       obtenerVacunas();
       toast.success("Vacuna eliminada correctamente");
     } catch (error) {

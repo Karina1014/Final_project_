@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import vaccineRouter from './routes/vaccineRouter.js';
-import cors from "cors";
 import morgan from 'morgan'
 // import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: "json" };
