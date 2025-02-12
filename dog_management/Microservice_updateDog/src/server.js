@@ -1,23 +1,30 @@
 import express from "express";
 import cors from "cors";
-import { connectDB } from './config/mysqldb.js';
-import 'dotenv/config';
+import cookieParser from "cookie-parser";
 import dogRouter from "./routes/dogRouter.js";
-
-import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './swagger.json' assert { type: "json" };
+import morgan from 'morgan'
+// import swaggerUi from 'swagger-ui-express';
+// import swaggerDocument from './swagger.json' assert { type: "json" };
 
 const app = express();
 const PORT = 4003;
 
-// Middleware
-app.use(express.json());
-app.use(cors());
+const corsOptions = {
+  origin: "http://100.24.35.210", // Permitir peticiones solo desde el frontend
+  credentials: true, // **IMPORTANTE** Permitir envío de cookies
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
+};
 
-connectDB();
+app.use(cors(corsOptions));
+app.use(morgan('dev'))
+app.use(express.json());
+app.use(cookieParser()); // Middleware para manejar cookies-prove
+
+app.use(express.json());
 
 // Routes
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/dog", dogRouter);
 
 app.get("/", (req, res) => {
