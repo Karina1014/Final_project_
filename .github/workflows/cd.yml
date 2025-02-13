@@ -71,77 +71,69 @@ jobs:
             sudo docker ps -a
 
   deploy-dog-management:
-    runs-on: ubuntu-latest
     needs: build-and-push
+    runs-on: ubuntu-latest
 
     steps:
-      - name: SSH into EC2 (Dog Management Server) and deploy Docker containers
+      - name: SSH into EC2 and deploy Docker containers
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_SERVER_DOG }}
           username: ubuntu
           key: ${{ secrets.DOG_SERVER_KEY }}
           script: |
-            # Asegurarse de que Docker esté instalado
+            # Verificar si Docker está instalado, si no, instalarlo
             if ! command -v docker &> /dev/null; then
               echo "Docker no está instalado. Instalando..."
               sudo apt update && sudo apt install -y docker.io
             fi
+
+            # Hacer que Docker se inicie automáticamente
             sudo systemctl enable --now docker
 
-            # Detener y eliminar los contenedores existentes de los microservicios
-            echo "Deteniendo y eliminando contenedores existentes..."
-            for service in create list remove update; do
-              sudo docker stop microservice_${service}_dog || true
-              sudo docker rm microservice_${service}_dog || true
-            done
-
-            # Eliminar imágenes existentes
-            echo "Eliminando imágenes existentes..."
-            for service in create list remove update; do
-              sudo docker rmi -f ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest || true
-            done
-
-            # Descargar las últimas imágenes
+            # Descargar las últimas imágenes desde Docker Hub
             echo "Descargando imágenes..."
-            for service in create list remove update; do
-              sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest
-            done
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_create_dog:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_updateDog:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_list_dog:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_remove_dog:latest
 
-            # Crear el archivo .env con las variables de entorno necesarias
-            echo "DB_NAME=${{ secrets.DB_NAME }}" > src/.env
-            echo "DB_USER=${{ secrets.DB_USER }}" >> src/.env
-            echo "DB_PASS=${{ secrets.DB_PASS }}" >> src/.env
-            echo "DB_HOST=${{ secrets.DB_HOST }}" >> src/.env
+            # Verificar si las imágenes fueron descargadas correctamente
+            sudo docker images
+
+            # Detener y eliminar los contenedores existentes por nombre
+            sudo docker stop microservice_create_dog || true
+            sudo docker rm microservice_create_dog || true
+            sudo docker stop microservice_updateDog || true
+            sudo docker rm microservice_updateDog || true
+            sudo docker stop microservice_list_dog || true
+            sudo docker rm microservice_list_dog || true
+            sudo docker stop microservice_remove_dog || true
+            sudo docker rm microservice_remove_dog || true
+
+            # Verificar las variables de entorno antes de generar el archivo
+            echo "Base de datos: $REACT_APP_RDS_HOST"
+
+            # Crear el archivo .env dentro de la carpeta src
+            mkdir -p src
+            echo "REACT_APP_RDS_HOST=${{ secrets.REACT_APP_RDS_HOST }}" >> src/.env
+            echo "REACT_APP_RDS_PORT=${{ secrets.REACT_APP_RDS_PORT }}" >> src/.env
+            echo "REACT_APP_RDS_DATABASE=${{ secrets.REACT_APP_RDS_DATABASE }}" >> src/.env
+            echo "REACT_APP_RDS_USER=${{ secrets.REACT_APP_RDS_USER }}" >> src/.env
+            echo "REACT_APP_RDS_PASSWORD=${{ secrets.REACT_APP_RDS_PASSWORD }}" >> src/.env
+
+            # Verificar que el archivo .env se ha creado correctamente
             cat src/.env
 
-            # Ejecutar los microservicios con sus respectivos puertos
-            for service in create list remove update; do
-              echo "Ejecutando microservice_${service}_dog..."
+            # Ejecutar los contenedores Docker con el archivo .env dentro de src
+            echo "Ejecutando microservice_create_dog..."
+            sudo docker run -d --name microservice_create_dog --env-file src/.env -p 4000:4000 ${{ secrets.DOCKER_USERNAME }}/microservice_create_dog:latest
+            echo "Ejecutando microservice_updateDog..."
+            sudo docker run -d --name microservice_updateDog --env-file src/.env -p 4003:4003 ${{ secrets.DOCKER_USERNAME }}/microservice_updateDog:latest
+            echo "Ejecutando microservice_list_dog..."
+            sudo docker run -d --name microservice_list_dog --env-file src/.env -p 4001:4001 ${{ secrets.DOCKER_USERNAME }}/microservice_list_dog:latest
+            echo "Ejecutando microservice_remove_dog..."
+            sudo docker run -d --name microservice_remove_dog --env-file src/.env -p 4002:4002 ${{ secrets.DOCKER_USERNAME }}/microservice_remove_dog:latest
 
-              # Asignación de puertos específica para cada servicio
-              case $service in
-                create)
-                  port="4000:4000"
-                  ;;
-                list)
-                  port="4001:4001"
-                  ;;
-                remove)
-                  port="4002:4002"
-                  ;;
-                update)
-                  port="4003:4003"
-                  ;;
-                *)
-                  echo "Servicio no reconocido: ${service}"
-                  continue
-                  ;;
-              esac
-
-              # Ejecutar el contenedor
-              sudo docker run -d --name microservice_${service}_dog --env-file src/.env -p $port ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest
-            done
-
-            # Verificar que los contenedores estén corriendo
+            # Verificar que los contenedores están corriendo
             sudo docker ps -a
