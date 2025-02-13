@@ -4,17 +4,24 @@ import connectDB from "./config/mongodb.js";
 import authRouter from "./routes/authRoutes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import morgan from 'morgan'
 
 const app = express();
 const port = 3011;
-// Conecta de todas las maneras
 
-const allowedOrigins = ['http://localhost:5173'];  // Si estás trabajando localmente con Vite
+connectDB()
+
+const corsOptions = {
+  origin: "http://54.147.184.127", // Permitir peticiones solo desde el frontend
+  credentials: true, // **IMPORTANTE** Permitir envío de cookies
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
+};
+
+app.use(cors(corsOptions));
+app.use(morgan('dev'))
 app.use(express.json());
-app.use(cookieParser());
-app.use(cors({ origin: allowedOrigins, credentials: true })); // Permitir cualquier origen
-
-connectDB();
+app.use(cookieParser()); // Middleware para manejar cookies-prove
 
 app.use(express.json());
 

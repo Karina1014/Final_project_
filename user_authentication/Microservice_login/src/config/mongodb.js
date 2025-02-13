@@ -1,22 +1,18 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://3.84.3.175:27017/mern_auth", {
+    await mongoose.connect(process.env.MONGO_URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-
-    console.log("✅ Database Connected Successfully");
-
-    // Evento para cuando la conexión se pierde y se reconecta automáticamente
-    mongoose.connection.on("disconnected", () => {
-      console.log("⚠️ Database Disconnected. Retrying...");
-    });
-
+    console.log("Conexión exitosa a MongoDB");
   } catch (error) {
-    console.error("❌ Database Connection Failed:", error);
-    process.exit(1); // Detiene la aplicación si no puede conectarse a MongoDB
+    console.error("Error al conectar a MongoDB:", error);
+    process.exit(1); 
   }
 };
 

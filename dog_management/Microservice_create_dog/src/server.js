@@ -10,7 +10,7 @@ const app = express();
 const PORT = 4000;
 
 const corsOptions = {
-  origin: "http://54.147.184.127", // Permitir peticiones solo desde el frontend
+  origin: "http://localhost:5173", // Permitir peticiones solo desde el frontend
   credentials: true, // **IMPORTANTE** Permitir envío de cookies
   methods: "GET,POST,PUT,DELETE",
   allowedHeaders: "Content-Type,Authorization",
@@ -24,7 +24,7 @@ app.use(cookieParser()); // Middleware para manejar cookies-prove
 app.use(express.json());
 // Routes
 // app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use("/api/dog", dogRouter);
+app.use("/api/dogs", dogRouter);
 
 app.get("/", (req, res) => {
   res.send("API Working");
