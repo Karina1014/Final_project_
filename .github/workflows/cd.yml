@@ -33,9 +33,9 @@ jobs:
 
       - name: Build and Push Microservice isAuthentication
         run: |
-          echo "Building and pushing microservice_isAuthentication"
-          docker build -f user_authentication/Microservice_isAuthentication/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_isAuthentication:latest user_authentication/Microservice_isAuthentication
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_isAuthentication:latest
+         echo "Building and pushing microservice_isauthentication"
+         docker build -f user_authentication/Microservice_isAuthentication/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_isauthentication:latest user_authentication/Microservice_isAuthentication
+         docker push ${{ secrets.DOCKER_USERNAME }}/microservice_isauthentication:latest
 
       - name: Build and Push Microservice login
         run: |
