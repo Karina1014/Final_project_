@@ -1,157 +1,139 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Table, Modal, ModalHeader, ModalBody, ModalFooter, FormGroup, Input } from "reactstrap";
-import { FaEdit, FaTrashAlt } from 'react-icons/fa'; // Icons for edit and delete
-import { ToastContainer, toast } from 'react-toastify'; // Toastify for notifications
-import 'react-toastify/dist/ReactToastify.css'; // CSS for Toastify
+import React, { useState, useEffect } from 'react';
+import { FaPlus, FaEdit, FaTrashAlt } from 'react-icons/fa';
+import axios from 'axios';
+import { Button, Modal, Form, Table } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';  // Importamos toast
+import 'react-toastify/dist/ReactToastify.css';  // Estilos de Toastify
 
 const Dog = () => {
-  const [data, setData] = useState([]); // State to store vaccine data
-  const [modalInsert, setModalInsert] = useState(false); // State to control the insert modal
-  const [modalUpdate, setModalUpdate] = useState(false); // State to control the update modal
-  const [form, setForm] = useState({
-    id_vaccine: "", // Vaccine ID (used for editing and deleting)
-    name: "", // Vaccine name
-    description: "", // Vaccine description
-    dose: "", // Dose of the vaccine
+  const backendUrl = "http://localhost:4001";  // URL del backend
+  const [image, setImage] = useState(null);
+  const [data, setData] = useState({
+    nameDog: "",
+    breed: "",
+    age: "",
+    gener: "",
   });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [dogs, setDogs] = useState([]);
+  const [modalInsertar, setModalInsertar] = useState(false);
 
-  // Fetch vaccines from the backend
-  const fetchVaccines = async () => {
-    try {
-      const response = await axios.get('http://54.161.148.130:3002/api/vaccines', {
-        withCredentials: true
-      });
-
-      console.log(response.data); // Check data in console
-      setData(response.data); // Save data in state
-    } catch (error) {
-      toast.error("Error while fetching vaccines");
-      console.error(error); // Log the error for debugging
-    }
-  };
-
+  // Cargar la lista de perros al inicio
   useEffect(() => {
-    fetchVaccines(); // Fetch vaccines when the component mounts
+    axios.get(`${backendUrl}/api/dogs/list`)
+      .then(response => {
+        setDogs(response.data.dogs);  // Suponiendo que `response.data.dogs` contiene la lista de perros
+      })
+      .catch(error => console.error("Error fetching dogs:", error));
   }, []);
 
-  // Handle form input changes
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({
-      ...form,
-      [name]: value, // Update the form state with the new value
-    });
+  const onChangeHandler = (event) => {
+    const { name, value } = event.target;
+    setData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  // Show the modal for inserting a new vaccine
-  const showInsertModal = () => {
-    setForm({
-      id_vaccine: "",
-      name: "",
-      description: "",
-      dose: "",
-    });
-    setModalInsert(true); // Open the insert modal
-  };
+  const onSubmitHandler = async (event) => {
+    event.preventDefault();
 
-  // Close the insert modal
-  const closeInsertModal = () => {
-    setModalInsert(false);
-  };
+    if (!data.nameDog || !data.breed || !data.gener || !data.age || !image) {
+      setErrorMessage("Todos los campos son obligatorios, incluyendo la imagen.");
+      return;
+    }
 
-  // Show the modal for updating an existing vaccine
-  const showUpdateModal = (data) => {
-    setForm(data); // Set the form with the data to be updated
-    setModalUpdate(true); // Open the update modal
-  };
+    const formData = new FormData();
+    formData.append("nameDog", data.nameDog);
+    formData.append("breed", data.breed);
+    formData.append("gener", data.gener);
+    formData.append("age", Number(data.age));
+    formData.append("image", image);
 
-  // Close the update modal
-  const closeUpdateModal = () => {
-    setModalUpdate(false);
-  };
-
-  // Insert a new vaccine into the database
-  const insert = async () => {
     try {
-      await axios.post('http://54.161.148.130:3001/api/createVaccines', form, {
-        withCredentials: true
-      });
-      fetchVaccines(); // Refresh the vaccine list
-      setModalInsert(false);
-      toast.success("Vaccine inserted successfully");
+      const response = await axios.post(`http://localhost:4000/api/dogs/add`, formData);
+      if (response.data.success) {
+        setDogs([...dogs, response.data.dog]);  // Agregar el nuevo perro a la lista
+        setModalInsertar(false);
+        setErrorMessage("");
+        setData({ nameDog: "", breed: "", age: "", gener: "" });
+        setImage(null);
+        toast.success("Perro agregado correctamente");  // Mostrar mensaje de éxito
+      } else {
+        setErrorMessage("Hubo un error al agregar el perro.");
+        toast.error("Hubo un error al agregar el perro");  // Mostrar mensaje de error
+      }
     } catch (error) {
-      toast.error("Error while inserting vaccine");
-      console.error(error);
+      console.error("Error al enviar el formulario:", error);
+      setErrorMessage("Hubo un error al enviar el formulario.");
+      toast.error("Hubo un error al enviar el formulario");  // Mostrar mensaje de error
     }
   };
 
-  // Edit an existing vaccine
-  const update = async () => {
-    try {
-      const response = await axios.put('http://54.161.148.130:3004/api/updateVaccines', form, {
-        withCredentials: true
-      });
-
-      if (response.data) {
-        toast.success("Vaccine updated successfully");
-        fetchVaccines(); // Refresh the vaccine list
-        setModalUpdate(false);
-      } else {
-        toast.error("Error while updating vaccine");
-      }
-    } catch (error) {
-      toast.error("Error while updating vaccine");
-      console.error(error); // Log for debugging
-    }
+  const mostrarModalInsertar = () => {
+    setModalInsertar(true);
   };
 
-  // Delete a vaccine
-  const deleteVaccine = async (id_vaccine) => {
+  const cerrarModalInsertar = () => {
+    setModalInsertar(false);
+  };
+
+  const eliminar = async (id) => {
     try {
-      const response = await axios.delete(`http://54.161.148.130:3003/api/deleteVaccine/${id_vaccine}`, {
-        withCredentials: true
-      });
-      if (response.data) {
-        toast.success("Vaccine deleted successfully");
-        fetchVaccines(); // Refresh the vaccine list
+      // Realizamos la solicitud de eliminación
+      const response = await axios.delete(`http://localhost:4002/api/dogs/delete/${id}`);
+  
+      // Verificamos si la respuesta tiene un mensaje de éxito
+      if (response.data.success) {
+        setDogs(dogs.filter((dog) => dog.id !== id));  // Eliminar el perro de la lista
+        toast.success("Perro eliminado correctamente");  // Mostrar mensaje de éxito
       } else {
-        toast.error("Error while deleting vaccine");
+        toast.error("No se pudo eliminar el perro");  // Mostrar mensaje de error
       }
     } catch (error) {
-      toast.error("Error while deleting vaccine");
-      console.error(error); // Log for debugging
+      // Manejo de errores con más detalles
+      if (error.response) {
+        // El error tiene una respuesta del servidor
+        toast.error(`Error al eliminar el perro: ${error.response.data.message || 'Error desconocido'}`);
+      } else if (error.request) {
+        // El error ocurrió al hacer la solicitud, pero no recibimos respuesta
+        toast.error("No se recibió respuesta del servidor");
+      } else {
+        // Error al configurar la solicitud
+        toast.error(`Error al realizar la solicitud: ${error.message}`);
+      }
     }
   };
 
   return (
     <>
-      <Button color="success" onClick={showInsertModal}>Insert New Vaccine</Button>
+      <Button variant="success" onClick={mostrarModalInsertar}>
+        Insertar Nueva Mascota
+      </Button>
+
       <div className="mt-4">
-        <Table>
+        <Table striped>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Dose</th>
-              <th>Action</th>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Raza</th>
+              <th>Edad</th>
+              <th>Género</th>
+              <th>Acción</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((vaccine) => (
-              <tr key={vaccine.id_vaccine}>
-                <td>{vaccine.id_vaccine}</td> {/* Display vaccine ID */}
-                <td>{vaccine.name}</td> {/* Display vaccine name */}
-                <td>{vaccine.description}</td> {/* Display vaccine description */}
-                <td>{vaccine.dose}</td> {/* Display vaccine dose */}
+            {dogs.map((dog, index) => (
+              <tr key={dog.id}>
+                <td>{index + 1}</td>
+                <td>{dog.nameDog}</td>
+                <td>{dog.breed}</td>
+                <td>{dog.age}</td>
+                <td>{dog.gener}</td>
                 <td>
-                  <Button color="primary" onClick={() => showUpdateModal(vaccine)}>
-                    <FaEdit /> {/* Icon to edit vaccine */}
-                  </Button>
-                  <Button color="danger" className="ml-2" onClick={() => deleteVaccine(vaccine.id_vaccine)}>
-                    <FaTrashAlt /> {/* Icon to delete vaccine */}
+                  <Button variant="danger" onClick={() => eliminar(dog.id)}>
+                    <FaTrashAlt />
                   </Button>
                 </td>
               </tr>
@@ -160,53 +142,86 @@ const Dog = () => {
         </Table>
       </div>
 
-      {/* Insert Modal */}
-      <Modal isOpen={modalInsert}>
-        <ModalHeader>Insert Vaccine</ModalHeader>
-        <ModalBody>
-          <FormGroup>
-            <label>Name</label>
-            <Input type="text" name="name" value={form.name} onChange={handleChange} />
-          </FormGroup>
-          <FormGroup>
-            <label>Description</label>
-            <Input type="text" name="description" value={form.description} onChange={handleChange} />
-          </FormGroup>
-          <FormGroup>
-            <label>Dose</label>
-            <Input type="text" name="dose" value={form.dose} onChange={handleChange} />
-          </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={insert}>Insert</Button>
-          <Button color="secondary" onClick={closeInsertModal}>Cancel</Button>
-        </ModalFooter>
+      {/* Modal de Inserción */}
+      <Modal show={modalInsertar} onHide={cerrarModalInsertar}>
+        <Modal.Header closeButton>
+          <Modal.Title>Insertar Nueva Mascota</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={onSubmitHandler} encType="multipart/form-data">
+            <Form.Group controlId="formNameDog">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control
+                type="text"
+                name="nameDog"
+                value={data.nameDog}
+                onChange={onChangeHandler}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formBreed">
+              <Form.Label>Raza</Form.Label>
+              <Form.Control
+                type="text"
+                name="breed"
+                value={data.breed}
+                onChange={onChangeHandler}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formAge">
+              <Form.Label>Edad</Form.Label>
+              <Form.Control
+                type="number"
+                name="age"
+                value={data.age}
+                onChange={onChangeHandler}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group controlId="formGener">
+              <Form.Label>Género</Form.Label>
+              <Form.Control
+                as="select"
+                name="gener"
+                value={data.gener}
+                onChange={onChangeHandler}
+                required
+              >
+                <option value="Macho">Macho</option>
+                <option value="Hembra">Hembra</option>
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId="formImage">
+              <Form.Label>Subir Imagen</Form.Label>
+              <Form.Control
+                type="file"
+                onChange={(e) => setImage(e.target.files[0])}
+                required
+              />
+            </Form.Group>
+
+            {errorMessage && (
+              <div className="mt-2 text-danger">{errorMessage}</div>
+            )}
+
+            <Modal.Footer>
+              <Button variant="primary" type="submit">
+                Insertar
+              </Button>
+              <Button variant="secondary" onClick={cerrarModalInsertar}>
+                Cancelar
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Modal.Body>
       </Modal>
 
-      {/* Update Modal */}
-      <Modal isOpen={modalUpdate}>
-        <ModalHeader>Update Vaccine</ModalHeader>
-        <ModalBody>
-          <FormGroup>
-            <label>Name</label>
-            <Input type="text" name="name" value={form.name} onChange={handleChange} />
-          </FormGroup>
-          <FormGroup>
-            <label>Description</label>
-            <Input type="text" name="description" value={form.description} onChange={handleChange} />
-          </FormGroup>
-          <FormGroup>
-            <label>Dose</label>
-            <Input type="text" name="dose" value={form.dose} onChange={handleChange} />
-          </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={update}>Update</Button>
-          <Button color="secondary" onClick={closeUpdateModal}>Cancel</Button>
-        </ModalFooter>
-      </Modal>
-
-      {/* Toast Notifications */}
+      {/* ToastContainer donde se mostrarán las notificaciones */}
       <ToastContainer />
     </>
   );

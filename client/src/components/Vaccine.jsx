@@ -20,7 +20,7 @@ const Vaccine = () => {
   // Obtener vacunas
   const obtenerVacunas = async () => {
     try {
-      const response = await axios.get("http://54.211.138.107:3002/api/vaccines", { withCredentials: true });
+      const response = await axios.get("http://18.211.169.160:3002/api/vaccines", { withCredentials: true });
       setData(response.data);
     } catch (error) {
       toast.error("Error al obtener las vacunas");
@@ -55,7 +55,7 @@ const Vaccine = () => {
    // Insertar vacuna
    const insertar = async () => {
     try {
-      await axios.post("http://54.211.138.107:3001/api/createVaccines", form, { withCredentials: true });
+      await axios.post("http://18.211.169.160:3001/api/createVaccines", form, { withCredentials: true });
       obtenerVacunas();
       cerrarModalInsertar();
       toast.success("Vacuna insertada correctamente");
@@ -76,7 +76,7 @@ const Vaccine = () => {
     console.log("Enviando datos:", formData); // Verifica en la consola que los datos sean correctos
 
     const response = await axios.put(
-      "http://54.211.138.107:3004/api/updateVaccines", 
+      "http://18.211.169.160:3004/api/updateVaccines", 
       formData, 
       { headers: { "Content-Type": "application/json" }, withCredentials: true }
     );
@@ -95,7 +95,7 @@ const Vaccine = () => {
 const eliminar = async (id_vaccine) => {
   try {
     // Realizamos la solicitud de eliminación
-    const response = await axios.delete(`http://54.211.138.107:3003/api/deleteVaccine/${id_vaccine}`, { withCredentials: true });
+    const response = await axios.delete(`http://18.211.169.160:3003/api/deleteVaccine/${id_vaccine}`, { withCredentials: true });
 
     // Verificamos si la respuesta tiene un mensaje de éxito
     if (response.status === 200) {
@@ -170,7 +170,7 @@ const eliminar = async (id_vaccine) => {
           </FormGroup>
           <FormGroup>
             <label>Dosis</label>
-            <Input type="number" name="dose" value={form.dose} onChange={handleChange} />
+            <Input type="text" name="dose" value={form.dose} onChange={handleChange} />
           </FormGroup>
         </ModalBody>
         <ModalFooter>
@@ -197,7 +197,7 @@ const eliminar = async (id_vaccine) => {
         </FormGroup>
         <FormGroup>
           <label>Dosis</label>
-          <Input type="number" name="dose" value={form.dose || ""} onChange={handleChange} />
+          <Input type="text" name="dose" value={form.dose || ""} onChange={handleChange} />
         </FormGroup>
       </ModalBody>
       <ModalFooter>

@@ -5,18 +5,26 @@ import connectDB from "./config/mongodb.js"; // Asegúrate del nombre del archiv
 import authRouter from "./routes/authRoutes.js";
 import cors from "cors";
 import userRoutes from "./routes/userRoutes.js";
+import morgan from 'morgan'
 
 const app = express();
 const port = 3013;
 
 connectDB();
 
-const allowedOrigins = ['http://localhost:5173'];  
+const corsOptions = {
+  origin: "http://54.147.184.127", // Permitir peticiones solo desde el frontend
+  credentials: true, // **IMPORTANTE** Permitir envío de cookies
+  methods: "GET,POST,PUT,DELETE",
+  allowedHeaders: "Content-Type,Authorization",
+};
+
+app.use(cors(corsOptions));
+app.use(morgan('dev'))
 app.use(express.json());
-app.use(cookieParser());
-app.use(cors({ origin: allowedOrigins, credentials: true })); 
+app.use(cookieParser()); // Middleware para manejar cookies-prove
 
-
+app.use(express.json());
 app.get('/', (req, res) => res.send("API working"));
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRoutes);
