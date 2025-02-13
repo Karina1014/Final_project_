@@ -56,40 +56,40 @@ const NavbarAdmin = () => {
 
   return (
     <div className='max-padd-container flex justify-between items-center py-2 bg-gray-800 text-white'>
-      <img src={assets.conquistadores} alt="logo" className='w-8 sm:w-12' />
+    <img src={assets.conquistadores} alt="logo" className='w-8 sm:w-12' />
 
-      {userData ?
-        <div className='w-8 h-8 flex justify-center items-center rounded-full bg-black text-white relative group'>
-          {/* Mostrar la primera letra del nombre del usuario */}
-          {userData.name.charAt(0).toUpperCase()}
-          
-          {/* Menú desplegable al hacer hover */}
-          <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-10'>
-            <ul className='list-none m-0 p-2 bg-gray-100 text-sm'>
-              {/* Mostrar la opc.toUpp "Verify email" solo si el usuario tiene la cuenta verificada */}
-              {!userData.isAccountVerified && 
-                <li onClick={sendVerifiOTP}className='py-1 px-2 hover:bg-gray-200 cursor-pointer'>
-                  Verify email
-                </li>
-              }
-
-              {/* Opción para cerrar sesión */}
-              <li onClick={logout} className='py-1 px-2 hover:bg-gray-200 cursor-pointer'>
-                Logout
+    {userData ?
+      <div className='w-8 h-8 flex justify-center items-center rounded-full bg-black text-white relative group'>
+        {/* Mostrar la primera letra del nombre del usuario */}
+        {userData.name.charAt(0).toUpperCase()}
+        
+        {/* Menú desplegable al hacer hover */}
+        <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-10'>
+          <ul className='list-none m-0 p-2 bg-gray-100 text-sm'>
+            {/* Mostrar la opc.toUpp "Verify email" solo si el usuario tiene la cuenta verificada */}
+            {!userData.isAccountVerified && 
+              <li onClick={sendVerifiOTP}className='py-1 px-2 hover:bg-gray-200 cursor-pointer'>
+                Verify email
               </li>
-            </ul>
-          </div>
+            }
+
+            {/* Opción para cerrar sesión */}
+            <li onClick={logout} className='py-1 px-2 hover:bg-gray-200 cursor-pointer'>
+              Logout
+            </li>
+          </ul>
         </div>
-          : 
-        <button
-          onClick={() => navigate('/login')}
-          className='flex items-center gap-2 border border-gray-500 rounded-full px-6 py-2 text-gray-800 hover:bg-gray-100 transition-all'
-        >
-          Login
-          <img src={assets.arrow_icon} alt="Flecha" />
-        </button>
-      }
-    </div>
+      </div>
+        : 
+      <button
+        onClick={() => navigate('/login')}
+        className='flex items-center gap-2 border border-gray-500 rounded-full px-6 py-2 text-gray-800 hover:bg-gray-100 transition-all'
+      >
+        Login
+        <img src={assets.arrow_icon} alt="Flecha" />
+      </button>
+    }
+  </div>
   );
 };
 
