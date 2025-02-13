@@ -32,8 +32,8 @@ jobs:
         run: |
           for service in isAuthentication login logout sendVerifiOTP verifiEmail; do
             echo "Building and pushing microservice_${service}"
-            docker build -f dog_management/Microservice_${service}/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest dog_management/Microservice_${service}_dog
-            docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest
+            docker build -f dog_management/Microservice_${service}/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}:latest user_authentication/Microservice_${service}
+            docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}:latest
           done
 
   deploy-client:
