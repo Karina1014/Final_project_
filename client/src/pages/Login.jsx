@@ -5,6 +5,7 @@ import { AppContent } from '../context/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+
 export const Login = () => {
   const navigate = useNavigate();
   const { backendUrl, setIsLoggedin, getUserData } = useContext(AppContent);
@@ -14,13 +15,14 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onSubmitHandler = async (e) => {
+  const onSubitHandler = async (e) => {
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+
     axios.defaults.withCredentials = true;
 
     try {
-      // Registro (Sign Up)
       if (state === 'Sign Up') {
+        // Lógica para el registro
         const { data } = await axios.post(`${backendUrl}/api/auth/register`, {
           name,
           email,
@@ -30,13 +32,12 @@ export const Login = () => {
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
-          navigate('/'); // Redirige a la página principal después del registro
+          navigate('/');
         } else {
           toast.error(data.message);
         }
-      }
-      // Inicio de sesión (Login)
-      else if (state === 'Login') {
+      } else if (state === 'Login') {
+        // Lógica para el login
         const { data } = await axios.post(`http://52.72.179.181:6001/api/auth/login`, {
           email,
           password,
@@ -45,13 +46,13 @@ export const Login = () => {
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
-          navigate('/admin'); // Redirige a la página de administración después del login
+          navigate('/admin');
         } else {
           toast.error(data.message);
         }
       }
     } catch (error) {
-      toast.error(error.message || 'An error occurred. Please try again.');
+      toast.error(error.message);
     }
   };
 
@@ -70,7 +71,7 @@ export const Login = () => {
         <p className="mb-6">
           {state === 'Sign Up' ? 'Create your account' : 'Login to your account!'}
         </p>
-        <form onSubmit={onSubmitHandler}>
+        <form onSubmit={onSubitHandler}>
           {/* Campo Nombre solo en Sign Up */}
           {state === 'Sign Up' && (
             <div className="mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]">

@@ -5,39 +5,42 @@ import { toast } from 'react-toastify';
 export const AppContent = createContext();
 
 export const AppContextProvider = (props) => {
-
+  
   axios.defaults.withCredentials = true; // Asegurarse de que las cookies se envíen correctamente.
 
   const [isLoggedin, setIsLoggedin] = useState(false);
-  const [userData, setUserData] = useState(null); // Inicializar en null
+  const [userData, setUserData] = useState(false); // Inicializar en null
 
   // Verifica el estado de autenticación
   const getAuthState = async () => {
     try {
-      const { data } = await axios.get(`http://52.72.179.181:6005/api/auth/is-auth`, {
-        withCredentials: true // Asegura que las cookies se envíen
-      });
-      
+      const { data } = await axios.get(`http://52.72.179.181:6005/api/auth/is-auth`);
       if (data.success) {
         setIsLoggedin(true);
         getUserData();
-      } else {
-        setIsLoggedin(false); // Si no está autenticado, actualiza el estado
-      }
+      } 
     } catch (error) {
-      toast.error(error.message); // Mejor manejo de errores
+      toast.error( error.message); // Mejor manejo de errores
     }
   };
+
+  useEffect(() => {
+  const fetchAuthState = async () => {
+    try {
+      await getAuthState();
+    } catch (error) {
+      console.error('Error fetching auth state:', error);
+    }
+  };
+
+  fetchAuthState();
+}, []);
+
 
   // Obtener los datos del usuario
   const getUserData = async () => {
     try {
-      const { data } = await axios.get(`http://52.72.179.181:6005/api/user/data`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}` // Si tienes el token guardado en localStorage
-        }
-      });
-
+      const { data } = await axios.get(`http://52.72.179.181:6005/api/user/data`);
       if (data.success) {
         setUserData(data.userData);
       } else {
