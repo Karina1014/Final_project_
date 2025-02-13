@@ -46,7 +46,7 @@ export const Login = () => {
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
-          navigate('/');
+          navigate('/admin');
         } else {
           toast.error(data.message);
         }
