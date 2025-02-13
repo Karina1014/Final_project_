@@ -27,8 +27,10 @@ export const Login = () => {
           name,
           email,
           password,
+        }, {
+          withCredentials: true,  // Asegura que las cookies se envíen correctamente
         });
-
+    
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
@@ -41,8 +43,10 @@ export const Login = () => {
         const { data } = await axios.post(`http://52.72.179.181:6001/api/auth/login`, {
           email,
           password,
+        }, {
+          withCredentials: true,  // Asegura que las cookies se envíen correctamente
         });
-
+    
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
@@ -54,7 +58,7 @@ export const Login = () => {
     } catch (error) {
       toast.error(error.message);
     }
-  };
+    
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
