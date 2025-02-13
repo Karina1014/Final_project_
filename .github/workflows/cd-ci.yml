@@ -131,7 +131,7 @@ jobs:
             # Descargar la última imagen del cliente desde Docker Hub
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
-            # Detener cualquier contenedor que esté corriendo
+            # Detener cualquier contenedor que esté corriendos
             sudo docker ps -q | xargs sudo docker stop || true
             sudo docker ps -q | xargs sudo docker rm || true
 
