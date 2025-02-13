@@ -15,7 +15,7 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onSubitHandler = async (e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
     axios.defaults.withCredentials = true;
   
@@ -32,7 +32,11 @@ export const Login = () => {
           toast.error(data.message);
         }
       } else if (state === 'Login') {
-        const { data } = await axios.post(`http://52.72.179.181:6001/api/auth/login`, { email, password });
+        const { data } = await axios.post(
+          `http://52.72.179.181:6001/api/auth/login`, 
+          { email, password }, // 👈 Datos del usuario correctamente estructurados
+          { withCredentials: true } // 👈 Configuración para incluir cookies
+        );
   
         if (data.success) {
           localStorage.setItem("userData", JSON.stringify(data.user)); // Guardar usuario en localStorage
@@ -44,9 +48,10 @@ export const Login = () => {
         }
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     }
   };
+  
   
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">

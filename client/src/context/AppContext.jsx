@@ -13,7 +13,9 @@ export const AppContextProvider = (props) => {
   // Verifica el estado de autenticación
   const getAuthState = async () => {
     try {
-      const { data } = await axios.get('http://52.72.179.181:6005/api/auth/is-auth');
+      const { data } = await axios.get('http://52.72.179.181:6005/api/auth/is-auth', {
+        withCredentials: true, // 👈 Esto es clave
+      });
       if (data.success) {
         setIsLoggedin(true);
         getUserData();
@@ -27,7 +29,9 @@ export const AppContextProvider = (props) => {
   // Obtener los datos del usuario
   const getUserData = async () => {
     try {
-      const { data } = await axios.get('http://52.72.179.181:6005/api/user/data');
+      const { data } = await axios.get('http://52.72.179.181:6005/api/user/data', {
+        withCredentials: true, // 👈 Esto es clave
+      });
       if (data.success) {
         setUserData(data.userData);
       } else {
