@@ -67,7 +67,7 @@ const Vaccine = () => {
   const editar = async () => {
   try {
     const formData = {
-      id: form.id_vaccine, // Cambia id_vaccine a id, si el backend lo espera así
+      id: form.id, // Cambia id_vaccine a id, si el backend lo espera así
       name: form.name,
       description: form.description,
       dose: form.dose
