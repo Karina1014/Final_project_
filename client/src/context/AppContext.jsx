@@ -5,55 +5,50 @@ import { toast } from 'react-toastify';
 export const AppContent = createContext();
 
 export const AppContextProvider = (props) => {
-  
   axios.defaults.withCredentials = true; // Asegurarse de que las cookies se envíen correctamente.
 
   const [isLoggedin, setIsLoggedin] = useState(false);
-  const [userData, setUserData] = useState(false); // Inicializar en null
+  const [userData, setUserData] = useState(null); // Inicializar en null
 
   // Verifica el estado de autenticación
   const getAuthState = async () => {
     try {
-      const { data } = await axios.get(`http://52.72.179.181:6005/api/auth/is-auth`);
+      const { data } = await axios.get('http://52.72.179.181:6005/api/auth/is-auth');
       if (data.success) {
         setIsLoggedin(true);
         getUserData();
       } 
     } catch (error) {
-      toast.error( error.message); // Mejor manejo de errores
-    }
-  };
-
-  useEffect(() => {
-  const fetchAuthState = async () => {
-    try {
-      await getAuthState();
-    } catch (error) {
       console.error('Error fetching auth state:', error);
+      toast.error(error.message);
     }
   };
-
-  fetchAuthState();
-}, []);
-
 
   // Obtener los datos del usuario
   const getUserData = async () => {
     try {
-      const { data } = await axios.get(`http://52.72.179.181:6005/api/user/data`);
+      const { data } = await axios.get('http://52.72.179.181:6005/api/user/data');
       if (data.success) {
         setUserData(data.userData);
       } else {
         toast.error(data.message || 'Unable to fetch user data');
       }
     } catch (error) {
+      console.error('Error fetching user data:', error);
       toast.error(error.response?.data?.message || error.message);
     }
   };
 
-  // Llamar a getAuthState cuando el componente se monta
   useEffect(() => {
-    getAuthState();
+    const fetchAuthState = async () => {
+      try {
+        await getAuthState();
+      } catch (error) {
+        console.error('Error fetching auth state:', error);
+      }
+    };
+
+    fetchAuthState();
   }, []); // Solo se ejecutará al montar el componente
 
   const value = {

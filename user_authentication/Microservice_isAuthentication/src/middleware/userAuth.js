@@ -1,36 +1,24 @@
 import jwt from 'jsonwebtoken';
 
-const userAuth = async (req, res, next) => {
-  const token = req.cookies.token; // Obtenemos el token desde las cookies
-
+// Middleware para verificar el token
+const verifyToken = (req, res, next) => {
+  const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
   if (!token) {
-    // Si no hay token, el usuario no está autorizado
-    return res.status(401).json({
-      success: false,
-      message: 'Not Authorized. Login Again',
-    });
+    return res.status(401).json({ success: false, message: 'No token provided' });
   }
 
-  try {
-    // Verificamos el token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (decoded.id) {
-      // Si el token es válido, agregamos el userId a la solicitud
-      req.userId = decoded.id;
-      next(); // Continuamos con la ejecución del siguiente middleware o controlador
-    } else {
-      return res.status(401).json({
-        success: false,
-        message: 'Not Authorized. Login Again',
-      });
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(403).json({ success: false, message: 'Invalid token' });
     }
-  } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: 'Invalid token or expired.',
-    });
-  }
+    req.user = decoded; // Decodifica el token y agrega los datos del usuario
+    next();
+  });
 };
 
-export default userAuth;
+// Ruta protegida para obtener datos del usuario
+app.get('/api/user/data', verifyToken, (req, res) => {
+  // Suponiendo que la información del usuario está en req.user
+  const userData = getUserDataFromDB(req.user.id); // Suponiendo que tienes una función para esto
+  res.json({ success: true, userData });
+});
