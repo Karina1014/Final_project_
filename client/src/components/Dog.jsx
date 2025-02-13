@@ -10,7 +10,7 @@ const Dog = () => {
 
   const fetchDogs = async () => {
     try {
-      const response = await fetch("http://18.211.169.160:4001/api/dog/list");
+      const response = await fetch("http://34.225.2.117:4001/api/dog/list");
       const data = await response.json();
       setDogs(data);
     } catch (error) {
@@ -35,7 +35,7 @@ const Dog = () => {
     });
 
     try {
-      await fetch("http://18.211.169.160:4000/api/dog/add", {
+      await fetch("http://34.225.2.117:4000/api/dog/add", {
         method: "POST",
         body: formData,
       });

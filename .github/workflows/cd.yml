@@ -105,8 +105,31 @@ jobs:
             echo "DB_HOST=${{ secrets.DB_HOST }}" >> src/.env
             cat src/.env
 
-            for service in create update list remove details stats; do
-              echo "Ejecutando microservice_${service}_dog..."
-              sudo docker run -d --name microservice_${service}_dog --env-file src/.env -p 400${service:0:1}:400${service:0:1} ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest
+            for service in create list remove update; do
+            echo "Ejecutando microservice_${service}_dog..."
+            
+            # Asignación de puertos específica para cada servicio
+            case $service in
+              create)
+                port="4000:4000"
+                ;;
+              list)
+                port="4001:4001"
+                ;;
+              remove)
+                port="4002:4002"
+                ;;
+              update)
+                port="4003:4003"
+                ;;
+              *)
+                echo "Servicio no reconocido: ${service}"
+                continue
+                ;;
+            esac
+
+            sudo docker run -d --name microservice_${service}_dog --env-file src/.env -p $port ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest
             done
+
             sudo docker ps -a
+
