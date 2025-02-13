@@ -55,7 +55,7 @@ const Vaccine = () => {
    // Insertar vacuna
    const insertar = async () => {
     try {
-      await axios.post("http://18.211.169.1601:3001/api/createVaccines", form, { withCredentials: true });
+      await axios.post("http://18.211.169.160:3001/api/createVaccines", form, { withCredentials: true });
       obtenerVacunas();
       cerrarModalInsertar();
       toast.success("Vacuna insertada correctamente");
@@ -64,39 +64,32 @@ const Vaccine = () => {
     }
   };
   
-  // Editar vacuna
   const editar = async () => {
-    try {
-      const formData = {
-        id_vaccine: form.id_vaccine, // Asegúrate de usar id_vaccine, no id
-        name: form.name,
-        description: form.description,
-        dose: form.dose
-      };
+  try {
+    const formData = {
+      id: form.id_vaccine, // Cambia id_vaccine a id, si el backend lo espera así
+      name: form.name,
+      description: form.description,
+      dose: form.dose
+    };
 
-      // Verifica que no haya campos vacíos antes de enviar
-      if (!formData.id_vaccine || !formData.name || !formData.description || !formData.dose) {
-        toast.error("Todos los campos son obligatorios.");
-        return;
-      }
+    console.log("Enviando datos:", formData); // Verifica en la consola que los datos sean correctos
 
-      console.log("Enviando datos:", formData); // Verifica en la consola que los datos sean correctos
+    const response = await axios.put(
+      "http://18.211.169.160:3004/api/updateVaccines", 
+      formData, 
+      { headers: { "Content-Type": "application/json" }, withCredentials: true }
+    );
 
-      const response = await axios.put(
-        "http://18.211.169.160:3004/api/updateVaccines", 
-        formData, 
-        { headers: { "Content-Type": "application/json" }, withCredentials: true }
-      );
-
-      console.log("Respuesta del servidor:", response.data);
-      obtenerVacunas(); // Recarga las vacunas después de la actualización
-      cerrarModalActualizar();
-      toast.success("Vacuna actualizada correctamente");
-    } catch (error) {
-      console.error("Error en la actualización:", error.response?.data || error.message);
-      toast.error("Error al actualizar la vacuna");
-    }
-  };
+    console.log("Respuesta del servidor:", response.data);
+    obtenerVacunas();
+    cerrarModalActualizar();
+    toast.success("Vacuna actualizada correctamente");
+  } catch (error) {
+    console.error("Error en la actualización:", error.response?.data || error.message);
+    toast.error("Error al actualizar la vacuna");
+  }
+};
 
 // Eliminar vacuna
 const eliminar = async (id_vaccine) => {
