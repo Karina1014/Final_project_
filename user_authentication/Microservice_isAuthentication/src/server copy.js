@@ -6,7 +6,6 @@ import authRouter from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import cors from "cors";
 import morgan from "morgan";
-import helmet from "helmet";
 
 const app = express();
 const port = process.env.PORT || 6005;
@@ -27,16 +26,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser()); // Middleware para manejar cookies
 
-// Protección contra ataques HTTP con Helmet
-app.use(
-  helmet({
-    contentSecurityPolicy: false, // Puedes activarlo si configuras CSP
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-    hsts: process.env.NODE_ENV === "production", // Solo forzar HTTPS en producción
-  })
-);
-
-// Middleware para manejar cookies de sesión de forma segura
+// Middleware para asegurar que las cookies sean seguras
 app.use((req, res, next) => {
   if (req.cookies.token) {
     res.cookie("token", req.cookies.token, {
@@ -49,16 +39,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// 🔹 Rutas de la API
+
+// Rutas de la API
 app.get("/", (req, res) => res.send("API working"));
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRoutes);
 
-// 🔹 Middleware para manejar rutas no encontradas
+// Middleware para manejar rutas no encontradas
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Ruta no encontrada" });
 });
 
-// 🔹 Iniciar el servidor
+// Iniciar el servidor
 app.listen(port, () => console.log(`Server started on PORT:${port}`));
-

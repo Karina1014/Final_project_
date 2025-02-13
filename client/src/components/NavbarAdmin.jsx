@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'; // Navegar Hook en enrutador
 import { AppContent } from '../context/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useEffect } from 'react';
 
 const NavbarAdmin = () => {
   const navigate = useNavigate();
@@ -15,23 +16,28 @@ const NavbarAdmin = () => {
       axios.defaults.withCredentials = true;
       const { data } = await axios.post(`http://52.72.179.181:6004/api/auth/logout`);
   
-      console.log('Backend response:', data); // Verifica la respuesta del backend
-      data.success && setIsLoggedin(false)
-      data.success && setUserData(false)
-      if (data.succes) {
-        setIsLoggedin(false);  // Cambia el estado de inicio de sesión
-        setUserData(false);      // Limpia los datos del usuario
-        
+      if (data.success) {
+        localStorage.removeItem("userData"); // Eliminar usuario de localStorage
+        setIsLoggedin(false);
+        setUserData(null);
         toast.success('Successfully logged out');
-        navigate('/');         // Redirige al inicio
+        navigate('/');
       } else {
         toast.error('Error logging out');
       }
     } catch (error) {
-      console.error('Logout error:', error);
       toast.error(error?.response?.data?.message || 'Error during logout');
     }
   };
+  
+useEffect(() => {
+  const storedUser = localStorage.getItem("userData");
+  if (storedUser) {
+    setUserData(JSON.parse(storedUser)); // Cargar datos guardados
+    setIsLoggedin(true);
+  }
+}, []);
+
 
   
   // Función para manejar la verificación de correo

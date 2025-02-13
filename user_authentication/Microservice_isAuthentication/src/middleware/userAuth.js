@@ -1,24 +1,38 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 
-// Middleware para verificar el token
-const verifyToken = (req, res, next) => {
-  const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
-  if (!token) {
-    return res.status(401).json({ success: false, message: 'No token provided' });
-  }
+const userAuth = async (req, res, next) => {
+  try {
+    // Obtener token desde la cookie o desde el header Authorization
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(403).json({ success: false, message: 'Invalid token' });
+    // Si no hay token, devolver error de autorización
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Not Authorized. Please log in.",
+      });
     }
-    req.user = decoded; // Decodifica el token y agrega los datos del usuario
-    next();
-  });
+
+    // Verificar y decodificar el token usando la clave secreta
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Si el ID está en el token, asignarlo a req.userId
+    if (decoded.id) {
+      req.userId = decoded.id; // Guardar userId en la request
+      next(); // Pasar al siguiente middleware o controlador
+    } else {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid token. Please log in again.",
+      });
+    }
+  } catch (error) {
+    // Manejo de errores de token inválido o expirado
+    return res.status(403).json({
+      success: false,
+      message: error.name === "TokenExpiredError" ? "Session expired. Please log in again." : "Invalid token.",
+    });
+  }
 };
 
-// Ruta protegida para obtener datos del usuario
-app.get('/api/user/data', verifyToken, (req, res) => {
-  // Suponiendo que la información del usuario está en req.user
-  const userData = getUserDataFromDB(req.user.id); // Suponiendo que tienes una función para esto
-  res.json({ success: true, userData });
-});
+export default userAuth;
