@@ -78,7 +78,7 @@ jobs:
       - name: SSH into EC2 (Dog Management Server) and deploy Docker containers
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.EC2_DOG_SERVER }}
+          host: ${{ secrets.EC2_SERVER_DOG }}
           username: ubuntu
           key: ${{ secrets.DOG_SERVER_KEY }}
           script: |
