@@ -10,8 +10,7 @@ class Vaccine(Base):
     description = Column(String, nullable=True)
     dose = Column(String, nullable=True)
 
-    def __init__(self, id, name, description=None, dose=None):
-        self.id = id
+    def __init__(self, name, description=None, dose=None):
         self.name = name
         self.description = description
         self.dose = dose
