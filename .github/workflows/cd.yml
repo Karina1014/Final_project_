@@ -31,7 +31,7 @@ jobs:
       - name: Build and Push Dog Management Microservices
         run: |
           for service in isAuthentication login logout sendVerifiOTP verifiEmail; do
-            echo "Building and pushing microservice_${service}_dog..."
+            echo "Building and pushing microservice_${service}"
             docker build -f dog_management/Microservice_${service}/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest dog_management/Microservice_${service}_dog
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest
           done
