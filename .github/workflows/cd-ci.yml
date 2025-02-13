@@ -16,22 +16,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Check for changes in vaccine_management and client
+        run: |
+          echo "Detectando cambios..."
+          git diff --name-only ${{ github.event.before }} ${{ github.sha }}
+          
       - name: Build and Push Docker images if changes detected (Microservices)
         run: |
-          # Condicionalmente construir solo el servicio modificado
+          echo "Buscando cambios en vaccine_management..."
           if [[ $(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep "vaccine_management") ]]; then
+            echo "Construyendo microservicio Create Vaccine"
             docker build -f vaccine_management/Microservice_create_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest vaccine_management/Microservice_create_vaccine
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine:latest
             
+            echo "Construyendo microservicio Update Vaccine"
             docker build -f vaccine_management/Microservice_update_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest vaccine_management/Microservice_update_vaccine
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_update_vaccine:latest
             
+            echo "Construyendo microservicio List Vaccine"
             docker build -f vaccine_management/Microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest vaccine_management/Microservice_list_vaccine
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
             
+            echo "Construyendo microservicio Delete Vaccine"
             docker build -f vaccine_management/Microservice_delete_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest vaccine_management/Microservice_delete_vaccine
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_delete_vaccine:latest
+          else
+            echo "No hay cambios en vaccine_management. No se construyó nada."
           fi
+
 
       - name: Build and Push Docker image if changes detected (Client)
         run: |
