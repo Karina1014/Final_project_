@@ -39,6 +39,7 @@ app.use((req, res, next) => {
   next();
 });
 
+
 // Rutas de la API
 app.get("/", (req, res) => res.send("API working"));
 app.use("/api/auth", authRouter);

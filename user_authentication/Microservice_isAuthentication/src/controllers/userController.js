@@ -1,25 +1,31 @@
-import userModel from '../models/userModel.js'; // Asegúrate de importar correctamente el modelo
+// controllers/getUserData.js
+import userModel from '../models/userModel.js';
 
 export const getUserData = async (req, res) => {
   try {
-    const { userId } = req.body; // Asegúrate de que userId se pase correctamente
-    const user = await userModel.findById(userId); // Busca el usuario en la base de datos
+    const userId = req.userId; // Obtenemos el userId del middleware (req.userId)
+
+    // Buscar al usuario en la base de datos, excluyendo la contraseña
+    const user = await userModel.findById(userId).select("-password");
 
     if (!user) {
-      return res.json({ success: false, message: 'User not found' });
+      // Si no se encuentra el usuario, devolver error
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-  
-    // Si el usuario se encuentra, devuelve los datos
+    // Devolver los datos del usuario sin la contraseña
     res.json({
       success: true,
       userData: {
         name: user.name,
-        isAccountVerified: user.isAccountVerified // Devolver el valor calculado aquí
+        email: user.email,
+        isAccountVerified: user.isAccountVerified,
       },
     });
+
   } catch (error) {
-    return res.json({ success: false, message: error.message });
+    // Manejar cualquier error del servidor
+    console.error("Error fetching user data:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
-
