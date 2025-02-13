@@ -91,20 +91,20 @@ jobs:
 
             # Detener y eliminar los contenedores existentes de los microservicios
             echo "Deteniendo y eliminando contenedores existentes..."
-            for service in create update list remove details stats; do
+            for service in create list remove update; do
               sudo docker stop microservice_${service}_dog || true
               sudo docker rm microservice_${service}_dog || true
             done
 
             # Eliminar imágenes existentes
             echo "Eliminando imágenes existentes..."
-            for service in create update list remove details stats; do
+            for service in create list remove update; do
               sudo docker rmi -f ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest || true
             done
 
             # Descargar las últimas imágenes
             echo "Descargando imágenes..."
-            for service in create update list remove details stats; do
+            for service in create list remove update; do
               sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest
             done
 
