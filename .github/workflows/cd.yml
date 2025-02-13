@@ -27,7 +27,7 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
           # Dog management microservices
-          for service in create update list remove details stats; do
+          for service in create update list remove ; do
             echo "Building and pushing microservice_${service}_dog..."
             docker build -f dog_management/Microservice_${service}_dog/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest dog_management/Microservice_${service}_dog
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest
