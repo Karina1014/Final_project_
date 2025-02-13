@@ -8,7 +8,7 @@ import userRoutes from "./routes/userRoutes.js";
 import morgan from 'morgan'
 
 const app = express();
-const port = 3013;
+const port = 6003;
 
 connectDB();
 
