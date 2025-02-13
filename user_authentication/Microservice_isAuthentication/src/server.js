@@ -8,7 +8,7 @@ import cors from "cors";
 import morgan from 'morgan'
 
 const app = express();
-const port = 6000;
+const port = 6005;
 
 connectDB();
 
