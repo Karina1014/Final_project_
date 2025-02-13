@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import morgan from 'morgan'
 
 const app = express();
-const port = 3011;
+const port = 6001;
 
 connectDB()
 

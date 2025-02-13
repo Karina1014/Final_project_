@@ -1,10 +1,19 @@
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-import mongoose from "mongoose";
+dotenv.config();
 
 const connectDB = async () => {
-  mongoose.connection.on('connected', () => console.log("Database Connected"));
-  
-  await mongoose.connect(`${process.env.MONGODB_URI}/mern_auth`);
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Conexión exitosa a MongoDB");
+  } catch (error) {
+    console.error("Error al conectar a MongoDB:", error);
+    process.exit(1); 
+  }
 };
 
 export default connectDB;
