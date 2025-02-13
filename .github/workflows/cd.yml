@@ -28,14 +28,11 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
       # Paso 4: Construir y subir las imágenes Docker de los microservicios
-      # Paso 4: Construir y subir las imágenes Docker de los microservicios de autenticación de usuarios
-      # Paso 4: Construir y subir las imágenes Docker de los microservicios de autenticación de usuarios
-
       - name: Build and Push Microservice isAuthentication
         run: |
-         echo "Building and pushing microservice_isauthentication"
-         docker build -f user_authentication/Microservice_isAuthentication/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_isauthentication:latest user_authentication/Microservice_isAuthentication
-         docker push ${{ secrets.DOCKER_USERNAME }}/microservice_isauthentication:latest
+          echo "Building and pushing microservice_isauthentication"
+          docker build -f user_authentication/Microservice_isAuthentication/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_isauthentication:latest user_authentication/Microservice_isAuthentication
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_isauthentication:latest
 
       - name: Build and Push Microservice login
         run: |
@@ -51,17 +48,15 @@ jobs:
 
       - name: Build and Push Microservice sendVerifiOTP
         run: |
-          echo "Building and pushing microservice_sendVerifiOTP"
-          docker build -f user_authentication/Microservice_sendVerifiOTP/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_sendVerifiOTP:latest user_authentication/Microservice_sendVerifiOTP
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_sendVerifiOTP:latest
+          echo "Building and pushing microservice_sendverifiotp"
+          docker build -f user_authentication/Microservice_sendVerifiOTP/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_sendverifiotp:latest user_authentication/Microservice_sendVerifiOTP
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_sendverifiotp:latest
 
       - name: Build and Push Microservice verifiEmail
         run: |
-          echo "Building and pushing microservice_verifiEmail"
-          docker build -f user_authentication/Microservice_verifiEmail/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_verifiEmail:latest user_authentication/Microservice_verifiEmail
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_verifiEmail:latest
-
-
+          echo "Building and pushing microservice_verifiemail"
+          docker build -f user_authentication/Microservice_verifiEmail/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_verifiemail:latest user_authentication/Microservice_verifiEmail
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_verifiemail:latest
 
   deploy-client:
     runs-on: ubuntu-latest
@@ -120,34 +115,33 @@ jobs:
 
             # Descargar las últimas imágenes desde Docker Hub
             echo "Descargando imágenes..."
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_isAuthentication:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_isauthentication:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_sendVerifiOTP:latest
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_verifiEmail:latest
-
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_sendverifiotp:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_verifiemail:latest
 
             # Verificar si las imágenes fueron descargadas correctamente
             sudo docker images
 
             # Detener y eliminar los contenedores existentes por nombre
-            sudo docker stop microservice_isAuthentication || true
-            sudo docker rm microservice_isAuthentication || true
+            sudo docker stop microservice_isauthentication || true
+            sudo docker rm microservice_isauthentication || true
             sudo docker stop microservice_login || true
             sudo docker rm microservice_login || true
             sudo docker stop microservice_logout || true
             sudo docker rm microservice_logout || true
-            sudo docker stop microservice_sendVerifiOTP || true
-            sudo docker rm microservice_sendVerifiOTP || true
-            sudo docker stop microservice_verifiEmail || true
-            sudo docker rm microservice_verifiEmail || true
+            sudo docker stop microservice_sendverifiotp || true
+            sudo docker rm microservice_sendverifiotp || true
+            sudo docker stop microservice_verifiemail || true
+            sudo docker rm microservice_verifiemail || true
 
             # Verificar las variables de entorno antes de generar el archivo
-            echo "Base de datos: 
+            echo "Base de datos: ${MONGO_URI}"
 
             # Crear el archivo .env dentro de la carpeta src
             mkdir -p src
-            echo " MONGO_URI=${{ secrets.MONGO_URI }}" >> src/.env
+            echo "MONGO_URI=${{ secrets.MONGO_URI }}" >> src/.env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> src/.env
             echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> src/.env
             echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> src/.env
@@ -157,16 +151,16 @@ jobs:
             cat src/.env
 
             # Ejecutar los contenedores Docker con el archivo .env dentro de src
-            echo "Ejecutando microservice_isAuthentication..."
-            sudo docker run -d --name microservice_isAuthentication --env-file src/.env -p 6000:6000 ${{ secrets.DOCKER_USERNAME }}/microservice_isAuthentication:latest
+            echo "Ejecutando microservice_isauthentication..."
+            sudo docker run -d --name microservice_isauthentication --env-file src/.env -p 6000:6000 ${{ secrets.DOCKER_USERNAME }}/microservice_isauthentication:latest
             echo "Ejecutando microservice_login..."
             sudo docker run -d --name microservice_login --env-file src/.env -p 6001:6001 ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest
             echo "Ejecutando microservice_logout..."
             sudo docker run -d --name microservice_logout --env-file src/.env -p 6002:6002 ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest
-            echo "Ejecutando microservice_sendVerifiOTP..."
-            sudo docker run -d --name microservice_sendVerifiOTP --env-file src/.env -p 6003:6003 ${{ secrets.DOCKER_USERNAME }}/microservice_sendVerifiOTP:latest
-            echo "Ejecutando microservice_verifiEmail..."
-            sudo docker run -d --name microservice_verifiEmail --env-file src/.env -p 6004:6004 ${{ secrets.DOCKER_USERNAME }}/microservice_verifiEmail:latest
+            echo "Ejecutando microservice_sendverifiotp..."
+            sudo docker run -d --name microservice_sendverifiotp --env-file src/.env -p 6003:6003 ${{ secrets.DOCKER_USERNAME }}/microservice_sendverifiotp:latest
+            echo "Ejecutando microservice_verifiemail..."
+            sudo docker run -d --name microservice_verifiemail --env-file src/.env -p 6004:6004 ${{ secrets.DOCKER_USERNAME }}/microservice_verifiemail:latest
 
             # Verificar que los contenedores están corriendo
             sudo docker ps -a
