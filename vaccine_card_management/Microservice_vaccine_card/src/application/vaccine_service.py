@@ -9,7 +9,6 @@ class VaccineService:
         query = """
         {
           vaccines {
-            id
             name
             description
             dose
@@ -23,7 +22,6 @@ class VaccineService:
         db = SessionLocal()
         for vaccine_data in vaccines_data:
             vaccine = Vaccine(
-                id=vaccine_data["id"],
                 name=vaccine_data["name"],
                 description=vaccine_data.get("description"),
                 dose=vaccine_data.get("dose")
