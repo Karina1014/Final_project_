@@ -145,6 +145,7 @@ jobs:
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> src/.env
             echo "NODE_ENV=${{ secrets.NODE_ENV }}" >> src/.env
             echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> src/.env
+            echo "SMTP_PASS=${{ secrets.SMTP_PASS }}" >> src/.env
             echo "SENDER_EMAIL=${{ secrets.SENDER_EMAIL }}" >> src/.env
 
             # Verificar que el archivo .env se ha creado correctamente
