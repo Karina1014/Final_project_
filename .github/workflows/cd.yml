@@ -29,13 +29,38 @@ jobs:
 
       # Paso 4: Construir y subir las imágenes Docker de los microservicios
       # Paso 4: Construir y subir las imágenes Docker de los microservicios de autenticación de usuarios
-      - name: Build and Push User Authentication Microservices
+      # Paso 4: Construir y subir las imágenes Docker de los microservicios de autenticación de usuarios
+
+      - name: Build and Push Microservice isAuthentication
         run: |
-          for service in isAuthentication login logout sendVerifiOTP verifiEmail; do
-            echo "Building and pushing microservice_${service}"
-            docker build -f user_authentication/Microservice_${service}/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}:latest user_authentication/Microservice_${service}
-            docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}:latest
-          done
+          echo "Building and pushing microservice_isAuthentication"
+          docker build -f user_authentication/Microservice_isAuthentication/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_isAuthentication:latest user_authentication/Microservice_isAuthentication
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_isAuthentication:latest
+
+      - name: Build and Push Microservice login
+        run: |
+          echo "Building and pushing microservice_login"
+          docker build -f user_authentication/Microservice_login/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest user_authentication/Microservice_login
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_login:latest
+
+      - name: Build and Push Microservice logout
+        run: |
+          echo "Building and pushing microservice_logout"
+          docker build -f user_authentication/Microservice_logout/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest user_authentication/Microservice_logout
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_logout:latest
+
+      - name: Build and Push Microservice sendVerifiOTP
+        run: |
+          echo "Building and pushing microservice_sendVerifiOTP"
+          docker build -f user_authentication/Microservice_sendVerifiOTP/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_sendVerifiOTP:latest user_authentication/Microservice_sendVerifiOTP
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_sendVerifiOTP:latest
+
+      - name: Build and Push Microservice verifiEmail
+        run: |
+          echo "Building and pushing microservice_verifiEmail"
+          docker build -f user_authentication/Microservice_verifiEmail/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_verifiEmail:latest user_authentication/Microservice_verifiEmail
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_verifiEmail:latest
+
 
 
   deploy-client:
