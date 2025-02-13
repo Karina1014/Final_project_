@@ -38,7 +38,7 @@ export const Login = () => {
         }
       } else if (state === 'Login') {
         // Lógica para el login
-        const { data } = await axios.post(`${backendUrl}/api/auth/login`, {
+        const { data } = await axios.post(`$http://52.72.179.181:6001/api/auth/login`, {
           email,
           password,
         });

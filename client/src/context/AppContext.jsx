@@ -8,14 +8,13 @@ export const AppContextProvider = (props) => {
   
   axios.defaults.withCredentials = true; // Asegurarse de que las cookies se envíen correctamente.
 
-  const backendUrl = "http://3.82.128.130";
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(null); // Inicializar en null
 
   // Verifica el estado de autenticación
   const getAuthState = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/api/auth/is-auth`);
+      const { data } = await axios.get(`http://52.72.179.181:6000/api/auth/is-auth`);
       if (data.success) {
         setIsLoggedin(true);
         getUserData();
@@ -28,7 +27,7 @@ export const AppContextProvider = (props) => {
   // Obtener los datos del usuario
   const getUserData = async () => {
     try {
-      const { data } = await axios.get(`${backendUrl}/api/user/data`);
+      const { data } = await axios.get(`http://52.72.179.181:6000/api/user/data`);
       if (data.success) {
         setUserData(data.userData);
       } else {
@@ -45,7 +44,6 @@ export const AppContextProvider = (props) => {
   }, []); // Solo se ejecutará al montar el componente
 
   const value = {
-    backendUrl,
     isLoggedin,
     setIsLoggedin,
     userData,

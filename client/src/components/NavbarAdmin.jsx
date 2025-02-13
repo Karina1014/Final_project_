@@ -13,7 +13,7 @@ const NavbarAdmin = () => {
   const logout = async () => {
     try {
       axios.defaults.withCredentials = true;
-      const { data } = await axios.post(`${backendUrl}/api/auth/logout`);
+      const { data } = await axios.post(`http://52.72.179.181:6004/api/auth/logout`);
   
       console.log('Backend response:', data); // Verifica la respuesta del backend
       data.success && setIsLoggedin(false)
@@ -39,7 +39,7 @@ const NavbarAdmin = () => {
     try {
       axios.defaults.withCredentials = true;
 
-      const { data } = await axios.post(`${backendUrl}/api/auth/send-verify-otp`);
+      const { data } = await axios.post(`http://52.72.179.181:6003/api/auth/send-verify-otp`);
 
       if (data.success) {
         navigate('/email-verify')
