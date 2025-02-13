@@ -67,26 +67,26 @@ const Vaccine = () => {
   const editar = async () => {
     try {
       const formData = {
-        id_vaccine: form.id_vaccine, // Asegúrate de usar id_vaccine, no id
+        id_vaccine: form.id_vaccine, // Asegúrate de que el id_vaccine esté bien
         name: form.name,
         description: form.description,
         dose: form.dose
       };
-
+  
       // Verifica que no haya campos vacíos antes de enviar
       if (!formData.id_vaccine || !formData.name || !formData.description || !formData.dose) {
         toast.error("Todos los campos son obligatorios.");
         return;
       }
-
+  
       console.log("Enviando datos:", formData); // Verifica en la consola que los datos sean correctos
-
+  
       const response = await axios.put(
         "http://18.211.169.160:3004/api/updateVaccines", 
         formData, 
         { headers: { "Content-Type": "application/json" }, withCredentials: true }
       );
-
+  
       console.log("Respuesta del servidor:", response.data);
       obtenerVacunas(); // Recarga las vacunas después de la actualización
       cerrarModalActualizar();
@@ -96,18 +96,19 @@ const Vaccine = () => {
       toast.error("Error al actualizar la vacuna");
     }
   };
-
+  
   // Eliminar vacuna
-  const eliminar = async (id_vaccine) => {
+  const eliminar = async (id) => {
     try {
-      await axios.delete(`http://18.211.169.160:3004/api/deleteVaccines/${id_vaccine}`, { withCredentials: true });
-      obtenerVacunas(); // Recarga las vacunas después de la eliminación
+      await axios.delete(`http://54.211.138.107:3003/api/vaccines/${id}`, { withCredentials: true });
+      obtenerVacunas();
       toast.success("Vacuna eliminada correctamente");
     } catch (error) {
       toast.error("Error al eliminar la vacuna");
     }
   };
-
+  
+  
   return (
     <div>
       <h1>Vacunas</h1>
