@@ -17,12 +17,10 @@ export const isAuthenticated = async (req, res) => {
     req.user = decoded;  // Asignar el usuario decodificado al request
     return res.json({ success: true });
   } catch (error) {
-    console.error(error);  // Puedes logear el error para depuración
     return res.status(401).json({ success: false, message: 'Invalid or expired token' });
   }
 };
 
-// Función para enviar OTP al correo del usuario
 export const sendResetOtp = async (req, res) => {
   const { email } = req.body;
 
@@ -37,16 +35,12 @@ export const sendResetOtp = async (req, res) => {
       return res.json({ success: false, message: 'User not found' });
     }
 
-    // Generar un OTP de 6 dígitos
     const otp = String(Math.floor(100000 + Math.random() * 900000));
-    
-    // Guardar OTP y su fecha de expiración en la base de datos
     user.resetOtp = otp;
     user.resetOtpExpireAt = Date.now() + 15 * 60 * 1000; // Expira en 15 minutos
 
     await user.save();
 
-    // Configuración del correo
     const mailOption = {
       from: process.env.SENDER_EMAIL,
       to: user.email,
@@ -54,42 +48,32 @@ export const sendResetOtp = async (req, res) => {
       text: `Your OTP for resetting your password is ${otp}. Use this OTP to proceed with resetting your password.`
     };
 
-    // Enviar correo con el OTP
     await transporter.sendMail(mailOption);
 
     return res.json({ success: true, message: 'OTP sent to email' });
 
   } catch (error) {
-    console.error(error);  // Log de errores
     return res.json({ success: false, message: error.message });
   }
 };
 
-// Función para verificar el OTP y activar la cuenta
+// Asegúrate de que esta función esté definida y exportada
 export const verifiEmail = async (req, res) => {
   const { otp } = req.body;
-
+  // Lógica de verificación de email usando OTP
   try {
-    // Buscar usuario por OTP
+    // Supongamos que validas el OTP y el usuario
     const user = await userModel.findOne({ 'resetOtp': otp });
-
     if (!user) {
       return res.status(400).json({ success: false, message: 'Invalid OTP' });
     }
 
-    // Verificar si el OTP ha expirado
-    if (user.resetOtpExpireAt < Date.now()) {
-      return res.status(400).json({ success: false, message: 'OTP has expired' });
-    }
-
-    // Si el OTP es válido, actualizar la verificación de la cuenta
+    // Si es válido, puedes actualizar la verificación del usuario
     user.isAccountVerified = true;
     await user.save();
 
     res.status(200).json({ success: true, message: 'Account verified successfully' });
   } catch (error) {
-    console.error(error);  // Log de errores
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
-

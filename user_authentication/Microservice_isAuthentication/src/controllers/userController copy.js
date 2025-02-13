@@ -3,27 +3,25 @@ import userModel from '../models/userModel.js'; // Asegúrate de importar correc
 export const getUserData = async (req, res) => {
   try {
     const { userId } = req.body; // Asegúrate de que userId se pase correctamente
-
-    if (!userId) {
-      return res.status(400).json({ success: false, message: 'User ID is required' });
-    }
-
     const user = await userModel.findById(userId); // Busca el usuario en la base de datos
 
     if (!user) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+      return res.json({ success: false, message: 'User not found' });
     }
 
+  
     // Si el usuario se encuentra, devuelve los datos
-    res.status(200).json({
+    res.json({
       success: true,
       userData: {
         name: user.name,
-        isAccountVerified: user.isAccountVerified, // Devolver el valor calculado aquí
+        isAccountVerified: user.isAccountVerified // Devolver el valor calculado aquí
       },
     });
   } catch (error) {
-    console.error(error); // Log para ayudar en la depuración
-    return res.status(500).json({ success: false, message: 'Server error' });
+    return res.json({ success: false, message: error.message });
   }
 };
+
+
+
