@@ -136,6 +136,9 @@ const Dog = () => {
                 <td>{dog.breed}</td>
                 <td>{dog.age}</td>
                 <td>{dog.gener}</td>
+                <Button color="primary" onClick={() => ()}>
+                    <FaEdit />
+                  </Button>
                 <td>
                   <Button variant="danger" onClick={() => eliminar(dog.id)}><FaTrashAlt /> Eliminar</Button>
                 </td>
