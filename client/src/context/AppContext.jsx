@@ -15,10 +15,7 @@ export const AppContextProvider = (props) => {
   const getAuthState = async () => {
     try {
       // Cambiar POST a GET para coincidir con el backend
-      const { data } = await axios.get('http://52.72.179.181:6005/api/auth/is-auth', {
-        withCredentials: true,  // Esto es clave para enviar las cookies
-      });
-
+      const { data } = await axios.get('http://52.72.179.181:6005/api/auth/is-auth');
       if (data.success) {
         setIsLoggedin(true);
         getUserData();
