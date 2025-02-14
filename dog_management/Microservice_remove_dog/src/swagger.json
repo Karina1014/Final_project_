@@ -2,22 +2,66 @@
   "swagger": "2.0",
   "info": {
     "title": "Dog API",
-    "description": "API for remove dogs",
+    "description": "API for removing dogs",
     "version": "1.0.0"
   },
   "host": "localhost:4002",
-  "basePath": "/api/dogs",
+  "basePath": "/",
   "schemes": [
     "http",
     "https"
   ],
   "paths": {
-    "/list": {
-      "get": {
-        "description": "",
+    "/delete/{id}": {
+      "delete": {
+        "tags": ["Dogs"],
+        "summary": "Delete a dog by ID",
+        "description": "Deletes a dog from the database with a simulated delay.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the dog to delete",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Dog successfully deleted",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Dog with ID 123 successfully deleted"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Dog not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Dog not found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
           }
         }
       }
