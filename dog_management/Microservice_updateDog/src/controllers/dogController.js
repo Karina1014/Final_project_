@@ -1,6 +1,6 @@
-import * as vaccineModel from '../models/vaccineModel.js';
+import * as vaccineModel from '../models/dogModel.js';
 
-const updateVaccine = async (req, res) => {
+const dogController = async (req, res) => {
   try {
     const { id } = req.params;  // Tomar el id de la URL
     const { name, description, dose } = req.body; // Los demás datos del cuerpo
@@ -22,4 +22,4 @@ const updateVaccine = async (req, res) => {
   }
 };
 
-export { updateVaccine };
+export { dogController };

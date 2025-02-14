@@ -2,37 +2,105 @@
   "swagger": "2.0",
   "info": {
     "title": "Dog API",
-    "description": "API for update dogs",
+    "description": "API for managing dogs, including updating dog details.",
     "version": "1.0.0"
   },
   "host": "localhost:4003",
   "basePath": "/",
+  "tags": [
+    {
+      "name": "Dogs",
+      "description": "Endpoints for managing dog records"
+    }
+  ],
   "schemes": [
     "http",
     "https"
   ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
   "paths": {
     "/update/{id}": {
       "put": {
-        "description": "",
+        "tags": ["Dogs"],
+        "summary": "Update dog details",
+        "description": "Updates the details of a specific dog by its ID.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "The unique identifier of the dog",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Updated dog information",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/DogUpdate"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Dog successfully updated",
+            "schema": {
+              "$ref": "#/definitions/DogUpdate"
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
           },
           "404": {
-            "description": "Not Found"
+            "description": "Dog not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
           },
           "500": {
-            "description": "Internal Server Error"
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
           }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "DogUpdate": {
+      "type": "object",
+      "required": ["name", "breed", "age"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Buddy"
+        },
+        "breed": {
+          "type": "string",
+          "example": "Golden Retriever"
+        },
+        "age": {
+          "type": "integer",
+          "example": 4
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Dog not found"
         }
       }
     }
