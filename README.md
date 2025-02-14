@@ -51,6 +51,9 @@ The project follows a microservices-based architecture and Clean Architecture pr
    ```sh
    docker-compose up -d
    ```
+## architecture
+
+https://excalidraw.com/#room=cd116f2ea5ed3764ad2d,RxxQeYjlY26grQGTkdEEjg
 
 ## 🤝 Contribution
 If you wish to contribute, follow these steps:
