@@ -6,6 +6,7 @@
 
 # Ignore bundler config.
 /.bundle
+/vendor/bundle
 
 # Ignore all environment files (except templates).
 /.env*
@@ -40,3 +41,9 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
+
+/coverage
+/spec
+/test
+/node_modules
+/public/assets
