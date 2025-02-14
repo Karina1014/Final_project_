@@ -22,6 +22,7 @@
             password: ${{ secrets.DOCKER_PASSWORD }}
 
         # Paso 3: Construir y subir la imagen Docker del cliente
+      # Build and Push Client Docker Image
         - name: Build and Push Client Docker image
           run: |
             docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest .
