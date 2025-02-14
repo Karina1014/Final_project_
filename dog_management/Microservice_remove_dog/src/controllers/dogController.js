@@ -1,22 +1,18 @@
-import { DogModel } from '../models/dogModel.js';
+const deleteDog = async (req, res) => {
+    const { id } = req.params; // Aquí debe venir el id
 
-class DogController {
-  async deleteDog(req, res) {
     try {
-      const { id } = req.params;
-      const dog = await DogModel.findByPk(id);
-      if (!dog) {
-        return res.status(404).json({ success: false, message: 'Dog not found' });
-      }
+        const result = await dogModel.deleteDog(id);
 
-      await dog.destroy();
-      res.json({ success: true, message: 'Dog deleted successfully' });
+        if (!result) {
+            return res.status(404).json({ message: 'Dog not found' });
+        }
+
+        return res.status(200).json({ message: 'Dog deleted successfully', id: result.id });
     } catch (error) {
-      console.error('Error deleting dog:', error);
-      res.status(500).json({ success: false, message: 'Error deleting dog' });
+        console.error('Error deleting dog:', error);
+        return res.status(500).json({ message: 'Error deleting dog' });
     }
-  }
-}
+};
 
-const dogController = new DogController();
-export { dogController };
+export { deleteDog };
