@@ -26,7 +26,7 @@ jobs:
             for service in create update list delete; do
             docker build -f vaccine_management/Microservice_${service}_vaccine/Dockerfile \
             -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_vaccine:latest \
-            vaccine_management/microservice_${service}_vaccine
+            vaccine_management/Microservice_${service}_vaccine
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_vaccine:latest
             done
       - name: Build and Push Docker Images dog_management
@@ -34,7 +34,7 @@ jobs:
             for service in create list remove update; do
             docker build -f dog_management/Microservice_${service}_dog/Dockerfile \
             -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest \
-             Microservice_${service}_dog
+             dog_management/Microservice_${service}_dog
              docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest
             done
 
