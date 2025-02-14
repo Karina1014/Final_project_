@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaPlus, FaTrashAlt } from 'react-icons/fa';
+import { FaPlus, FaTrashAlt,FaEdit } from 'react-icons/fa';
 import axios from 'axios';
 import { Button, Modal, Form, Table } from 'react-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
@@ -136,7 +136,7 @@ const Dog = () => {
                 <td>{dog.breed}</td>
                 <td>{dog.age}</td>
                 <td>{dog.gener}</td>
-                <Button color="primary" onClick={() => ()}>
+                <Button color="primary" >
                     <FaEdit />
                   </Button>
                 <td>
