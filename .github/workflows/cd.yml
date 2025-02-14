@@ -24,7 +24,8 @@ jobs:
       # Paso 3: Construir y subir la imagen Docker del cliente
       - name: Build and Push Client Docker image
         run: |
-          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest .
+          echo "Building and pushing Client..."
+          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest client
           docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
 
       # Paso 4: Construir y subir las imágenes Docker de los microservicios
@@ -36,24 +37,24 @@ jobs:
 
       - name: Build and Push Microservice GraphQL
         run: |
-            echo "Building and pushing microservice_graphql..."
-            docker build -f Microservice-graphql/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_graphql:latest Microservice-graphql
-            docker push ${{ secrets.DOCKER_USERNAME }}/microservice_graphql:latest
+          echo "Building and pushing microservice_graphql..."
+          docker build -f Microservice-graphql/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_graphql:latest Microservice-graphql
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_graphql:latest
         
-      - name: Build and Push Microservice_create_vaccine_card
+      - name: Build and Push Microservice Create Vaccine Card
         run: |
-          echo "Building and pushing Microservice_create_vaccine_card"
+          echo "Building and pushing Microservice_create_vaccine_card..."
           docker build -f vaccine_card_management/Microservice_create_vaccine_card/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine_card:latest vaccine_card_management/Microservice_create_vaccine_card
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine_card:latest
 
-      - name: Build and Push Microservice_vaccine_card
+      - name: Build and Push Microservice Vaccine Card
         run: |
-          echo "Building and pushing Microservice_vaccine_card"
+          echo "Building and pushing Microservice_vaccine_card..."
           docker build -f vaccine_card_management/Microservice_vaccine_card/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_vaccine_card:latest vaccine_card_management/Microservice_vaccine_card
-          
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_vaccine_card:latest
+
       - name: Build and Push Microservice Owner List
         run: |
-              echo "Building and pushing microservice_list_owner..."
-              docker build -f owner_management/Microservice_list_owner/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_owner:latest owner_management/Microservice_list_owner
-              docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_owner:latest
-          
+          echo "Building and pushing microservice_list_owner..."
+          docker build -f owner_management/Microservice_list_owner/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_owner:latest owner_management/Microservice_list_owner
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_owner:latest
