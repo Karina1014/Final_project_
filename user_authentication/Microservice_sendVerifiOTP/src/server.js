@@ -19,12 +19,18 @@ const corsOptions = {
   allowedHeaders: "Content-Type,Authorization",
 };
 
-app.use(cors(corsOptions));
-app.use(morgan('dev'))
-app.use(express.json());
-app.use(cookieParser()); // Middleware para manejar cookies-prove
+app.use(cookieParser()); // Mueve esto antes de cors()
+app.use(express.json()); 
+app.use(cors(corsOptions)); // cors después de cookieParser()
+app.use(morgan('dev'));
+// Middleware para depuración: Ver las cookies que llegan al servidor
+app.use((req, res, next) => {
+  console.log("Cookies recibidas:", req.cookies);
+  next();
+});
 
 app.use(express.json());
+
 app.get('/', (req, res) => res.send("API working"));
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRoutes);
