@@ -31,8 +31,8 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_dog:latest
 
           echo "Building and pushing microservice_updateDog..."
-          docker build -f dog_management/Microservice_updateDog/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_updateDog:latest dog_management/Microservice_updateDog
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_updateDog:latest
+          docker build -f dog_management/Microservice_update_dog/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_update_dog:latest dog_management/Microservice_update_dog
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_update_dog:latest
 
           echo "Building and pushing microservice_list_dog..."
           docker build -f dog_management/Microservice_list_dog/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_dog:latest dog_management/Microservice_list_dog
