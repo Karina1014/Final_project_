@@ -92,6 +92,11 @@ jobs:
         run: |
             echo "Building and pushing Microservice_vaccine_card"
             docker build -f vaccine_card_management/Microservice_vaccine_card/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_vaccine_card:latest vaccine_card_management/Microservice_vaccine_card 
+      - name: Build and Push Microservice GraphQL
+        run: |
+            echo "Building and pushing microservices_graphql..."
+            docker build -f Microservices-graphql/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservices_graphql:latest Microservices-graphql
+            docker push ${{ secrets.DOCKER_USERNAME }}/microservices_graphql:latest
   
    
   deploy-client:
@@ -453,3 +458,36 @@ jobs:
 
             # Verificar que los contenedores están corriendo
             sudo docker ps -a
+  deploy-graphql:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into EC2 and deploy GraphQL container
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_GRAPHQL_SERVER }}
+          username: ubuntu
+          key: ${{ secrets.EC2_GRAPHQL_SSH_KEY }}
+          script: |
+            echo " Verificando Docker en EC2..."
+
+            # Verificar si Docker está instalado
+            if ! command -v docker &> /dev/null; then
+              echo "Instalando Docker..."
+              sudo apt update && sudo apt install -y docker.io
+              sudo systemctl enable docker
+              sudo systemctl start docker
+            fi
+
+            echo " Docker listo."
+
+            # Descargar la última imagen desde Docker Hub
+            echo " Haciendo pull de la imagen más reciente..."
+            docker pull ${{ secrets.DOCKER_USERNAME }}/microservices_graphql:latest
+
+            # Ejecutar el contenedor en el puerto 3000
+            echo " Iniciando contenedor GraphQL..."
+            docker run -d -p 3000:3000 --name microservices_graphql ${{ secrets.DOCKER_USERNAME }}/microservices_graphql:latest
+
+            echo "✅Contenedor GraphQL iniciado en el puerto 3000."
