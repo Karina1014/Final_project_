@@ -15,16 +15,21 @@ export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onSubmitHandler = async (e) => {
+  const onSubitHandler = async (e) => {
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+
     axios.defaults.withCredentials = true;
-  
+
     try {
       if (state === 'Sign Up') {
-        const { data } = await axios.post(`${backendUrl}/api/auth/register`, { name, email, password });
-  
+        // Lógica para el registro
+        const { data } = await axios.post(`${backendUrl}/api/auth/register`, {
+          name,
+          email,
+          password,
+        });
+
         if (data.success) {
-          localStorage.setItem("userData", JSON.stringify(data.user)); // Guardar usuario en localStorage
           setIsLoggedin(true);
           getUserData();
           navigate('/');
@@ -32,14 +37,13 @@ export const Login = () => {
           toast.error(data.message);
         }
       } else if (state === 'Login') {
-        const { data } = await axios.post(
-          `http://52.72.179.181:6001/api/auth/login`, 
-          { email, password }, // 👈 Datos del usuario correctamente estructurados
-          { withCredentials: true } // 👈 Configuración para incluir cookies
-        );
-  
+        // Lógica para el login
+        const { data } = await axios.post(`http://52.72.179.181:6001/api/auth/login`, {
+          email,
+          password,
+        });
+
         if (data.success) {
-          localStorage.setItem("userData", JSON.stringify(data.user)); // Guardar usuario en localStorage
           setIsLoggedin(true);
           getUserData();
           navigate('/admin');
@@ -48,11 +52,10 @@ export const Login = () => {
         }
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || error.message);
+      toast.error(error.message);
     }
   };
-  
-  
+
   return (
     <div className="flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400">
       <img

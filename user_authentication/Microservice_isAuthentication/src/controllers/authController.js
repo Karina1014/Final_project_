@@ -35,9 +35,10 @@ export const sendResetOtp = async (req, res) => {
       return res.json({ success: false, message: 'User not found' });
     }
 
+    // Generar OTP
     const otp = String(Math.floor(100000 + Math.random() * 900000));
-    user.resetOtp = otp;
-    user.resetOtpExpireAt = Date.now() + 15 * 60 * 1000; // Expira en 15 minutos
+    user.verifyOtp = otp;  // Se cambió de sendVerifiOTP a verifyOtp para que sea consistente con la validación en verifiEmail
+    user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000; // Expira en 24 horas
 
     await user.save();
 

@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom'; // Navegar Hook en enrutador
 import { AppContent } from '../context/AppContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-
-const Navbar = () => {
+import { useEffect } from 'react';
+const NavbarAdmin = () => {
   const navigate = useNavigate();
   const { userData, setUserData, setIsLoggedin } = useContext(AppContent);
 
@@ -33,6 +33,14 @@ const Navbar = () => {
     }
   };
 
+useEffect(() => {
+  const storedUser = localStorage.getItem("userData");
+  if (storedUser) {
+    setIsLoggedin(true);
+  }
+}, []);
+
+
   
   // Función para manejar la verificación de correo
   const sendVerifiOTP = async () => {
@@ -55,8 +63,8 @@ const Navbar = () => {
 
 
   return (
-    <div className='w-full flex justify-between items-center p-4 sm:p-6 sm:px-24 absolute top-0'>
-      <img src={assets.vaccine} alt="logo" className='w-28 sm:w-32' />
+    <div className='max-padd-container flex justify-between items-center py-2 bg-gray-800 text-white'>
+      <img src={assets.conquistadores} alt="logo" className='w-8 sm:w-12' />
 
       {userData ?
         <div className='w-8 h-8 flex justify-center items-center rounded-full bg-black text-white relative group'>
@@ -66,7 +74,7 @@ const Navbar = () => {
           {/* Menú desplegable al hacer hover */}
           <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-10'>
             <ul className='list-none m-0 p-2 bg-gray-100 text-sm'>
-              {/* Mostrar la opción de "Verify email" solo si el usuario tiene la cuenta verificada */}
+              {/* Mostrar la opc.toUpp "Verify email" solo si el usuario tiene la cuenta verificada */}
               {!userData.isAccountVerified && 
                 <li onClick={sendVerifiOTP}className='py-1 px-2 hover:bg-gray-200 cursor-pointer'>
                   Verify email
@@ -80,9 +88,7 @@ const Navbar = () => {
             </ul>
           </div>
         </div>
-        
           : 
-          
         <button
           onClick={() => navigate('/login')}
           className='flex items-center gap-2 border border-gray-500 rounded-full px-6 py-2 text-gray-800 hover:bg-gray-100 transition-all'
@@ -95,4 +101,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default NavbarAdmin;

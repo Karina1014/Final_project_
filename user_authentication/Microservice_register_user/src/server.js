@@ -11,7 +11,7 @@ const port = 3010;
 connectDB();
 
 
-const allowedOrigins = ['http://localhost:5173'];  // Si estás trabajando localmente con Vite
+const allowedOrigins = ['http://54.147.184.127'];  // Si estás trabajando localmente con Vite
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: allowedOrigins, credentials: true })); // Permitir cualquier origen
