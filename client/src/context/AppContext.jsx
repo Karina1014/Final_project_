@@ -14,24 +14,26 @@ export const AppContextProvider = (props) => {
   // Verifica el estado de autenticación
   const getAuthState = async () => {
     try {
-      // Cambiar POST a GET para coincidir con el backend
-      const { data } = await axios.get('http://52.72.179.181:6005/api/auth/is-auth');
+      const { data } = await axios.get(`http://52.72.179.181:6005/api/auth/is-auth`, {
+        withCredentials: true,  // 👈 Asegura que las cookies se envíen
+      });
+  
       if (data.success) {
         setIsLoggedin(true);
-        getUserData();
-      } else {
-        setIsLoggedin(false);
       }
     } catch (error) {
-      toast.error(error.message || 'Error fetching auth state');
-      setIsLoggedin(false); // Si hay un error, tratamos el usuario como no autenticado
+      console.error(error);
+      toast.error('Authentication failed');
     }
   };
+  
 
   // Obtener los datos del usuario
   const getUserData = async () => {
     try {
-      const { data } = await axios.get(`http://52.72.179.181:6005/api/user/data`);
+      const { data } = await axios.get(`http://52.72.179.181:6005/api/user/data`, {
+        withCredentials: true,  // 👈 Asegura que las cookies se envíen
+      });
       if (data.success) {
         setUserData(data.userData);
       } else {
