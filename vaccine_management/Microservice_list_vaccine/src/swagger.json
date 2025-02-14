@@ -1,0 +1,61 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Vaccine API",
+    "description": "API to retrieve a list of vaccines.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3002",
+  "basePath": "/api",
+  "schemes": ["http", "https"],
+  "tags": [
+    {
+      "name": "Vaccines",
+      "description": "Endpoints related to vaccines"
+    }
+  ],
+  "paths": {
+    "/vaccines": {
+      "get": {
+        "summary": "Get all vaccines",
+        "tags": ["Vaccines"],
+        "description": "Returns a list of available vaccines.",
+        "responses": {
+          "200": {
+            "description": "Successful response with a list of vaccines",
+            "schema": {
+              "$ref": "#/definitions/VaccineListResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Vaccine": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "example": "abc123" },
+        "name": { "type": "string", "example": "COVID-19 Vaccine" },
+        "description": { "type": "string", "example": "A vaccine for COVID-19 prevention" },
+        "dose": { "type": "integer", "example": 2 }
+      }
+    },
+    "VaccineListResponse": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Vaccine" }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "message": { "type": "string", "example": "Internal Server Error" }
+      }
+    }
+  }
+}

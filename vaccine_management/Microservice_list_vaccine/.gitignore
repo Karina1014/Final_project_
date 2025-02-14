@@ -28,4 +28,3 @@ build/
 coverage/
 *.cache
 *.bak
-swagger.json
