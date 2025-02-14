@@ -1,7 +1,6 @@
 
 *.vscode/
 
-/go.sum
 /go.work
 /go.work.sum
 
