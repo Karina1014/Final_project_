@@ -1,0 +1,71 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Vaccine API",
+    "description": "API for managing vaccines, including deletion of vaccine records.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3003",
+  "basePath": "/api",
+  "schemes": ["http", "https"],
+  "tags": [
+    {
+      "name": "Vaccines",
+      "description": "Endpoints for managing vaccine records"
+    }
+  ],
+  "paths": {
+    "/deleteVaccine/{id}": {
+      "delete": {
+        "summary": "Delete a vaccine by ID",
+        "description": "Deletes a vaccine record using its unique ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The unique ID of the vaccine to be deleted."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vaccine deleted successfully",
+            "schema": {
+              "$ref": "#/definitions/SuccessResponse"
+            }
+          },
+          "404": {
+            "description": "Vaccine not found",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Vaccine not found"
+        }
+      }
+    },
+    "SuccessResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "example": "Vaccine deleted successfully"
+        }
+      }
+    }
+  }
+}
