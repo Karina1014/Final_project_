@@ -1,12 +1,9 @@
-import express from "express";
-import multer from "multer";
-import { dogController } from "../controllers/dogController.js";
+import express from 'express';
+import * as dogController from '../controllers/dogController.js';
 
-const dogRouter = express.Router();
+const router = express.Router();
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+// Asegúrate de que la ruta esté bien definida
+router.delete('/deleteDog/:id', dogController.deleteDog);
 
-dogRouter.delete("/delete/:id", (req, res) => dogController.deleteDog(req, res));
-
-export default dogRouter;
+export default router;

@@ -1,15 +1,20 @@
-import { database } from '../config/mysqldb.js';
-import { DataTypes } from 'sequelize';
+import * as dogModel from '../models/dogModel.js';
 
-const DogModel = database.define('Dog', {
-  nameDog: { type: DataTypes.STRING, allowNull: false },
-  breed: { type: DataTypes.STRING, allowNull: false },
-  age: { type: DataTypes.INTEGER, allowNull: false },
-  gener: { type: DataTypes.STRING, allowNull: false },
-  image: { type: DataTypes.BLOB('medium'), allowNull: true },
-}, {
-  tableName: 'dogs',
-  timestamps: false,
-});
+const deleteDog = async (req, res) => {
+    const { id } = req.params;
 
-export { DogModel };
+    try {
+        const result = await dogModel.deleteDog(id);
+
+        if (!result) {
+            return res.status(404).json({ message: 'Dog not found' });
+        }
+
+        return res.status(200).json({ message: 'Dog deleted successfully', id: result.id });
+    } catch (error) {
+        console.error('Error deleting dog:', error);
+        return res.status(500).json({ message: 'Error deleting dog' });
+    }
+};
+
+export { deleteDog };
