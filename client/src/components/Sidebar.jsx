@@ -38,6 +38,15 @@ const Sidebar = ({ onSelect }) => {
           <span className="text-lg font-medium">Dog</span>
         </li>
 
+            {/* Opción de Dog */}
+            <li
+          onClick={() => onSelect('VaccineCardForm')}
+          className="flex items-center gap-4 p-3 rounded-lg text-gray-200 cursor-pointer hover:bg-blue-600 hover:text-white transition duration-300 transform hover:scale-105"
+        >
+          <FaDog size={22} />
+          <span className="text-lg font-medium">VaccineCardForm</span>
+        </li>
+
         </ul>
       </div>
     </div>

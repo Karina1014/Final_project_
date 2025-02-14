@@ -4,6 +4,7 @@ import Vaccine from '../components/Vaccine';
 import HeaderAdmin from '../components/HeaderAdmin';
 import NavbarAdmin from '../components/NavbarAdmin';
 import Dog from '../components/Dog'; 
+import VaccineCardForm from '../components/VaccineCardForm';
 
 const Admin = () => {
   const [selectedMenu, setSelectedMenu] = useState('Inicio'); // Estado para controlar el menú seleccionado
@@ -34,6 +35,10 @@ const Admin = () => {
           )}
           {selectedMenu === 'Dog' && (
             <Dog />  
+          )}
+
+          {selectedMenu === 'VaccineCardForm' && (
+            <VaccineCardForm />  
           )}
           
         </div>
