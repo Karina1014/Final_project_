@@ -46,45 +46,6 @@ jobs:
             owner_management/Microservice_${service}_owner
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_owner:latest
             done
-      
-
-      # Paso 3: Construir y subir la imagen Docker del cliente
-      - name: Build and Push Client Docker image
-        run: |
-          docker build -f client/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/cliente:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/cliente:latest
-
-
-  deploy-client:
-    runs-on: ubuntu-latest
-    needs: build-and-push
-
-    steps:
-      - name: SSH into EC2 (Client) and deploy Docker container
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.EC2_CLIENT_SERVER }}
-          username: ubuntu
-          key: ${{ secrets.CLIENT_SERVER_KEY }}
-          script: |
-            # Install Docker on the EC2 instance (Client)
-            sudo apt update && sudo apt install -y docker.io
-
-            # Ensure Docker starts automatically
-            sudo systemctl enable --now docker
-
-            # Pull the latest client image from Docker Hub
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cliente:latest
-
-            # Stop any running containers
-            sudo docker ps -q | xargs sudo docker stop || true
-            sudo docker ps -q | xargs sudo docker rm || true
-
-            # Start the new container with the pulled image
-            sudo docker run -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/cliente:latest
-
-            # Verify the container is running
-            sudo docker ps -a
   
   deploy-vaccine-management:
     needs: build-and-push
@@ -278,3 +239,6 @@ jobs:
             docker run -d -p 8083:8083 --name microservice_delete_owner ${{ secrets.DOCKER_USERNAME }}/microservice_delete_owner:latest
             
             echo "✅ Contenedores iniciados."
+
+
+  
