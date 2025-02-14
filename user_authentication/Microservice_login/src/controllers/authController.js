@@ -35,13 +35,13 @@ export const login = async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    // 🔹 Configurar la cookie correctamente
-    res.cookie('token', token, {
-      httpOnly: true, // 🔒 Evita acceso desde JavaScript en el cliente
-      secure: process.env.NODE_ENV === 'production', // Solo en HTTPS en producción
-      sameSite: 'None', // Permite enviar cookies entre dominios
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días en milisegundos
+    res.cookie("token", token, {
+      httpOnly: true, // Evita que JavaScript acceda a la cookie
+      secure: false, // ⚠️ Solo funciona con HTTPS (AWS usa HTTP por defecto)
+      sameSite: "None", // ⚠️ Necesario para dominios diferentes
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
     });
+    
 
     // 📨 Enviar email de bienvenida
     const mailOption = {

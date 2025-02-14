@@ -15,7 +15,7 @@ export const isAuthenticated = async (req, res) => {
     // Verificar el token JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;  // Asignar el usuario decodificado al request
-    return res.json({ success: true });
+    return res.json({ success: true, user: decoded });
   } catch (error) {
     return res.status(401).json({ success: false, message: 'Invalid or expired token' });
   }
@@ -25,28 +25,28 @@ export const sendResetOtp = async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
-    return res.json({ success: false, message: 'Email is required' });
+    return res.status(400).json({ success: false, message: 'Email is required' });
   }
 
   try {
     const user = await userModel.findOne({ email });
 
     if (!user) {
-      return res.json({ success: false, message: 'User not found' });
+      return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     // Generar OTP
     const otp = String(Math.floor(100000 + Math.random() * 900000));
-    user.verifyOtp = otp;  // Se cambió de sendVerifiOTP a verifyOtp para que sea consistente con la validación en verifiEmail
+    user.verifyOtp = otp;  // Guardamos el OTP en el campo correcto
     user.verifyOtpExpireAt = Date.now() + 24 * 60 * 60 * 1000; // Expira en 24 horas
-
     await user.save();
 
+    // Enviar correo con OTP
     const mailOption = {
       from: process.env.SENDER_EMAIL,
       to: user.email,
       subject: 'Password Reset OTP',
-      text: `Your OTP for resetting your password is ${otp}. Use this OTP to proceed with resetting your password.`
+      text: `Your OTP for resetting your password is: ${otp}. Use this OTP to reset your password.`
     };
 
     await transporter.sendMail(mailOption);
@@ -54,27 +54,35 @@ export const sendResetOtp = async (req, res) => {
     return res.json({ success: true, message: 'OTP sent to email' });
 
   } catch (error) {
-    return res.json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
-// Asegúrate de que esta función esté definida y exportada
+// Verificar OTP y confirmar email
 export const verifiEmail = async (req, res) => {
   const { otp } = req.body;
-  // Lógica de verificación de email usando OTP
+
+  if (!otp) {
+    return res.status(400).json({ success: false, message: 'OTP is required' });
+  }
+
   try {
-    // Supongamos que validas el OTP y el usuario
-    const user = await userModel.findOne({ 'resetOtp': otp });
+    // Buscar usuario con OTP válido
+    const user = await userModel.findOne({ verifyOtp: otp });
+
     if (!user) {
       return res.status(400).json({ success: false, message: 'Invalid OTP' });
     }
 
-    // Si es válido, puedes actualizar la verificación del usuario
+    // Marcar el usuario como verificado
     user.isAccountVerified = true;
+    user.verifyOtp = null; // Eliminar el OTP después de usarlo
+    user.verifyOtpExpireAt = null;
     await user.save();
 
-    res.status(200).json({ success: true, message: 'Account verified successfully' });
+    return res.json({ success: true, message: 'Account verified successfully' });
+
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error' });
+    return res.status(500).json({ success: false, message: 'Server error' });
   }
 };

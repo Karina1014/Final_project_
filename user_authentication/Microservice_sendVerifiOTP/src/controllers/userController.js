@@ -1,27 +1,41 @@
-import userModel from '../models/userModel.js'; // Asegúrate de importar correctamente el modelo
+import userModel from '../models/userModel.js';
 
 export const getUserData = async (req, res) => {
   try {
-    const { userId } = req.body; // Asegúrate de que userId se pase correctamente
-    const user = await userModel.findById(userId); // Busca el usuario en la base de datos
-
-    if (!user) {
-      return res.json({ success: false, message: 'User not found' });
+    // 🛡 Tomamos userId desde req.userId (protegido por middleware)
+    const userId = req.userId;  
+    if (!userId) {
+      return res.status(400).json({ success: false, message: 'User ID is missing' });
     }
 
-  
-    // Si el usuario se encuentra, devuelve los datos
+    // 🔍 Buscar usuario en MongoDB
+    const user = await userModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // ✅ Respuesta con datos del usuario
     res.json({
       success: true,
       userData: {
         name: user.name,
-        isAccountVerified: user.isAccountVerified // Devolver el valor calculado aquí
+        isAccountVerified: user.isAccountVerified
       },
     });
+
   } catch (error) {
-    return res.json({ success: false, message: error.message });
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
-
-
+// 🍪 Configurar la cookie de autenticación
+export const setAuthCookie = (res, token) => {
+  res.cookie("token", token, {
+    httpOnly: true, 
+    secure: false, // 🔥 Cambia a `true` si es producción
+    sameSite: "None", 
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+  });
+};
