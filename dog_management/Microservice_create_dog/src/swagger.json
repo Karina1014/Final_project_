@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Dog API",
-    "description": "API for creating dog",
+    "description": "API for managing dog records",
     "version": "1.0.0"
   },
   "host": "localhost:4000",
@@ -14,34 +14,69 @@
   "paths": {
     "/add": {
       "post": {
-        "description": "",
+        "summary": "Add a new dog",
+        "operationId": "addDog",
+        "tags": ["Dogs"],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
-              "type": "object",
-              "properties": {
-                "nameDog": {
-                  "example": "any"
-                },
-                "breed": {
-                  "example": "any"
-                },
-                "age": {
-                  "example": "any"
-                },
-                "gener": {
-                  "example": "any"
-                }
-              }
+              "$ref": "#/definitions/Dog"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Dog successfully added",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Dog added successfully"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Dog": {
+      "type": "object",
+      "required": ["nameDog", "breed", "age"],
+      "properties": {
+        "nameDog": {
+          "type": "string",
+          "example": "Buddy",
+          "description": "Name of the dog"
+        },
+        "breed": {
+          "type": "string",
+          "example": "Labrador",
+          "description": "Breed of the dog"
+        },
+        "age": {
+          "type": "integer",
+          "example": 3,
+          "description": "Age of the dog in years"
+        },
+        "gender": {
+          "type": "string",
+          "enum": ["Male", "Female"],
+          "example": "Male",
+          "description": "Gender of the dog"
         }
       }
     }
