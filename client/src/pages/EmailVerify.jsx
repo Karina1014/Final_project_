@@ -1,61 +1,69 @@
-import React, { useContext, useRef } from 'react';
-import { assets } from '../assets/assets';
-import { useNavigate } from 'react-router-dom';
-import { AppContent } from '../context/AppContext';
+import React, { useContext } from 'react'
+import { assets } from '../assets/assets'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { AppContent } from '../context/AppContext'
+import {toast} from 'react-toastify'
+import { useEffect } from 'react';
+
 
 const EmailVerify = () => {
-  const navigate = useNavigate();
-  const { backendUrl } = useContext(AppContent);
-  const inputRefs = useRef([]);
+  
+  axios.defaults.withCredentials = true;
+  const {isLoggedin, userData, getUserData} = useContext(AppContent)
+
+  const navigate = useNavigate()
+
+  const inputRefs = React.useRef([])
 
   const handleInput = (e, index) => {
     if (e.target.value.length > 0 && index < inputRefs.current.length - 1) {
       inputRefs.current[index + 1].focus();
     }
   }
-
   const handleKeyDown = (e, index) => {
-    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+    if (e.key === 'Backspace' && e.target.value == '' && index > 0) {
       inputRefs.current[index - 1].focus();
     }
   }
 
   const handlePaste = (e) => {
-    const paste = e.clipboardData.getData('text');
+    const paste = e.clipboardData.getData('text')
     const pasteArray = paste.split('');
     pasteArray.forEach((char, index) => {
       if (inputRefs.current[index]) {
         inputRefs.current[index].value = char;
       }
-    });
+    })
   }
   const onSubmitHandler = async (e) => {
     try {
       e.preventDefault();
-  
-      // Obtener OTP ingresado
       const otpArray = inputRefs.current.map(e => e.value);
       const otp = otpArray.join('');
-  
-      // Enviar OTP al backend para la verificación
-      const { data } = await axios.post(`http://52.72.179.181:6004/api/auth/verify-account`, {
-        userId: userData._id,  // El ID del usuario debería ser parte de userData
-        otp,
-      });
-  
+
+      const { data } = await axios.post(
+         'http://52.72.179.181:6004/api/auth/verify-account',
+        { otp }, // Cuerpo de la solicitud
+        { withCredentials: true } // Enviar credenciales (cookies)
+      );
+
       if (data.success) {
-        toast.success(data.message); // Mensaje de éxito
-        navigate('/dashboard'); // Redirigir después de la verificación exitosa
+        toast.success(data.message);
+        getUserData();
+        navigate('/admin');
       } else {
-        toast.error(data.message || 'Invalid OTP');
+        toast.error(data.message);
       }
     } catch (error) {
-      toast.error('Something went wrong');
+      toast.error(error.message);
     }
-  };
-  
+};
+
+  useEffect(() => {
+    isLoggedin && userData && userData.isAccountVerified && navigate('/')
+  }, [isLoggedin, userData])
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-200 to-purple-400">
       <img
@@ -66,30 +74,24 @@ const EmailVerify = () => {
       />
       <form onSubmit={onSubmitHandler} className='bg-slate-900 p-8 rounded-lg shadow-lg w-96 text-sm'>
         <h1 className='text-white text-2xl font-semibold text-center mb-4'>
-          Verify your Email
-        </h1>
+          Email verify OTP</h1>
         <p className='text-center mb-6 text-indigo-300'>
-          Enter the 6-digit OTP sent to your email.
-        </p>
+          Enter the 6-digit code sent to your email id.</p>
         <div className='flex justify-between mb-8' onPaste={handlePaste}>
           {Array(6).fill(0).map((_, index) => (
-            <input
-              type="text"
-              maxLength='1'
-              key={index}
+            <input type="text" maxLength='1' key={index} required
               className='w-12 h-12 bg-[#333A5C] text-white text-center text-xl rounded-md'
-              ref={el => inputRefs.current[index] = el}
+              ref={e => inputRefs.current[index] = e}
               onInput={(e) => handleInput(e, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
             />
           ))}
         </div>
-        <button className='w-full py-3 bg-gradient-to-r from-indigo-500 to-indigo-900 text-white rounded-full'>
-          Verify Email
-        </button>
+        <button className='w-full py-3 bg-gradient-to-r from-indigo-500 
+        to-indigo-900 text-white rounded-full'>Verify email</button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default EmailVerify;
+export default EmailVerify

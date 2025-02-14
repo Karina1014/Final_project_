@@ -13,9 +13,11 @@ const NavbarAdmin = () => {
   const logout = async () => {
     try {
       axios.defaults.withCredentials = true;
-      const { data } = await axios.post(`http://52.72.179.181:6002/api/auth/logout`,
-      { withCredentials: true });
-  
+      const { data } = await axios.post(
+        "http://52.72.179.181:6002/api/auth/logout",
+        {}, // Cuerpo vacío si no necesitas enviar datos
+        { withCredentials: true } // Configuración de Axios
+      );
       console.log('Backend response:', data); // Verifica la respuesta del backend
       data.success && setIsLoggedin(false)
       data.success && setUserData(false)
@@ -40,9 +42,12 @@ const NavbarAdmin = () => {
     try {
       axios.defaults.withCredentials = true;
 
-      const { data } = await axios.post(`http://52.72.179.181:6003/api/auth/send-verify-otp`, 
-      { withCredentials: true });
-
+      const { data } = await axios.post(
+        "http://52.72.179.181:6003/api/auth/send-verify-otp",
+        {}, // Cuerpo vacío si no necesitas enviar datos
+        { withCredentials: true } // Configuración de Axios
+      );
+      
       if (data.success) {
         navigate('/email-verify')
         toast.success(data.message +' Verification email sent!');

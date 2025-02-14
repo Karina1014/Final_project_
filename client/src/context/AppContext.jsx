@@ -11,11 +11,16 @@ export const AppContextProvider = (props) => {
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [userData, setUserData] = useState(false); // Inicializar en null
 
+  const token = localStorage.getItem("token"); // O desde cookies
+
   // Verifica el estado de autenticación
   const getAuthState = async () => {
     try {
       const { data } = await axios.get(`http://52.72.179.181:6005/api/auth/is-auth`, {
-        withCredentials: true,  // 👈 Asegura que las cookies se envíen
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        withCredentials: true
       });
   
       if (data.success) {

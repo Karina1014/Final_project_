@@ -38,11 +38,12 @@ export const Login = () => {
         }
       } else if (state === 'Login') {
         // Lógica para el login
-        const { data } = await axios.post(`http://52.72.179.181:6001/api/auth/login`, {
-          email,
-          password,
-        });
-
+        const { data } = await axios.post(
+          "http://52.72.179.181:6001/api/auth/login",
+          { email, password }, // Cuerpo de la solicitud
+          { withCredentials: true } // Configuración de Axios
+        );
+        
         if (data.success) {
           setIsLoggedin(true);
           getUserData();
