@@ -6,7 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Dog = () => {
-  const backendUrl = "http://localhost:4001";  // URL del backend
+  const backendUrl = "http://34.225.2.117:4001";  // URL del backend
   const [image, setImage] = useState(null);
   const [data, setData] = useState({
     id: "",
