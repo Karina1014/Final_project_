@@ -21,6 +21,13 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Build and Push Microservice Owner create
+        run: |
+          echo "Building and pushing microservice_create_owner..."
+          docker build -f owner_management/Microservice_create_owner/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_owner:latest owner_management/Microservice_create_owner
+          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_owner:latest
+      
+
       # Paso 3: Construir y subir la imagen Docker del cliente
       - name: Build and Push Client Docker image
         run: |
@@ -56,4 +63,5 @@ jobs:
               echo "Building and pushing microservice_list_owner..."
               docker build -f owner_management/Microservice_list_owner/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_owner:latest owner_management/Microservice_list_owner
               docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_owner:latest
-          
+    
+ 
