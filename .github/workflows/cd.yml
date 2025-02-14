@@ -81,6 +81,18 @@ jobs:
           echo "Building and pushing microservice_verifiemail"
           docker build -f user_authentication/Microservice_verifiEmail/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_verifiemail:latest user_authentication/Microservice_verifiEmail
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_verifiemail:latest
+
+      - name: Build and Push Microservice_create_vaccine_card
+        run: |
+            echo "Building and pushing Microservice_create_vaccine_card"
+            docker build -f vaccine_card_management/Microservice_create_vaccine_card/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine_card:latest vaccine_card_management/Microservice_create_vaccine_card
+            docker push ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine_card:latest
+  
+      - name: Build and Push Microservice_vaccine_card
+        run: |
+            echo "Building and pushing Microservice_vaccine_card"
+            docker build -f vaccine_card_management/Microservice_vaccine_card/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_vaccine_card:latest vaccine_card_management/Microservice_vaccine_card 
+  
    
   deploy-client:
       runs-on: ubuntu-latest
@@ -380,3 +392,64 @@ jobs:
 
               # Verificar que los contenedores están corriendo
               sudo docker ps -a
+
+  deploy-card:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into EC2 and deploy Docker containers
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_SERVER_CARD }}
+          username: ubuntu
+          key: ${{ secrets.CARD_SERVER_KEY }}
+          script: |
+            # Verificar si Docker está instalado, si no, instalarlo
+            if ! command -v docker &> /dev/null; then
+              echo "Docker no está instalado. Instalando..."
+              sudo apt update && sudo apt install -y docker.io
+            fi
+
+            # Hacer que Docker se inicie automáticamente
+            sudo systemctl enable --now docker
+
+            # Descargar las últimas imágenes desde Docker Hub
+            echo "Descargando imágenes..."
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine_card:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/microservice_vaccine_card:latest
+
+            # Verificar si las imágenes fueron descargadas correctamente
+            sudo docker images
+
+            # Detener y eliminar los contenedores existentes por nombre
+            sudo docker stop microservice_create_vaccine_card || true
+            sudo docker rm microservice_create_vaccine_card || true
+            sudo docker stop microservice_vaccine_card || true
+            sudo docker rm microservice_vaccine_card || true
+
+            # Verificar las variables de entorno antes de generar el archivo
+            echo "Base de datos: $REACT_APP_RDS_HOST"
+
+            # Crear el archivo .env dentro de la carpeta src
+            mkdir -p src
+            echo "MONGO_URI_PYTHON=${{ secrets.MONGO_URI_PYTHON }}" >> src/.env
+            echo "MONGO_DB=${{ secrets.MONGO_DB }}" >> src/.env
+            echo "GRAPHQL_URL=${{ secrets.GRAPHQL_URL }}" >> src/.env
+            echo "DB_SERVER=${{ secrets.DB_SERVER }}" >> src/.env
+            echo "DB_SERVER=${{ secrets.DB_USERV }}" >> src/.env
+            echo "DB_NAME=${{ secrets.DB_NAMEV }}" >> src/.env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> src/.env
+            echo "DRIVER=${{ secrets.DRIVER }}" >> src/.env
+
+            # Verificar que el archivo .env se ha creado correctamente
+            cat src/.env
+
+            # Ejecutar los contenedores Docker con el archivo .env dentro de src
+            echo "Ejecutando microservice_create_vaccine_card..."
+            sudo docker run -d --name microservice_create_vaccine_card --env-file src/.env -p 9000:9000 ${{ secrets.DOCKER_USERNAME }}/microservice_create_vaccine_card:latest
+            echo "Ejecutando microservice_vaccine_card..."
+            sudo docker run -d --name microservice_vaccine_card --env-file src/.env -p 7500:7500 ${{ secrets.DOCKER_USERNAME }}/microservice_vaccine_card:latest
+
+            # Verificar que los contenedores están corriendo
+            sudo docker ps -a

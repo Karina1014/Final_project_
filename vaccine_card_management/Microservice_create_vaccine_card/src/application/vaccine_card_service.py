@@ -7,9 +7,9 @@ class VaccineCardService:
 
     def fetch_data(self):
         try:
-            dogs = requests.get("http://localhost:9000/dogs").json()
-            owners = requests.get("http://localhost:9000/owners").json()
-            vaccines = requests.get("http://localhost:9000/vaccines").json()
+            dogs = requests.get("http://18.215.212.3:9000/dogs").json()
+            owners = requests.get("http://18.215.212.3:9000/owners").json()
+            vaccines = requests.get("http://18.215.212.3:9000/vaccines").json()
             return dogs, owners, vaccines
         except requests.exceptions.RequestException as e:
             print(f"Error en la petición: {e}")
