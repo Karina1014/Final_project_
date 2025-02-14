@@ -24,7 +24,7 @@ jobs:
       - name: Build and Push Docker Images vaccine_management
         run: |
             for service in create update list delete; do
-            docker build -f vaccine_management/microservice_${service}_vaccine/Dockerfile \
+            docker build -f vaccine_management/Microservice_${service}_vaccine/Dockerfile \
             -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_vaccine:latest \
             vaccine_management/microservice_${service}_vaccine
             docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_vaccine:latest
@@ -32,12 +32,12 @@ jobs:
       - name: Build and Push Docker Images dog_management
         run: |
             for service in create list remove update; do
-            docker build -f Microservice_${service}_dog/Dockerfile \
+            docker build -f dog_management/Microservice_${service}_dog/Dockerfile \
             -t ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest \
              Microservice_${service}_dog
              docker push ${{ secrets.DOCKER_USERNAME }}/microservice_${service}_dog:latest
             done
-            
+
       - name: Build and Push Docker Images owner_management
         run: |
             for service in create update list delete; do
