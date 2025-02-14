@@ -1,0 +1,121 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Vaccine API",
+    "description": "API for managing vaccine records, including vaccine creation.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3001",
+  "basePath": "/api",
+  "tags": [
+    {
+      "name": "Vaccines",
+      "description": "Endpoints for managing vaccines"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/createVaccines": {
+      "post": {
+        "tags": ["Vaccines"],
+        "summary": "Create a new vaccine record",
+        "description": "Creates a new vaccine entry with the provided details.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Vaccine details to be added",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/VaccineCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Vaccine successfully created",
+            "schema": {
+              "$ref": "#/definitions/VaccineResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/ErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "VaccineCreate": {
+      "type": "object",
+      "required": ["name", "description", "dose"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Rabies Vaccine"
+        },
+        "description": {
+          "type": "string",
+          "example": "A vaccine to prevent rabies in dogs."
+        },
+        "dose": {
+          "type": "integer",
+          "example": 2
+        }
+      }
+    },
+    "VaccineResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "12345"
+        },
+        "name": {
+          "type": "string",
+          "example": "Rabies Vaccine"
+        },
+        "description": {
+          "type": "string",
+          "example": "A vaccine to prevent rabies in dogs."
+        },
+        "dose": {
+          "type": "integer",
+          "example": 2
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2025-02-14T12:00:00Z"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string",
+          "example": "Invalid input data"
+        }
+      }
+    }
+  }
+}
