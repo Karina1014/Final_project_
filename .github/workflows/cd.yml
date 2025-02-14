@@ -34,12 +34,12 @@ jobs:
           docker build -f vaccine_management/Microservice_list_vaccine/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest vaccine_management/Microservice_list_vaccine
           docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_vaccine:latest
 
-      - name: Build and Push Microservice owner
+      - name: Build and Push Microservice Owner List
         run: |
-          echo "Building and pushing microservice_ownerList"
-          docker build -f owner_management/Microservice_list_owner/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_owner:latest owner_management/Microservice_list_owner
-          docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_owner:latest
-
+            echo "Building and pushing microservice_list_owner..."
+            docker build -f owner_management/Microservice_list_owner/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/microservice_list_owner:latest owner_management/Microservice_list_owner
+            docker push ${{ secrets.DOCKER_USERNAME }}/microservice_list_owner:latest
+        
       - name: Build and Push Microservice GraphQL
         run: |
             echo "Building and pushing microservice_graphql..."
